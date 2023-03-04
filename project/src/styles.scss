@@ -1,0 +1,31 @@
+.register-container {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    
+    .register-wrapper {
+        flex-direction: column;
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+    }
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    
+    .login-wrapper {
+        flex-direction: column;
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+    }
+}
