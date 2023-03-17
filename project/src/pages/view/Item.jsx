@@ -1,0 +1,1 @@
+// for item detail components
