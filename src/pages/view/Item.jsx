@@ -1,16 +1,8 @@
-import React from "react";
-import { db, auth } from "../../firebase";
-import { ProfileCard } from "../users/Profile";
-// for item detail components
+import { db } from "../../firebase";
 
-export default function ItemView() {
-    return (
-        <div>
-            <ProfileCard></ProfileCard>
-            <>
-                1. picture, description, price, add to cart. 2. try-on by upload
-                picture. 3. customer review display section
-            </>
-        </div>
-    );
-}
+// Ying. Yang: item customer review
+// Item bar/sticker element, for product filter result, flyer, order history pages etc.
+export function ItemMini() {}
+
+// Detailed item info page
+export default function ItemDetails() {}

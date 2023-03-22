@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { db, auth } from "../../firebase";
 import { signOut } from "firebase/auth";
 
-// for user profile page components
+// Mashhood
+// for user profile card components
 export function ProfileCard() {
     return (
         <div>
@@ -15,6 +16,7 @@ export function ProfileCard() {
     );
 }
 
+// detailed user profile display & edit on-site
 export default function Profile() {
     return <div></div>;
 }
