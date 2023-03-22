@@ -24,9 +24,12 @@ function Login() {
             console.log(error);
             setError(true);
         }
+
+        // Add analysis for db response in case of admin
     };
 
     return (
+        // add admin redirection
         <div className="login-container">
             <div className="login-wrapper">
                 <form onSubmit={validate}>

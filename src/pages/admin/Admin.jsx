@@ -1,13 +1,10 @@
 import React from "react";
-import { ProfileCard } from "./Profile";
+import { ProfileCard } from "../user/Profile";
 import { db } from "../../firebase";
 import { Link } from "react-router-dom";
 
+// Yang
 // for admin statistic components
-
-function MonthlyReport() {}
-
-function WebUsage() {}
 
 export default function Administration() {
     return (
