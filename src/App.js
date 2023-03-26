@@ -1,6 +1,7 @@
 import Login from "./pages/login/Login";
 import Register from "./pages/login/Register";
 import Main from "./pages/Main";
+import Profile from "./pages/user/Profile";
 import "./assets/styles.scss";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -26,6 +27,14 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <Main />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route 
+                        path="user/Profile"
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
                             </ProtectedRoute>
                         }
                     />
