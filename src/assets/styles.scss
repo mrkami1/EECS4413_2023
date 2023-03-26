@@ -1,3 +1,7 @@
+body {
+    margin: 0;
+}
+
 .register-container {
     display: flex;
     align-items: center;
@@ -28,4 +32,22 @@
         }
 
     }
+}
+
+.navbar-container {
+    background-color: rgb(97, 97, 97);
+}
+
+.navbar-items {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+
+    li {
+        padding-left: 10px; 
+    }
+
 }
