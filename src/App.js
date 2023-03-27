@@ -1,12 +1,16 @@
 import Login from "./pages/login/Login";
 import Register from "./pages/login/Register";
-import Main from "./pages/Main";
+import { Main } from "./pages/Main";
 import Profile from "./pages/user/Profile";
-import "./assets/styles.scss";
+import { AddProducts } from "./pages/view/AddProducts";
+import "./index.css";
+// import "./assets/styles.scss";
+
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
+
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -23,12 +27,12 @@ function App() {
             <Routes>
                 <Route path="/">
                     <Route
-                        index
-                        element={
-                            <ProtectedRoute>
-                                <Main />
-                            </ProtectedRoute>
-                        }
+                        path="Main"
+                        element={<Main />}
+                    />
+                    <Route
+                        path="/addproducts"
+                        element={<AddProducts />}
                     />
                     <Route 
                         path="user/Profile"

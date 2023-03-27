@@ -1,13 +1,14 @@
 import React from "react";
-import Navbar from "../components/Navbar";
+import '../css/Main.css'
+import { Navbar } from "./view/Navbar";
+import { Products } from "./view/Products";
 
 // main page for product display, ?profile review, ?cart display, ?order history, ?payment
-function Main() {
+export const Main = () => {
     return (
-        <div>
+        <div className = 'wrapper'>
             <Navbar />
+            <Products />
         </div>
     );
 }
-
-export default Main;
