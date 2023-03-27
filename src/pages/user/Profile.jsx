@@ -16,12 +16,12 @@ function Profile() {
             <Navbar />
             {userFields &&
                 <>
-                    <p>Name: {currentUser.displayName}</p>
-                    <p>Email: {userFields.email.stringValue}</p>
-                    <p>Account type: {userFields.level.stringValue}</p>
-                    <p>Payment: {userFields.payment.stringValue}</p>
-                    <p>Address: {userFields.shippingAddr.stringValue}</p>
-                    <p>User ID: {userFields.userID.stringValue}</p>
+                    <p>Name: {currentUser?.displayName}</p>
+                    <p>Email: {userFields.email?.stringValue}</p>
+                    <p>Account type: {userFields.level?.stringValue}</p>
+                    <p>Payment: {userFields.payment?.stringValue}</p>
+                    <p>Address: {userFields.shippingAddr?.stringValue}</p>
+                    <p>User ID: {userFields.userID?.stringValue}</p>
                 </>
             } 
         </div>

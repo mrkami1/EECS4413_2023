@@ -16,6 +16,10 @@ function Register() {
         const password = e.target[3].value;
         const confirm = e.target[4].value;
 
+        const level = "customer";
+        const payment = 0;
+        const address = "no address set";
+
         if (password !== confirm) {
             setError(true);
             return;
@@ -34,6 +38,9 @@ function Register() {
                 firstName,
                 lastName,
                 email,
+                level,
+                payment,
+                address
             });
 
             await updateProfile(response.user, {
