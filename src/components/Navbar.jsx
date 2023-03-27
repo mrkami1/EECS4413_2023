@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import { signOut } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
 
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const logout = async () => {
         signOut(auth);
@@ -20,9 +21,9 @@ function Navbar() {
     return (
         <div className="navbar-container">
             <ul className="navbar-items">
-                <li><input type='text' placeholder="Search"></input></li>
-                <li><button onClick={goToProfile}>{currentUser.displayName}</button></li>
-                <li><button onClick={logout}>Log out</button></li>
+                <li>{location.pathname === "/" && <input type='text' placeholder="Search"></input>}</li>
+                <li>{location.pathname === "/" && <button onClick={goToProfile}>{currentUser.displayName}</button>}</li>
+                <li>{location.pathname === "/user/profile" && <button onClick={logout}>Sign out</button>}</li>
             </ul>
         </div>
     );
