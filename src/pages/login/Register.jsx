@@ -17,8 +17,8 @@ function Register() {
         const confirm = e.target[4].value;
 
         const level = "customer";
-        const payment = 0;
-        const address = "no address set";
+        const payment = "";
+        const address = "";
 
         if (password !== confirm) {
             setError(true);
