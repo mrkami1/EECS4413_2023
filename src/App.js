@@ -8,6 +8,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { UserFieldsProvider } from "./context/UserFieldsContext";
+import FlyersShow from "./pages/view/Flyer";
+import Administration from "./pages/admin/Admin";
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -21,33 +23,41 @@ function App() {
     };
 
     return (
-        
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/">
-                        <Route
-                            index
-                            element={
-                                <ProtectedRoute>
-                                    <Main />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="user/Profile"
-                            element={
-                                <ProtectedRoute>
-                                    <UserFieldsProvider>
-                                        <Profile />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route path="Login" element={<Login />} />
-                        <Route path="Register" element={<Register />} />
-                    </Route>
-                </Routes>
-            </BrowserRouter>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/">
+                    <Route
+                        index
+                        element={
+                            <ProtectedRoute>
+                                <Main />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
+                    <Route
+                        path="user/profile"
+                        element={
+                            <ProtectedRoute>
+                                <UserFieldsProvider>
+                                    <Profile />
+                                </UserFieldsProvider>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="admin/portal"
+                        element={
+                            <ProtectedRoute>
+                                <Administration />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="admin/flyer" element={<FlyersShow />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     );
 }
 

@@ -117,11 +117,9 @@ async function Flyer({ isAdmin }) {
     );
 }
 
-export default async function FlyersShow() {
+export default function FlyersShow() {
     const user = useContext(AuthContextProvider);
-    const q2 = query(collection(db, "users", user.uid));
-    const doc1 = await getDoc(q2);
-    const isAdmin = doc1.exists() && doc1.data().level === "admin";
+    const isAdmin = user.isAdmin;
     // Todo
     const saveAbove = () => {};
     return (
