@@ -10,11 +10,10 @@ function Register() {
 
     const createAccount = async (e) => {
         e.preventDefault();
-        const firstName = e.target[0].value;
-        const lastName = e.target[1].value;
-        const email = e.target[2].value;
-        const password = e.target[3].value;
-        const confirm = e.target[4].value;
+        const name = e.target[0].value;
+        const email = e.target[1].value;
+        const password = e.target[2].value;
+        const confirm = e.target[3].value;
 
         const level = "customer";
         const payment = "";
@@ -35,8 +34,7 @@ function Register() {
             const userID = response.user.uid;
             await setDoc(doc(db, "users", response.user.uid), {
                 userID,
-                firstName,
-                lastName,
+                name,
                 email,
                 level,
                 payment,
@@ -44,7 +42,7 @@ function Register() {
             });
 
             await updateProfile(response.user, {
-                displayName: firstName + " " + lastName,
+                displayName: name,
             })
                 .then((res) => {
                     console.log(res);
