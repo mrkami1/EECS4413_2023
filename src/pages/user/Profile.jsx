@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { signOut } from "firebase/auth";
+import { updateProfile } from "firebase/auth";
+import { auth, db } from "../../firebase";
+import { doc, updateDoc } from "firebase/firestore"
 import { AuthContext } from "../../context/AuthContext";
 import  UserFieldsContext from "../../context/UserFieldsContext";
-import { auth } from "../../firebase";
 import Navbar from "../../components/Navbar";
 
 // Mashhood
@@ -22,10 +23,23 @@ function Profile() {
         setShowEdit(true)
     }
 
-    const saveProfile = () => {
-        setShowEdit(false)
-
-        
+    const saveProfile = async () => {
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            email: newFields.email,
+            payment: newFields.payment,
+            address: newFields.address
+        })
+        .then(() => {
+            updateProfile(auth.currentUser, {
+                displayName: newFields.name
+            })
+            .then(() => {
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        })
     }
 
     const updateFields = (e) => {
@@ -46,8 +60,6 @@ function Profile() {
         })
     }, [newName, newEmail, newPayment, newAddress])
 
-    console.log(newFields)
-
     return (
         <div>
             <Navbar />
@@ -67,7 +79,7 @@ function Profile() {
                         {showEdit && <input type='text' placeholder="New payment" name="payment" onChange={updateFields}></input>}
                     </p>
                     <p>
-                        Address: {userFields.shippingAddr?.stringValue}
+                        Address: {userFields.address?.stringValue}
                         {showEdit && <input type='text' placeholder="New address" name="address" onChange={updateFields}></input>}
                     </p>
                     <p>User ID: {userFields.userID?.stringValue}</p>
