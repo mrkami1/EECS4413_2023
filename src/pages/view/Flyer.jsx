@@ -1,22 +1,37 @@
-import React, { useState } from "react";
-import { db, auth } from "../../firebase";
-import { ProfileCard } from "../user/Profile";
-import { query, collection, orderBy, getDocs } from "firebase/firestore";
+import React, { useContext, useState } from "react";
+import { db } from "../../firebase";
+import Navbar from "../../components/Navbar";
+import {
+    query,
+    collection,
+    orderBy,
+    getDocs,
+    addDoc,
+    getDoc,
+    deleteDoc,
+} from "firebase/firestore";
+import { AuthContextProvider } from "../../context/AuthContext";
 
 // Yang
 // for flyer components
 
-function ProductBlock(product) {
+// Individual Product card, showing product properties.
+// Admin can change its current discout for later submission
+function ProductBlock({ product, isAdmin, handleDelete }) {
     const prodID = product.name + "_discount";
     const [discount, setDiscount] = useState(product.discount);
 
     const handleChange = (event) => {
+        event.preventDefault();
         setDiscount(event.target.value);
     };
+
+    const removeProd = () => {};
 
     return (
         <div>
             <h3>{product.name}</h3>
+            <p>Expire on {product.expire}</p>
             <img
                 url={product.url}
                 alt={product.name}
@@ -24,54 +39,78 @@ function ProductBlock(product) {
                 height={100}
             />
             <p>Original price: {product.price}</p>
-            <form>
-                <label for={prodID}>Discount (%): </label>
-                <input
-                    id={prodID}
-                    type="number"
-                    value={discount}
-                    step={1}
-                    min={1}
-                    max={100}
-                    onChange={handleChange}
-                />
-                <button type="submit" onClick={setDiscount(discount)}>
-                    update
-                </button>
-            </form>
-            <br />
-            <p>Discounted price: {product.price * (1 - discount / 100)}</p>
+            {isAdmin && (
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <label for={prodID}>Discount (%): </label>
+                    <input
+                        id={prodID}
+                        type="number"
+                        value={discount}
+                        step={1}
+                        min={1}
+                        max={100}
+                        onChange={handleChange}
+                    />
+                    <button
+                        onClick={() => setDiscount(discount)}
+                        disabled={discount == product.discount}
+                    >
+                        update
+                    </button>
+                </form>
+            )}
             <hr />
-            <button onClick={removeProd}>delete &#x1f5d1</button>
+            <p>
+                Discounted price:{" "}
+                {(product.price * (1 - discount / 100)).toFixed(2)}
+            </p>
+            {isAdmin && <button onClick={handleDelete}>delete &#x1f5d1</button>}
         </div>
     );
 }
 
-function NewBlock() {
+// A single add-new product block for admin use
+function NewBlock({ handleAddItem }) {
     return (
         <div>
             <h3>Add new flyer item here</h3>
             <form>
                 <label>SKU</label>
                 <input />
-                <button type></button>
+                <button onClick={handleAddItem}></button>
             </form>
         </div>
     );
 }
 
-function Flyer({ saleItems }) {
+async function Flyer({ isAdmin }) {
+    const q1 = query(collection(db, "flyer"), orderBy("name"));
+    const docs = await getDocs(q1);
+    var saleItems = [];
+    docs.forEach((doc) => {
+        saleItems.push(doc.data());
+    });
+    const [newSales, setNewSales] = useState(Array());
+    // todo
+    const addSalesItem = (sku, newPrice) => {};
+    const removeItem = () => {};
     return (
         <>
             <ul>
                 {saleItems.map((prod) => (
                     <li key={prod.sku}>
-                        <ProductBlock {...prod} />
+                        <ProductBlock
+                            product={prod}
+                            isAdmin={isAdmin}
+                            handleDelete={removeItem}
+                        />
                     </li>
                 ))}
-                <li key="blank">
-                    <NewBlock />
-                </li>
+                {isAdmin && (
+                    <li key="blank">
+                        <NewBlock handleAddItem={addSalesItem} />
+                    </li>
+                )}
             </ul>
             <button>Save all changes</button>
         </>
@@ -79,22 +118,18 @@ function Flyer({ saleItems }) {
 }
 
 export default async function FlyersShow() {
-    const q = query(collection(db, "flyer"), orderBy("name"));
-    const docs = await getDocs(q);
-    var saleItems = [];
-    docs.forEach((doc) => {
-        saleItems.push(doc.data());
-    });
-
-    const user = auth.currentUser;
+    const user = useContext(AuthContextProvider);
+    const q2 = query(collection(db, "users", user.uid));
+    const doc1 = await getDoc(q2);
+    const isAdmin = doc1.exists() && doc1.data().level === "admin";
+    // Todo
+    const saveAbove = () => {};
     return (
         <>
-            <ProfileCard></ProfileCard>
-            <Flyer saleItems={saleItems} />
+            <Navbar />
+            <Flyer isAdmin={isAdmin} />
             <hr />
-            <button onClick={saveAbove}>Save Updates</button>
+            {isAdmin && <button onClick={saveAbove}>Save Updates</button>}
         </>
     );
 }
-
-function addSalesItem(sku, newPrice) {}
