@@ -1,2 +1,2 @@
 // Yang
-function MonthlyReport() {}
+export default function MonthlyReport() {}
