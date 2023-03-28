@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useState, useEffect } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 
 export const AuthContext = createContext();
 
@@ -8,13 +8,11 @@ export const AuthContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
 
     useEffect(() => {
-        const userState = onAuthStateChanged(auth, (user) => {
-            setCurrentUser(user);
+        const unSub = onAuthStateChanged(auth, (user) => {
+            setCurrentUser({ ...user, isAdmin: checkAdmin(user) });
         });
 
-        return () => {
-            userState();
-        };
+        return unSub;
     }, []);
 
     return (
@@ -23,3 +21,9 @@ export const AuthContextProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
+async function checkAdmin(user) {
+    const q = query(collection(db, "users", user.uid));
+    const doc1 = await getDoc(q);
+    return doc1.exists() && doc1.data().level === "admin";
+}

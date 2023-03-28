@@ -1,20 +1,25 @@
-import React from "react";
-import { ProfileCard } from "../user/Profile";
+import React, { useContext } from "react";
+import Navbar from "../../components/Navbar";
 import { db } from "../../firebase";
 import { Link } from "react-router-dom";
 import WebUsage from "./WebUsage";
 import MonthlyReport from "./MonthlyReport";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 // Yang
 // for admin statistic components
 
 export default function Administration() {
+    const { admin } = useContext(AuthContext);
+    const navigate = useNavigate();
     return (
         <div>
-            <ProfileCard></ProfileCard>
-            <Link>// to flyer edit page</Link>
-            <MonthlyReport></MonthlyReport>
-            <WebUsage></WebUsage>
+            <Navbar />
+            <p>Welcome Administrator: {admin.displayName}</p>
+            <Link to="/admin/flyer">To Flyer edit page</Link>
+            <MonthlyReport />
+            <WebUsage />
         </div>
     );
 }

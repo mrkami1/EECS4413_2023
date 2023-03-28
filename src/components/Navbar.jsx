@@ -6,7 +6,6 @@ import { auth } from "../firebase";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
-
     const { currentUser } = useContext(AuthContext);
     const { userFields } = useContext(UserFieldsContext)
     
@@ -47,6 +46,13 @@ function Navbar() {
         }
         else navigate("/login");
     }
+    const goToProfile = () => {
+        navigate("user/profile");
+    };
+
+    const goToAdmin = () => {
+        navigate("admin/portal");
+    };
 
     useEffect(() => {
         
@@ -92,6 +98,15 @@ function Navbar() {
                         {currentUser && <option value="signout">Sign out</option>}
                         {!currentUser && <option value="signin">Sign in</option>}
                     </select>
+                <li>
+                    {location.pathname === "/" && currentUser.isAdmin && (
+                        <button onClick={goToAdmin}>Admin Portal</button>
+                    )}
+                </li>
+                <li>
+                    {location.pathname === "/user/profile" && (
+                        <button onClick={logout}>Sign out</button>
+                    )}
                 </li>
                 <li><button onClick={goToCart}><i className="fi fi-bs-shopping-cart"></i>{itemCount}</button></li>
             </ul>
