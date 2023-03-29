@@ -5,8 +5,7 @@ import Profile from "./pages/user/Profile";
 // import "./index.css";
 import { AllProducts } from "./pages/view/AllProducts";
 import "./assets/styles.scss";
-import { ProductDetail } from "./pages/view/ProductDetai
-
+import { ProductDetail } from "./pages/view/ProductDetail";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
@@ -30,20 +29,8 @@ function App() {
             <Routes>
                 <Route path="/">
                     <Route
-                        path="Main"
+                        index
                         element={<Main />}
-                    />
-                    {/* <Route
-                        path="/addproducts"
-                        element={<AddProducts />}
-                    /> */}
-                    <Route
-                        path="/product-type/glasses"
-                        element={<AllProducts type={'products'}/>}
-                    />
-                    <Route 
-                        path="/product/:id"
-                        element={<ProductDetail type={'products'}/>}
                     />
                     <Route 
                         path="user/Profile"
@@ -57,6 +44,14 @@ function App() {
                     />
                     <Route path="Login" element={<Login />} />
                     <Route path="Register" element={<Register />} />
+                    <Route
+                        path="/product-type/glasses"
+                        element={<AllProducts type={'products'}/>}
+                    />
+                    <Route 
+                        path="/product/:id"
+                        element={<ProductDetail type={'products'}/>}
+                    />
                 </Route>
             </Routes>
         </BrowserRouter>
