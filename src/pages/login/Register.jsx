@@ -21,6 +21,8 @@ function Register() {
         const address = "";
 
         if (password !== confirm) {
+            console.log(password);
+            console.log(confirm)
             setError(true);
             return;
         }
@@ -64,8 +66,7 @@ function Register() {
         <div className="register-container">
             <div className="register-wrapper">
                 <form onSubmit={createAccount}>
-                    <input type="text" placeholder="First name" />
-                    <input type="text" placeholder="Last name" />
+                    <input type="text" placeholder="Name" />
                     <input type="email" placeholder="Enter an email" />
                     <input type="password" placeholder="Create a password" />
                     <input type="password" placeholder="Confirm password" />
