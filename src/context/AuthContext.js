@@ -15,11 +15,7 @@ export const AuthContextProvider = ({ children }) => {
         return unSub;
     }, []);
 
-    return (
-        <AuthContext.Provider value={currentUser}>
-            {children}
-        </AuthContext.Provider>
-    );
+    return <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>;
 };
 
 async function checkAdmin(user) {

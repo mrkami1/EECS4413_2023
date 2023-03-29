@@ -1,16 +1,9 @@
 import React, { useContext, useState } from "react";
 import { db } from "../../firebase";
 import Navbar from "../../components/Navbar";
-import {
-    query,
-    collection,
-    orderBy,
-    getDocs,
-    addDoc,
-    getDoc,
-    deleteDoc,
-} from "firebase/firestore";
+import { query, collection, orderBy, getDocs, addDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { AuthContextProvider } from "../../context/AuthContext";
+import UserFieldsContext from "../../context/UserFieldsContext";
 
 // Yang
 // for flyer components
@@ -32,12 +25,7 @@ function ProductBlock({ product, isAdmin, handleDelete }) {
         <div>
             <h3>{product.name}</h3>
             <p>Expire on {product.expire}</p>
-            <img
-                url={product.url}
-                alt={product.name}
-                width={100}
-                height={100}
-            />
+            <img url={product.url} alt={product.name} width={100} height={100} />
             <p>Original price: {product.price}</p>
             {isAdmin && (
                 <form onSubmit={(e) => e.preventDefault()}>
@@ -51,19 +39,13 @@ function ProductBlock({ product, isAdmin, handleDelete }) {
                         max={100}
                         onChange={handleChange}
                     />
-                    <button
-                        onClick={() => setDiscount(discount)}
-                        disabled={discount == product.discount}
-                    >
+                    <button onClick={() => setDiscount(discount)} disabled={discount == product.discount}>
                         update
                     </button>
                 </form>
             )}
             <hr />
-            <p>
-                Discounted price:{" "}
-                {(product.price * (1 - discount / 100)).toFixed(2)}
-            </p>
+            <p>Discounted price: {(product.price * (1 - discount / 100)).toFixed(2)}</p>
             {isAdmin && <button onClick={handleDelete}>delete &#x1f5d1</button>}
         </div>
     );
@@ -99,11 +81,7 @@ async function Flyer({ isAdmin }) {
             <ul>
                 {saleItems.map((prod) => (
                     <li key={prod.sku}>
-                        <ProductBlock
-                            product={prod}
-                            isAdmin={isAdmin}
-                            handleDelete={removeItem}
-                        />
+                        <ProductBlock product={prod} isAdmin={isAdmin} handleDelete={removeItem} />
                     </li>
                 ))}
                 {isAdmin && (
@@ -118,7 +96,7 @@ async function Flyer({ isAdmin }) {
 }
 
 export default function FlyersShow() {
-    const user = useContext(AuthContextProvider);
+    const user = useContext(UserFieldsContext);
     const isAdmin = user.isAdmin;
     // Todo
     const saveAbove = () => {};
