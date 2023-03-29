@@ -7,7 +7,6 @@ import { AllProducts } from "./view/AllProducts";
 export const Main = () => {
     return (
         <div className = 'wrapper'>
-            <Navbar />
             <AllProducts type={'products'}/>
         </div>
     );
