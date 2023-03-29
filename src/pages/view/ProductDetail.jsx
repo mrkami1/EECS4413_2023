@@ -1,9 +1,10 @@
-import { getDoc } from 'firebase/firestore'
+import { addDoc, getDoc } from 'firebase/firestore'
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { doc, query, onSnapshot, getDocs } from 'firebase/firestore';
 import { db } from "../../firebase"
+import Navbar from "../../components/Navbar"
 
 export const ProductDetail = () => {
     const { id } = useParams()
@@ -28,6 +29,10 @@ export const ProductDetail = () => {
     GetSpecifiedProduct();
 
   return (
+    <div>
+    <div>
+        <Navbar />
+    </div>
     <div>ProductDetail
         {product ? <div>
             <div>
@@ -50,6 +55,7 @@ export const ProductDetail = () => {
         </div> : <div>Loading...</div>
 
         }
+    </div>
     </div>
   )
 }
