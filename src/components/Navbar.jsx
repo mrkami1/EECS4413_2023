@@ -17,10 +17,9 @@ function Navbar() {
 
     const logout = async () => {
         if (currentUser) {
-            signOut(auth)
-            .then(() => {
+            signOut(auth).then(() => {
                 window.location.reload();
-            })
+            });
         }
     };
 
@@ -33,12 +32,23 @@ function Navbar() {
         
         if (currentUser) {
             switch (val) {
-                case "home": navigate("/"); break; 
-                case "profile": navigate("/user/profile"); break; 
-                case "orders": navigate("/user/orderhistory"); break;
-                case "wishlist": navigate("/user/wishlist"); break;
-                case "signout": logout(); break;
-                default: break;
+                case "home":
+                    navigate("/");
+                    break;
+                case "profile":
+                    navigate("/user/profile");
+                    break;
+                case "orders":
+                    navigate("/user/orderhistory");
+                    break;
+                case "wishlist":
+                    navigate("/user/wishlist");
+                    break;
+                case "signout":
+                    logout();
+                    break;
+                default:
+                    break;
             }
         }
         else if (!currentUser && val === "home") {
@@ -55,9 +65,8 @@ function Navbar() {
     };
 
     useEffect(() => {
-        
         if (currentUser !== null && Object.keys(currentUser).length !== 0) {
-            setUserTitle(currentUser.displayName)
+            setUserTitle(currentUser.displayName);
         }
 
         if (userFields) {
@@ -69,35 +78,42 @@ function Navbar() {
     const [input, setInput] = useState('')
 
     const handleChange = (e) => {
-        setInput(e.target.value)
-    }
+        setInput(e.target.value);
+    };
 
     return (
         <div className="navbar-container">
             <ul className="navbar-items">
-                <li><button className="site-button" onClick={goToPage} value="home">Glasses Website</button></li>
-                <li>{location.pathname === "/" && 
-                <div>
-                <input type='text' 
-                       placeholder="Filter by Brand / Color"
-                       onChange={handleChange}>
-                </input>    
-                          
-                    <a href={`/search/${input}`}>
-                        <button className="details-btn">Search</button>
-                    </a>
-                         
-                </div>}             
+                <li>
+                    <button className="site-button" onClick={goToPage} value="home">
+                        Glasses Website
+                    </button>
+                </li>
+                <li>
+                    {location.pathname === "/" && (
+                        <div>
+                            <input type="text" placeholder="Filter by Brand / Color" onChange={handleChange}></input>
+
+                            <a href={`/search/${input}`}>
+                                <button className="details-btn">Search</button>
+                            </a>
+                        </div>
+                    )}
                 </li>
                 <li>
                     <select onChange={goToPage} defaultValue="name">
-                        <option value="name" disabled>{userTitle}</option>
+                        <option value="name" disabled>
+                            {userTitle}
+                        </option>
                         <option value="profile">Your Profile</option>
                         <option value="orders">Your Orders</option>
                         <option value="wishlist">Your Wishlist</option>
                         {currentUser && <option value="signout">Sign out</option>}
                         {!currentUser && <option value="signin">Sign in</option>}
                     </select>
+                </li>
+                <li>{location.pathname === "/" && <input type="text" placeholder="Search"></input>}</li>
+                <li>{location.pathname === "/" && <button onClick={goToProfile}>{currentUser.displayName}</button>}</li>
                 <li>
                     {location.pathname === "/" && currentUser.isAdmin && (
                         <button onClick={goToAdmin}>Admin Portal</button>

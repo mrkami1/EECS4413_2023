@@ -12,7 +12,6 @@ import { AuthContext } from "../../context/AuthContext";
 
 export default function Administration() {
     const { admin } = useContext(AuthContext);
-    const navigate = useNavigate();
     return (
         <div>
             <Navbar />
