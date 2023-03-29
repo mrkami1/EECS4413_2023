@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
 import { db } from "../../firebase";
 import Navbar from "../../components/Navbar";
-import { query, collection, orderBy, getDocs, addDoc, getDoc, deleteDoc } from "firebase/firestore";
-import { AuthContextProvider } from "../../context/AuthContext";
+import { query, collection, orderBy, getDocs, addDoc, getDoc, deleteDoc, Timestamp } from "firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
 
 // Yang
@@ -57,7 +56,7 @@ function NewBlock({ handleAddItem }) {
         <div>
             <h3>Add new flyer item here</h3>
             <form>
-                <label>SKU</label>
+                <label htmlFor="">New on sale product id: </label>
                 <input />
                 <button onClick={handleAddItem}></button>
             </form>
@@ -68,44 +67,65 @@ function NewBlock({ handleAddItem }) {
 async function Flyer({ isAdmin }) {
     const q1 = query(collection(db, "flyer"), orderBy("name"));
     const docs = await getDocs(q1);
-    var saleItems = [];
-    docs.forEach((doc) => {
-        saleItems.push(doc.data());
+    const saleItems = docs.map((doc) => doc.data());
+    const endOfDay = { hour: 23, minute: 59, second: 59 };
+
+    const [updated, setUpdated] = useState(false);
+    const [onSale, setOnSale] = useState(saleItems);
+    const [time, setTime] = useState(() => {
+        if (saleItems) return saleItems[0].expire.toDate();
+        else return new Date();
     });
-    const [newSales, setNewSales] = useState(Array());
     // todo
-    const addSalesItem = (sku, newPrice) => {};
+    const addSalesItem = (id, newPrice) => {};
     const removeItem = () => {};
     return (
         <>
-            <ul>
-                {saleItems.map((prod) => (
-                    <li key={prod.sku}>
-                        <ProductBlock product={prod} isAdmin={isAdmin} handleDelete={removeItem} />
-                    </li>
-                ))}
-                {isAdmin && (
-                    <li key="blank">
-                        <NewBlock handleAddItem={addSalesItem} />
-                    </li>
-                )}
-            </ul>
-            <button>Save all changes</button>
+            <div>
+                <ul>
+                    {onSale.map((prod) => (
+                        <li key={prod.id}>
+                            <ProductBlock product={prod} isAdmin={isAdmin} handleDelete={removeItem} />
+                        </li>
+                    ))}
+                    {isAdmin && (
+                        <li key="blank">
+                            <NewBlock handleAddItem={addSalesItem} />
+                        </li>
+                    )}
+                </ul>
+            </div>
+            <br />
+            <div>
+                <h3>Valid until:</h3>
+                <form>
+                    <label>Year: </label>
+                    <input placeholder={time.getFullYear()} />
+                    <label>Month: </label>
+                    <input placeholder={time.getMonth()} />
+                    <label>Day: </label>
+                    <label placeholder={time.getDate()} />
+                    <button>Update Expiration</button>
+                </form>
+            </div>
+            <hr />
+            {isAdmin && (
+                <button onClick={saveAbove} disabled={updated}>
+                    Save Updates
+                </button>
+            )}
         </>
     );
 }
 
 export default function FlyersShow() {
-    const user = useContext(UserFieldsContext);
-    const isAdmin = user.isAdmin;
-    // Todo
-    const saveAbove = () => {};
+    const { user } = useContext(UserFieldsContext);
     return (
-        <>
-            <Navbar />
-            <Flyer isAdmin={isAdmin} />
-            <hr />
-            {isAdmin && <button onClick={saveAbove}>Save Updates</button>}
-        </>
+        <div>
+            <div>
+                <Navbar />
+            </div>
+            <Flyer isAdmin={user.isAdmin} />
+        </div>
     );
 }

@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import Navbar from "../../components/Navbar";
-import { db } from "../../firebase";
 import { Link } from "react-router-dom";
 import WebUsage from "./WebUsage";
 import MonthlyReport from "./MonthlyReport";
@@ -14,9 +13,13 @@ export default function Administration() {
     const { admin } = useContext(AuthContext);
     return (
         <div>
-            <Navbar />
+            <div>
+                <Navbar />
+            </div>
             <p>Welcome Administrator: {admin.displayName}</p>
-            <Link to="/admin/flyer">To Flyer edit page</Link>
+            <Link to="flyer" target="_blank">
+                To Flyer edit page
+            </Link>
             <MonthlyReport />
             <hr />
             <WebUsage />
