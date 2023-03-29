@@ -4,6 +4,8 @@ import { Main } from "./pages/Main";
 import Profile from "./pages/user/Profile";
 import { AddProducts } from "./pages/view/AddProducts";
 import "./index.css";
+import { ProductsContextProvider } from "./components/ProductsContext";
+import { AllProducts } from "./components/AllProducts";
 // import "./assets/styles.scss";
 
 
@@ -23,6 +25,7 @@ function App() {
     };
 
     return (
+        <ProductsContextProvider>
         <BrowserRouter>
             <Routes>
                 <Route path="/">
@@ -33,6 +36,10 @@ function App() {
                     <Route
                         path="/addproducts"
                         element={<AddProducts />}
+                    />
+                    <Route
+                        path="/product-type/glasses"
+                        element={<AllProducts type={'products'}/>}
                     />
                     <Route 
                         path="user/Profile"
@@ -47,6 +54,7 @@ function App() {
                 </Route>
             </Routes>
         </BrowserRouter>
+        </ProductsContextProvider>
     );
 }
 
