@@ -14,24 +14,19 @@ function App() {
 
     const ProtectedRoute = ({ children }) => {
         if (!currentUser) {
-            return <Navigate to="/login" />;
+            return <Navigate to="/" />;
         }
 
         return children;
     };
 
     return (
-        
             <BrowserRouter>
                 <Routes>
                     <Route path="/">
                         <Route
                             index
-                            element={
-                                <ProtectedRoute>
-                                    <Main />
-                                </ProtectedRoute>
-                            }
+                            element={<Main />}
                         />
                         <Route
                             path="user/Profile"
