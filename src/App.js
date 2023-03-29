@@ -2,23 +2,24 @@ import Login from "./pages/login/Login";
 import Register from "./pages/login/Register";
 import { Main } from "./pages/Main";
 import Profile from "./pages/user/Profile";
-import { AddProducts } from "./pages/view/AddProducts";
-import "./index.css";
-import { AllProducts } from "./components/AllProducts";
-// import "./assets/styles.scss";
-import { ProductDetail } from "./components/ProductDetail";
+// import "./index.css";
+import { AllProducts } from "./pages/view/AllProducts";
+import "./assets/styles.scss";
+import { ProductDetail } from "./pages/view/ProductDetai
 
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
+import { UserFieldsProvider } from "./context/UserFieldsContext";
 
 
 function App() {
     const { currentUser } = useContext(AuthContext);
+
     const ProtectedRoute = ({ children }) => {
         if (!currentUser) {
-            return <Navigate to="/login" />;
+            return <Navigate to="/" />;
         }
 
         return children;
@@ -32,10 +33,10 @@ function App() {
                         path="Main"
                         element={<Main />}
                     />
-                    <Route
+                    {/* <Route
                         path="/addproducts"
                         element={<AddProducts />}
-                    />
+                    /> */}
                     <Route
                         path="/product-type/glasses"
                         element={<AllProducts type={'products'}/>}
@@ -48,7 +49,9 @@ function App() {
                         path="user/Profile"
                         element={
                             <ProtectedRoute>
-                                <Profile />
+                                    <UserFieldsProvider>
+                                        <Profile />
+                                    </UserFieldsProvider>
                             </ProtectedRoute>
                         }
                     />
