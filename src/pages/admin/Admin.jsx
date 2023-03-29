@@ -18,6 +18,7 @@ export default function Administration() {
             <p>Welcome Administrator: {admin.displayName}</p>
             <Link to="/admin/flyer">To Flyer edit page</Link>
             <MonthlyReport />
+            <hr />
             <WebUsage />
         </div>
     );

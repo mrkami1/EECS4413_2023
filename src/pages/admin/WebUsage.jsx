@@ -26,7 +26,8 @@ export default function WebUsage() {
 
     return (
         <div>
-            <h1>Logged-in users:</h1>
+            <h1>Web usage</h1>
+            <h2>Logged-in users:</h2>
             <ul>
                 {users.map((u) => (
                     <li key={u.id}>
