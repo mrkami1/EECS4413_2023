@@ -2,6 +2,8 @@ import Login from "./pages/login/Login";
 import Register from "./pages/login/Register";
 import Main from "./pages/Main";
 import Profile from "./pages/user/Profile";
+import OrderHistory from "./pages/user/OrderHistory";
+import WishList from "./pages/user/WishList";
 import "./assets/styles.scss";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -34,6 +36,26 @@ function App() {
                                 <ProtectedRoute>
                                     <UserFieldsProvider>
                                         <Profile />
+                                    </UserFieldsProvider>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="user/OrderHistory"
+                            element={
+                                <ProtectedRoute>
+                                    <UserFieldsProvider>
+                                        <OrderHistory />
+                                    </UserFieldsProvider>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="user/WishList"
+                            element={
+                                <ProtectedRoute>
+                                    <UserFieldsProvider>
+                                        <WishList />
                                     </UserFieldsProvider>
                                 </ProtectedRoute>
                             }
