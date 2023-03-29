@@ -4,9 +4,9 @@ import { Main } from "./pages/Main";
 import Profile from "./pages/user/Profile";
 import { AddProducts } from "./pages/view/AddProducts";
 import "./index.css";
-import { ProductsContextProvider } from "./components/ProductsContext";
 import { AllProducts } from "./components/AllProducts";
 // import "./assets/styles.scss";
+import { ProductDetail } from "./components/ProductDetail";
 
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -25,7 +25,6 @@ function App() {
     };
 
     return (
-        <ProductsContextProvider>
         <BrowserRouter>
             <Routes>
                 <Route path="/">
@@ -42,6 +41,10 @@ function App() {
                         element={<AllProducts type={'products'}/>}
                     />
                     <Route 
+                        path="/product/:id"
+                        element={<ProductDetail type={'products'}/>}
+                    />
+                    <Route 
                         path="user/Profile"
                         element={
                             <ProtectedRoute>
@@ -54,7 +57,6 @@ function App() {
                 </Route>
             </Routes>
         </BrowserRouter>
-        </ProductsContextProvider>
     );
 }
 
