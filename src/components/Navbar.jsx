@@ -45,12 +45,30 @@ function Navbar() {
     }, [currentUser])
 
     console.log(currentUser)
+    
+    const [input, setInput] = useState('')
+
+    const handleChange = (e) => {
+        setInput(e.target.value)
+    }
 
     return (
         <div className="navbar-container">
             <ul className="navbar-items">
                 <li><button className="site-button" onClick={goToPage} value="home">Glasses Website</button></li>
-                <li>{location.pathname === "/" && <input type='text' placeholder="Search"></input>}</li>
+                <li>{location.pathname === "/" && 
+                <div>
+                <input type='text' 
+                       placeholder="Filter by Brand / Color"
+                       onChange={handleChange}>
+                </input>    
+                          
+                    <a href={`/search/${input}`}>
+                        <button className="details-btn">Search</button>
+                    </a>
+                         
+                </div>}             
+                </li>
                 <li>
                     <select onChange={goToPage} defaultValue="name">
                         <option value="name" disabled>{userTitle}</option>

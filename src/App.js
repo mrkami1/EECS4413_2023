@@ -7,11 +7,13 @@ import WishList from "./pages/user/WishList";
 import { AllProducts } from "./pages/view/AllProducts";
 import "./assets/styles.scss";
 import { ProductDetail } from "./pages/view/ProductDetail";
+import { Search} from "./components/Search";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { UserFieldsProvider } from "./context/UserFieldsContext";
+import { SearchPage } from "./pages/view/SearchPage";
 
 
 function App() {
@@ -73,6 +75,12 @@ function App() {
                         path="/product/:id"
                         element={<ProductDetail type={'products'}/>}
                     />
+                    <Route 
+                        path="/search/:key"
+                        element={<SearchPage type={'products'}/>}
+                    />
+                </Route>
+
             </Routes>
         </BrowserRouter>
     );
