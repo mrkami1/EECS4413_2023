@@ -2,13 +2,15 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { collection, query, onSnapshot, getDocs } from 'firebase/firestore';
 import { db } from "../../firebase";
-// import { Item } from '../pages/view/Item'
 import Product from './Product'
 import Navbar from '../../components/Navbar';
 
+//Ying 
+//list all the products with sort functionality
 export const AllProducts = (props) => {
   console.log("the type is: "+props.type);
   const [products, setProducts] = useState([]);
+
   useEffect(()=> {
     const getProducts = ()=> {
         const productsArray = [];
@@ -26,10 +28,53 @@ export const AllProducts = (props) => {
     }
     getProducts()
   },[])
+
+//   const [sortState, setSortState] = useState("Sort Products");
+//   console.log("products: "+products)
+//   products.forEach((product)=>{
+//     console.log("product: "+product.id)
+//   })
+
+// sort price low to hight
+  const numAscending = [...products].sort((a, b) => a.price - b.price);
+
+// sort price high to low
+  const numDescending = [...products].sort((a, b) => b.price - a.price);
+  
+// sort name a - z
+  const strAscending = [...products].sort((a, b) => 
+                        a.name > b.name ? 1 : -1) 
+
+// sort name z - a 
+  const strDescending = [...products].sort((a, b) => 
+                        a.name > b.name ? -1 : 1) 
+    
+  const onSelect = (e) => {        
+        const val = e.target.value;
+ 
+        switch (val) {
+            case "Sort Product": break; 
+            case "PriceAscending": setProducts(numAscending); break; 
+            case "PriceDescending": setProducts(numDescending); break;
+            case "NameAscending": setProducts(strAscending); break;
+            case "NameDescending": setProducts(strDescending); break;
+            default: break;
+            }
+    }
+
   return (
     <div className='allproduct'>
         <div>
             <Navbar />
+        </div>
+        <div>   
+            <select onChange={onSelect} defaultValue="Sort Product">
+                <option value="Sort Product">Sort Products</option>
+                <option value="PriceAscending">Sort Price from Low to High</option>
+                <option value="PriceDescending">Sort Price from high to Low</option>
+                <option value="NameAscending">Sort Name from A to Z</option>
+                <option value="NameDescending">Sort Name from Z to A</option>
+            </select>
         </div>
         <div className='heading'>
             <p>results for {props.type}</p>
