@@ -2,17 +2,21 @@ import { addDoc, getDoc } from 'firebase/firestore'
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import { doc, query, onSnapshot, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, query, onSnapshot, getDocs, setDoc, updateDoc, arrayUnion, Timestamp } from 'firebase/firestore';
 import { db } from "../../firebase"
 import Navbar from "../../components/Navbar"
 import UserFieldsContext from '../../context/UserFieldsContext';
 import { AuthContext } from '../../context/AuthContext';
+import { uuidv4 } from '@firebase/util';
 
 export const ProductDetail = () => {
     const { id } = useParams()
     const [product, setProduct] = useState('')
     const [success, setSuccess] = useState('')
     const [error, setError] = useState('')
+    const [rating, setRating] = useState("5");
+    const [message, setMessage] = useState("");
+    const [reviews, setReviews] = useState([]);
 
     const { userFields } = useContext(UserFieldsContext)
     const { currentUser } = useContext(AuthContext)
@@ -64,6 +68,56 @@ export const ProductDetail = () => {
         }
     }
 
+    useEffect(() => {
+        const getReviews = async () => {
+            if (currentUser && id) {
+               
+                const reviewsDoc = await getDoc(doc(db, "reviews", id))
+
+                if (reviewsDoc.exists()){
+                    const r = reviewsDoc.data().customerReviews;
+                    setReviews(r);
+                    
+                }
+                else {
+                    console.log("no doc exists")
+                }
+            }
+        }
+        return () => {
+            getReviews();
+            
+        }
+
+    }, [currentUser, id])
+
+    console.log(reviews)
+
+    const createReview = async () => {
+        const newReview = {
+            date: Timestamp.now(),
+            itemID: id,
+            itemName: product.name,
+            reviewerID: currentUser.uid,
+            reviewerName: currentUser.displayName,
+            message: message,
+            rating: rating,
+        }
+
+        const reviewDoc = await getDoc(doc(db, "reviews", id));
+        if (!reviewDoc.exists()) {
+            await setDoc(doc(db, "reviews", id), {
+                customerReviews: []
+            })
+        }
+  
+        await updateDoc(doc(db, "reviews", id), {
+            customerReviews: arrayUnion(newReview)
+        })
+        .then(() => {window.location.reload()})
+        
+    }
+
     function GetSpecifiedProduct() {
 
         useEffect(()=> {
@@ -101,6 +155,36 @@ export const ProductDetail = () => {
                     <button className="btn">Buy Now</button>
                     <button className="btn" onClick={addToCart}>Add to cart</button>
                 </div>
+                <div className="review-container">
+                    <div>
+                        <p>Write a review:</p>
+                        <input type="text" onChange={(e) => {setMessage(e.target.value)}}></input>
+                        <select onChange={(e) => {setRating(e.target.value)}}>
+                            <option value="5">5 stars</option>
+                            <option value="4">4 stars</option>
+                            <option value="3">3 stars</option>
+                            <option value="2">2 stars</option>
+                            <option value="1">1 star</option>
+                        </select>
+                        <p><button className='btn' onClick={createReview}>Submit review</button></p>
+                    </div>
+                    <div className="user-reviews">
+                        {
+                            reviews?.map((r, i) => {
+                                return (
+                                    <div key={i}>
+                                        <hr />
+                                        <p>{r.reviewerName}</p>
+                                        <p>{r.rating} stars</p>
+                                        <p>Reviewed on {r?.date?.toDate()?.toDateString()}</p>
+                                        <p>{r.message}</p>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+
             </div>
         </div> : <div>Loading...</div>
 
