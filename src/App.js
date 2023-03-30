@@ -29,85 +29,74 @@ function App() {
     };
 
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/">
-                    <Route
-                        index
-                        element={
-                            <UserFieldsProvider>
+        <UserFieldsProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/">
+                        <Route
+                            index
+                            element={
                                 <Main />
-                            </UserFieldsProvider>
-                        }
-                    />
-                    <Route 
-                        path="user/Profile"
-                        element={
-                            <ProtectedRoute>
-                                    <UserFieldsProvider>
+                            }
+                        />
+                        <Route 
+                            path="user/Profile"
+                            element={
+                                    <ProtectedRoute>
                                         <Profile />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="user/OrderHistory"
-                            element={
-                                <ProtectedRoute>
-                                    <UserFieldsProvider>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="user/OrderHistory"
+                                element={
+                                    <ProtectedRoute>
                                         <OrderHistory />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="user/WishList"
-                            element={
-                                <ProtectedRoute>
-                                    <UserFieldsProvider>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="user/WishList"
+                                element={
+                                    <ProtectedRoute>
                                         <WishList />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="user/Cart"
-                            element={
-                                <ProtectedRoute>
-                                    <UserFieldsProvider>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="user/Cart"
+                                element={
+                                    <ProtectedRoute>
                                         <Cart />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="view/Checkout"
-                            element={
-                                <ProtectedRoute>
-                                    <UserFieldsProvider>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="view/Checkout"
+                                element={
+                                    <ProtectedRoute>
                                         <Checkout />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
+                                    </ProtectedRoute>
+                                }
+                            />
+                        <Route path="Login" element={<Login />} />
+                        <Route path="Register" element={<Register />} />
+                        <Route
+                            path="/product-type/glasses"
+                            element={<AllProducts type={'products'}/>}
                         />
-                    <Route path="Login" element={<Login />} />
-                    <Route path="Register" element={<Register />} />
-                    <Route
-                        path="/product-type/glasses"
-                        element={<AllProducts type={'products'}/>}
-                    />
-                    <Route 
-                        path="/product/:id"
-                        element={<ProductDetail type={'products'}/>}
-                    />
-                    <Route 
-                        path="/search/:key"
-                        element={<SearchPage type={'products'}/>}
-                    />
-                </Route>
-
-            </Routes>
-        </BrowserRouter>
+                        <Route 
+                            path="/product/:id"
+                            element={<ProductDetail type={'products'}/>}
+                        />
+                        <Route 
+                            path="/search/:key"
+                            element={<SearchPage type={'products'}/>}
+                        />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </UserFieldsProvider>
     );
 }
 

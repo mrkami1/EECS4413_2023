@@ -58,7 +58,19 @@ function Profile() {
             payment: newPayment,
             address: newAddress
         })
+
     }, [newName, newEmail, newPayment, newAddress])
+
+    useEffect(() => {
+        if (userFields) {
+            setNewFields({
+                name: userFields.get("name"),
+                email: userFields.get("email"),
+                payment: userFields.get("payment"),
+                address: userFields.get("address"),
+            })
+        }
+    }, [userFields])
 
     return (
         <div>
@@ -66,23 +78,23 @@ function Profile() {
             {userFields &&
                 <>
                     <p>
-                        Name: {currentUser?.displayName}
+                        Name: {newFields.name}
                         {showEdit && <input type='text' placeholder="New name" name="name" onChange={updateFields}></input>}
                     </p>
                     <p>
-                        Email: {userFields.email?.stringValue}
+                        Email: {newFields.email}
                         {showEdit && <input type='text' placeholder="New email" name="email" onChange={updateFields}></input>}
                     </p>
-                    <p>Account type: {userFields.level?.stringValue}</p>
+                    <p>Account type: {userFields?.get("level")}</p>
                     <p>
-                        Payment: {userFields.payment?.stringValue}
+                        Payment: {newFields.payment}
                         {showEdit && <input type='text' placeholder="New payment" name="payment" onChange={updateFields}></input>}
                     </p>
                     <p>
-                        Address: {userFields.address?.stringValue}
+                        Address: {newFields.address}
                         {showEdit && <input type='text' placeholder="New address" name="address" onChange={updateFields}></input>}
                     </p>
-                    <p>User ID: {userFields.userID?.stringValue}</p>
+                    <p>User ID: {currentUser.uid}</p>
                 </>
             }
             {!showEdit && <button onClick={editProfile}>Edit profile</button>}
