@@ -18,6 +18,7 @@ function Register() {
         const level = "customer";
         const payment = "";
         const address = "";
+        const cartItems = [];
 
         if (password !== confirm) {
             console.log(password);
@@ -40,7 +41,8 @@ function Register() {
                 email,
                 level,
                 payment,
-                address
+                address,
+                cartItems
             });
 
             await updateProfile(response.user, {

@@ -43,8 +43,7 @@ export const ProductDetail = () => {
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     cartItems: arrayUnion(newItem)
                 })
-                .then((msg) => {
-                    console.log(msg)
+                .then(() => {
                     console.log("added new item to cart")
                 })
                 .catch((error) => {
@@ -55,8 +54,7 @@ export const ProductDetail = () => {
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     cartItems: currentItems
                 })
-                .then((msg) => {
-                    console.log(msg)
+                .then(() => {
                     console.log("updated item quantity")
                 })
                 .catch((error) => {

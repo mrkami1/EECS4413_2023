@@ -42,6 +42,9 @@ function Navbar() {
                 default: break;
             }
         }
+        else if (!currentUser && val === "home") {
+            navigate("/");
+        }
         else navigate("/login");
     }
 

@@ -1,13 +1,17 @@
+import { updateDoc, doc } from "@firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Navbar from "../../components/Navbar";
+import { AuthContext } from "../../context/AuthContext";
 import UserFieldsContext from "../../context/UserFieldsContext";
+import { db } from "../../firebase";
 
 // Anubhav
 // for customer cart components
 
 function Cart() {
     const { userFields } = useContext(UserFieldsContext)
+    const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
     
     const [items, setItems] = useState([])
@@ -33,6 +37,26 @@ function Cart() {
         }
     }, [items])
 
+    const deleteItem = async (e) => {
+        const deleteID = e.target.name;
+
+        let updatedItems = [];
+        items.forEach((item) => {
+            if (item.itemID !== deleteID) {
+                updatedItems.push(item);
+            }
+        })
+
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            cartItems: updatedItems
+        })
+        .then(() => {
+            setItems(updatedItems);
+            console.log("deleted item")
+        })
+        
+    }
+
     return (
         <div>
             <Navbar />
@@ -46,6 +70,7 @@ function Cart() {
                             <p>Item ID: {item.itemID}</p>
                             <p>Price: {item.price}</p>
                             <p>Quantity: {item.quantity}</p>
+                            <button onClick={deleteItem} name={item.itemID}>Delete</button>
                             <br />
                         </div>
                     )
