@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { db } from "../../firebase";
 import Navbar from "../../components/Navbar";
 import { query, collection, orderBy, getDocs, addDoc, getDoc, deleteDoc, Timestamp } from "firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
+import { AuthContext } from "../../context/AuthContext";
 
 // Yang
 // for flyer components
@@ -64,18 +65,24 @@ function NewBlock({ handleAddItem }) {
     );
 }
 
-async function Flyer({ isAdmin }) {
-    const q1 = query(collection(db, "flyer"), orderBy("name"));
-    const docs = await getDocs(q1);
-    const saleItems = docs.map((doc) => doc.data());
-    const endOfDay = { hour: 23, minute: 59, second: 59 };
-
+function Flyer({ isAdmin }) {
     const [updated, setUpdated] = useState(false);
-    const [onSale, setOnSale] = useState(saleItems);
+    const [onSale, setOnSale] = useState([]);
     const [time, setTime] = useState(() => {
-        if (saleItems) return saleItems[0].expire.toDate();
+        if (onSale) return onSale[0].expire.toDate();
         else return new Date();
     });
+    useEffect(()=>{
+        const currentFlyer = [];
+        getDocs(collection(db, "flyer"), orderBy("name")).then((snapShots)=>{
+            snapShots.forEach((doc)=>{
+                currentFlyer.push(doc.data())
+            })
+        }).catch(error=>{console.log(error.message)})
+        setOnSale(currentFlyer)
+    },[])
+    const endOfDay = { hour: 23, minute: 59, second: 59 };
+
     // todo
     const addSalesItem = (id, newPrice) => {};
     const removeItem = () => {};
@@ -120,13 +127,14 @@ async function Flyer({ isAdmin }) {
 }
 
 export default function FlyersShow() {
-    const { user } = useContext(UserFieldsContext);
+    const { user } = useContext(AuthContext);
+    console.log(user)
     return (
         <div>
             <div>
                 <Navbar />
             </div>
-            <Flyer isAdmin={user.isAdmin} />
+            <Flyer isAdmin={true} />
         </div>
     );
 }

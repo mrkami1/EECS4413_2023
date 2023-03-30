@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useState, useEffect } from "react";
 import { auth, db } from "../firebase";
-import { query, collection, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 export const AuthContext = createContext();
 
@@ -9,18 +9,17 @@ export const AuthContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
 
     useEffect(() => {
-        const unSub = onAuthStateChanged(auth, (user) => {
-            setCurrentUser({ ...user, isAdmin: checkAdmin(user) });
+        const userState = onAuthStateChanged(auth, (user) => {
+            getDoc(doc(db, "users", user.uid)).then(doc=>{
+                let isAdmin = doc.exists() && doc.data().level === "admin";
+                setCurrentUser({ ...user, isAdmin: isAdmin });
+            }).catch((error)=>{console.log(error.message)})
         });
 
-        return unSub;
+        return ()=>{userState();};
     }, []);
 
+    console.log("running authcontext..")
+    console.log(currentUser)
     return <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>;
 };
-
-async function checkAdmin(user) {
-    const q = query(collection(db, "users", user.uid));
-    const doc1 = await getDoc(q);
-    return doc1.exists() && doc1.data().level === "admin";
-}

@@ -9,6 +9,7 @@ export default function WebUsage() {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+            console.log("at webusage: user" + user.name)
             if (user && !users.some((u) => u.id === user.uid)) {
                 setUsers([
                     ...users,

@@ -112,8 +112,6 @@ function Navbar() {
                         {!currentUser && <option value="signin">Sign in</option>}
                     </select>
                 </li>
-                <li>{location.pathname === "/" && <input type="text" placeholder="Search"></input>}</li>
-                <li>{location.pathname === "/" && <button onClick={goToProfile}>{currentUser.displayName}</button>}</li>
                 <li>
                     {location.pathname === "/" && currentUser.isAdmin && (
                         <button onClick={goToAdmin}>Admin Portal</button>
