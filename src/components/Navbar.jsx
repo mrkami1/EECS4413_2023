@@ -113,7 +113,7 @@ function Navbar() {
                     </select>
                 </li>
                 <li>
-                    {location.pathname === "/" && currentUser.isAdmin && (
+                    {location.pathname === "/" && currentUser?.isAdmin && (
                         <button onClick={goToAdmin}>Admin Portal</button>
                     )}
                 </li>
