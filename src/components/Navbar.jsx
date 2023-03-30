@@ -1,13 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
+import UserFieldsContext from "../context/UserFieldsContext";
 import { auth } from "../firebase";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
 
     const { currentUser } = useContext(AuthContext);
+    const { userFields } = useContext(UserFieldsContext)
+    
     const [userTitle, setUserTitle] = useState("Your Account");
+    const [itemCount, setItemCount] = useState(0);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -21,9 +25,13 @@ function Navbar() {
         }
     };
 
+    const goToCart = () => {
+        navigate("/user/cart");
+    }
+
     const goToPage = (e) => {
         const val = e.target.value;
-
+        
         if (currentUser) {
             switch (val) {
                 case "home": navigate("/"); break; 
@@ -34,6 +42,9 @@ function Navbar() {
                 default: break;
             }
         }
+        else if (!currentUser && val === "home") {
+            navigate("/");
+        }
         else navigate("/login");
     }
 
@@ -42,9 +53,12 @@ function Navbar() {
         if (currentUser !== null && Object.keys(currentUser).length !== 0) {
             setUserTitle(currentUser.displayName)
         }
-    }, [currentUser])
 
-    console.log(currentUser)
+        if (userFields) {
+            setItemCount(userFields.get("cartItems").length)
+        }
+    }, [currentUser, userFields])
+
     
     const [input, setInput] = useState('')
 
@@ -79,6 +93,7 @@ function Navbar() {
                         {!currentUser && <option value="signin">Sign in</option>}
                     </select>
                 </li>
+                <li><button onClick={goToCart}><i className="fi fi-bs-shopping-cart"></i>{itemCount}</button></li>
             </ul>
         </div>
     );

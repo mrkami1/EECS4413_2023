@@ -1,10 +1,12 @@
 import { addDoc, getDoc } from 'firebase/firestore'
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import { doc, query, onSnapshot, getDocs } from 'firebase/firestore';
+import { doc, query, onSnapshot, getDocs, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from "../../firebase"
 import Navbar from "../../components/Navbar"
+import UserFieldsContext from '../../context/UserFieldsContext';
+import { AuthContext } from '../../context/AuthContext';
 
 export const ProductDetail = () => {
     const { id } = useParams()
@@ -12,7 +14,55 @@ export const ProductDetail = () => {
     const [success, setSuccess] = useState('')
     const [error, setError] = useState('')
 
+    const { userFields } = useContext(UserFieldsContext)
+    const { currentUser } = useContext(AuthContext)
 
+    const addToCart = async () => {
+
+        const newItem = {
+            image: product.img,
+            itemID: id,
+            name: product.name,
+            price: product.price,
+            quantity: 1
+        }
+
+        if (userFields && currentUser) {
+
+            let currentItems = userFields.get("cartItems");
+            let itemInCart = false;
+
+            currentItems.forEach(async (item) => {
+                if (item.itemID === newItem.itemID) {
+                    item.quantity += 1;
+                    itemInCart = true;
+                }
+            })
+            
+            if (!itemInCart) {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    cartItems: arrayUnion(newItem)
+                })
+                .then(() => {
+                    console.log("added new item to cart")
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            }
+            else {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    cartItems: currentItems
+                })
+                .then(() => {
+                    console.log("updated item quantity")
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            }
+        }
+    }
 
     function GetSpecifiedProduct() {
 
@@ -49,7 +99,7 @@ export const ProductDetail = () => {
                 <p>Description: {product.description}</p>
                 <div className='buy-cart'>
                     <button className="btn">Buy Now</button>
-                    <button className="btn">Add to cart</button>
+                    <button className="btn" onClick={addToCart}>Add to cart</button>
                 </div>
             </div>
         </div> : <div>Loading...</div>

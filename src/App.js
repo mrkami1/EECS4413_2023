@@ -4,6 +4,8 @@ import { Main } from "./pages/Main";
 import Profile from "./pages/user/Profile";
 import OrderHistory from "./pages/user/OrderHistory";
 import WishList from "./pages/user/WishList";
+import Cart from "./pages/user/Cart";
+import Checkout from "./pages/view/Checkout";
 import { AllProducts } from "./pages/view/AllProducts";
 import "./assets/styles.scss";
 import { ProductDetail } from "./pages/view/ProductDetail";
@@ -27,61 +29,74 @@ function App() {
     };
 
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/">
-                    <Route
-                        index
-                        element={<Main />}
-                    />
-                    <Route 
-                        path="user/Profile"
-                        element={
-                            <ProtectedRoute>
-                                    <UserFieldsProvider>
+        <UserFieldsProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/">
+                        <Route
+                            index
+                            element={
+                                <Main />
+                            }
+                        />
+                        <Route 
+                            path="user/Profile"
+                            element={
+                                    <ProtectedRoute>
                                         <Profile />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="user/OrderHistory"
-                            element={
-                                <ProtectedRoute>
-                                    <UserFieldsProvider>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="user/OrderHistory"
+                                element={
+                                    <ProtectedRoute>
                                         <OrderHistory />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="user/WishList"
-                            element={
-                                <ProtectedRoute>
-                                    <UserFieldsProvider>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="user/WishList"
+                                element={
+                                    <ProtectedRoute>
                                         <WishList />
-                                    </UserFieldsProvider>
-                                </ProtectedRoute>
-                            }
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="user/Cart"
+                                element={
+                                    <ProtectedRoute>
+                                        <Cart />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="view/Checkout"
+                                element={
+                                    <ProtectedRoute>
+                                        <Checkout />
+                                    </ProtectedRoute>
+                                }
+                            />
+                        <Route path="Login" element={<Login />} />
+                        <Route path="Register" element={<Register />} />
+                        <Route
+                            path="/product-type/glasses"
+                            element={<AllProducts type={'products'}/>}
                         />
-                    <Route path="Login" element={<Login />} />
-                    <Route path="Register" element={<Register />} />
-                    <Route
-                        path="/product-type/glasses"
-                        element={<AllProducts type={'products'}/>}
-                    />
-                    <Route 
-                        path="/product/:id"
-                        element={<ProductDetail type={'products'}/>}
-                    />
-                    <Route 
-                        path="/search/:key"
-                        element={<SearchPage type={'products'}/>}
-                    />
-                </Route>
-
-            </Routes>
-        </BrowserRouter>
+                        <Route 
+                            path="/product/:id"
+                            element={<ProductDetail type={'products'}/>}
+                        />
+                        <Route 
+                            path="/search/:key"
+                            element={<SearchPage type={'products'}/>}
+                        />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </UserFieldsProvider>
     );
 }
 

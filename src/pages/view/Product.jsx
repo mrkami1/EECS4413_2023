@@ -1,6 +1,60 @@
-import React from "react";
+import { arrayUnion, doc, increment, updateDoc } from "@firebase/firestore";
+import { db } from "../../firebase";
+import React, { useEffect, useContext } from "react";
+import UserFieldsContext from "../../context/UserFieldsContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Product = (product) => {
+
+    const { userFields } = useContext(UserFieldsContext)
+    const { currentUser } = useContext(AuthContext)
+
+    const addToCart = async () => {
+        const newItem = {
+            image: product.product.img,
+            itemID: product.product.id,
+            name: product.product.name,
+            price: product.product.price,
+            quantity: 1
+        }
+
+        if (userFields && currentUser) {
+
+            let currentItems = userFields.get("cartItems");
+            let itemInCart = false;
+
+            currentItems.forEach(async (item) => {
+                if (item.itemID === newItem.itemID) {
+                    item.quantity += 1;
+                    itemInCart = true;
+                }
+            })
+            
+            if (!itemInCart) {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    cartItems: arrayUnion(newItem)
+                })
+                .then(() => {
+                    console.log("added new item to cart")
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            }
+            else {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    cartItems: currentItems
+                })
+                .then(() => {
+                    console.log("updated item quantity")
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            }
+        }
+    }
+
     return (
         <div className='product-container'>
             <img src={product.product.img} />
@@ -17,7 +71,7 @@ const Product = (product) => {
                     </a>
                 </div>
                 <div>
-                    <button className="btn">Add to cart</button>
+                    <button className="btn" onClick={addToCart}>Add to cart</button>
                 </div>
             </div>
             <br/>
