@@ -102,7 +102,15 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
-                        <Route path="admin/flyer" element={<FlyersShow />} />
+                        <Route
+                            path="admin/portal/flyer"
+                            element={
+                                <ProtectedRoute>
+                                    <FlyersShow />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="flyer" element={<FlyersShow />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
