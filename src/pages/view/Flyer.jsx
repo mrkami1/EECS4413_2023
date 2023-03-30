@@ -1,100 +1,143 @@
-import React, { useState } from "react";
-import { db, auth } from "../../firebase";
-import { ProfileCard } from "../user/Profile";
-import { query, collection, orderBy, getDocs } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import { db } from "../../firebase";
+import Navbar from "../../components/Navbar";
+import { query, collection, orderBy, getDocs, addDoc, getDoc, deleteDoc, Timestamp } from "firebase/firestore";
+import UserFieldsContext from "../../context/UserFieldsContext";
 
 // Yang
 // for flyer components
 
-function ProductBlock(product) {
+// Individual Product card, showing product properties.
+// Admin can change its current discout for later submission
+function ProductBlock({ product, isAdmin, handleDelete }) {
     const prodID = product.name + "_discount";
     const [discount, setDiscount] = useState(product.discount);
 
     const handleChange = (event) => {
+        event.preventDefault();
         setDiscount(event.target.value);
     };
+
+    const removeProd = () => {};
 
     return (
         <div>
             <h3>{product.name}</h3>
-            <img
-                url={product.url}
-                alt={product.name}
-                width={100}
-                height={100}
-            />
+            <p>Expire on {product.expire}</p>
+            <img url={product.url} alt={product.name} width={100} height={100} />
             <p>Original price: {product.price}</p>
-            <form>
-                <label for={prodID}>Discount (%): </label>
-                <input
-                    id={prodID}
-                    type="number"
-                    value={discount}
-                    step={1}
-                    min={1}
-                    max={100}
-                    onChange={handleChange}
-                />
-                <button type="submit" onClick={setDiscount(discount)}>
-                    update
-                </button>
-            </form>
-            <br />
-            <p>Discounted price: {product.price * (1 - discount / 100)}</p>
+            {isAdmin && (
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <label for={prodID}>Discount (%): </label>
+                    <input
+                        id={prodID}
+                        type="number"
+                        value={discount}
+                        step={1}
+                        min={1}
+                        max={100}
+                        onChange={handleChange}
+                    />
+                    <button onClick={() => setDiscount(discount)} disabled={discount === product.discount}>
+                        update
+                    </button>
+                </form>
+            )}
             <hr />
-            <button onClick={removeProd}>delete &#x1f5d1</button>
+            <p>Discounted price: {(product.price * (1 - discount / 100)).toFixed(2)}</p>
+            {isAdmin && <button onClick={handleDelete}>delete &#x1f5d1</button>}
         </div>
     );
 }
 
-function NewBlock() {
+// A single add-new product block for admin use
+function NewBlock({ handleAddItem }) {
     return (
         <div>
             <h3>Add new flyer item here</h3>
             <form>
-                <label>SKU</label>
+                <label htmlFor="">New on sale product id: </label>
                 <input />
-                <button type></button>
+                <button onClick={handleAddItem}></button>
             </form>
         </div>
     );
 }
 
-function Flyer({ saleItems }) {
-    return (
-        <>
-            <ul>
-                {saleItems.map((prod) => (
-                    <li key={prod.sku}>
-                        <ProductBlock {...prod} />
-                    </li>
-                ))}
-                <li key="blank">
-                    <NewBlock />
-                </li>
-            </ul>
-            <button>Save all changes</button>
-        </>
-    );
-}
-
-export default async function FlyersShow() {
-    const q = query(collection(db, "flyer"), orderBy("name"));
-    const docs = await getDocs(q);
-    var saleItems = [];
-    docs.forEach((doc) => {
-        saleItems.push(doc.data());
+function Flyer({ isAdmin }) {
+    const [updated, setUpdated] = useState(false);
+    const [onSale, setOnSale] = useState([]);
+    const [time, setTime] = useState(() => {
+        if (onSale) return onSale[0].expire.toDate();
+        else return new Date();
     });
+    useEffect(() => {
+        const currentFlyer = [];
+        getDocs(collection(db, "flyer"), orderBy("name"))
+            .then((snapShots) => {
+                snapShots.forEach((doc) => {
+                    currentFlyer.push(doc.data());
+                });
+            })
+            .catch((error) => {
+                console.log(error.message);
+            });
+        setOnSale(currentFlyer);
+    }, []);
+    const endOfDay = { hour: 23, minute: 59, second: 59 };
 
-    const user = auth.currentUser;
+    // todo
+    const addSalesItem = (id, newPrice) => {};
+    const removeItem = () => {};
+    const saveAbove = () => {};
     return (
         <>
-            <ProfileCard></ProfileCard>
-            <Flyer saleItems={saleItems} />
+            <div>
+                <ul>
+                    {onSale.map((prod) => (
+                        <li key={prod.id}>
+                            <ProductBlock product={prod} isAdmin={isAdmin} handleDelete={removeItem} />
+                        </li>
+                    ))}
+                    {isAdmin && (
+                        <li key="blank">
+                            <NewBlock handleAddItem={addSalesItem} />
+                        </li>
+                    )}
+                </ul>
+            </div>
+            <br />
+            <div>
+                <h3>Valid until:</h3>
+                <form>
+                    <label>Year: </label>
+                    <input placeholder={time.getFullYear()} />
+                    <label>Month: </label>
+                    <input placeholder={time.getMonth()} />
+                    <label>Day: </label>
+                    <label placeholder={time.getDate()} />
+                    <button>Update Expiration</button>
+                </form>
+            </div>
             <hr />
-            <button onClick={saveAbove}>Save Updates</button>
+            {isAdmin && (
+                <button onClick={saveAbove} disabled={updated}>
+                    Save Updates
+                </button>
+            )}
         </>
     );
 }
 
-function addSalesItem(sku, newPrice) {}
+export default function FlyersShow() {
+    const { user } = useContext(UserFieldsContext);
+    console.log(user);
+    return (
+        <div>
+            <div>
+                <Navbar />
+            </div>
+            <Flyer isAdmin={user && user.level === "admin"} />
+        </div>
+    );
+}

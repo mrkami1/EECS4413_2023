@@ -6,7 +6,6 @@ import { auth } from "../firebase";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
-
     const { currentUser } = useContext(AuthContext);
     const { userFields } = useContext(UserFieldsContext)
     
@@ -18,10 +17,9 @@ function Navbar() {
 
     const logout = async () => {
         if (currentUser) {
-            signOut(auth)
-            .then(() => {
+            signOut(auth).then(() => {
                 window.location.reload();
-            })
+            });
         }
     };
 
@@ -34,12 +32,23 @@ function Navbar() {
         
         if (currentUser) {
             switch (val) {
-                case "home": navigate("/"); break; 
-                case "profile": navigate("/user/profile"); break; 
-                case "orders": navigate("/user/orderhistory"); break;
-                case "wishlist": navigate("/user/wishlist"); break;
-                case "signout": logout(); break;
-                default: break;
+                case "home":
+                    navigate("/");
+                    break;
+                case "profile":
+                    navigate("/user/profile");
+                    break;
+                case "orders":
+                    navigate("/user/orderhistory");
+                    break;
+                case "wishlist":
+                    navigate("/user/wishlist");
+                    break;
+                case "signout":
+                    logout();
+                    break;
+                default:
+                    break;
             }
         }
         else if (!currentUser && val === "home") {
@@ -47,11 +56,17 @@ function Navbar() {
         }
         else navigate("/login");
     }
+    const goToProfile = () => {
+        navigate("user/profile");
+    };
+
+    const goToAdmin = () => {
+        navigate("admin/portal");
+    };
 
     useEffect(() => {
-        
         if (currentUser !== null && Object.keys(currentUser).length !== 0) {
-            setUserTitle(currentUser.displayName)
+            setUserTitle(currentUser.displayName);
         }
 
         if (userFields) {
@@ -63,35 +78,49 @@ function Navbar() {
     const [input, setInput] = useState('')
 
     const handleChange = (e) => {
-        setInput(e.target.value)
-    }
+        setInput(e.target.value);
+    };
 
     return (
         <div className="navbar-container">
             <ul className="navbar-items">
-                <li><button className="site-button" onClick={goToPage} value="home">Glasses Website</button></li>
-                <li>{location.pathname === "/" && 
-                <div>
-                <input type='text' 
-                       placeholder="Filter by Brand / Color"
-                       onChange={handleChange}>
-                </input>    
-                          
-                    <a href={`/search/${input}`}>
-                        <button className="details-btn">Search</button>
-                    </a>
-                         
-                </div>}             
+                <li>
+                    <button className="site-button" onClick={goToPage} value="home">
+                        Glasses Website
+                    </button>
+                </li>
+                <li>
+                    {location.pathname === "/" && (
+                        <div>
+                            <input type="text" placeholder="Filter by Brand / Color" onChange={handleChange}></input>
+
+                            <a href={`/search/${input}`}>
+                                <button className="details-btn">Search</button>
+                            </a>
+                        </div>
+                    )}
                 </li>
                 <li>
                     <select onChange={goToPage} defaultValue="name">
-                        <option value="name" disabled>{userTitle}</option>
+                        <option value="name" disabled>
+                            {userTitle}
+                        </option>
                         <option value="profile">Your Profile</option>
                         <option value="orders">Your Orders</option>
                         <option value="wishlist">Your Wishlist</option>
                         {currentUser && <option value="signout">Sign out</option>}
                         {!currentUser && <option value="signin">Sign in</option>}
                     </select>
+                </li>
+                <li>
+                    {location.pathname === "/" && currentUser.isAdmin && (
+                        <button onClick={goToAdmin}>Admin Portal</button>
+                    )}
+                </li>
+                <li>
+                    {location.pathname === "/user/profile" && (
+                        <button onClick={logout}>Sign out</button>
+                    )}
                 </li>
                 <li><button onClick={goToCart}><i className="fi fi-bs-shopping-cart"></i>{itemCount}</button></li>
             </ul>

@@ -28,11 +28,7 @@ function Register() {
         }
 
         try {
-            const response = await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
+            const response = await createUserWithEmailAndPassword(auth, email, password);
             console.log(response);
             const userID = response.user.uid;
             await setDoc(doc(db, "users", response.user.uid), {

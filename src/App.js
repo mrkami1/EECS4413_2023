@@ -15,7 +15,8 @@ import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { UserFieldsProvider } from "./context/UserFieldsContext";
 import { SearchPage } from "./pages/view/SearchPage";
-
+import FlyersShow from "./pages/view/Flyer";
+import Administration from "./pages/admin/Admin";
 
 function App() {
     const { currentUser } = useContext(AuthContext);
@@ -93,6 +94,23 @@ function App() {
                             path="/search/:key"
                             element={<SearchPage type={'products'}/>}
                         />
+                        <Route
+                            path="admin/portal"
+                            element={
+                                <ProtectedRoute>
+                                    <Administration />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="admin/portal/flyer"
+                            element={
+                                <ProtectedRoute>
+                                    <FlyersShow />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="flyer" element={<FlyersShow />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
@@ -101,4 +119,3 @@ function App() {
 }
 
 export default App;
-

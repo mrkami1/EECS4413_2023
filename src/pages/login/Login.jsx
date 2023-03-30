@@ -13,11 +13,7 @@ function Login() {
         const password = e.target[1].value;
 
         try {
-            const response = await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
+            const response = await signInWithEmailAndPassword(auth, email, password);
             console.log(response);
             navigate("/");
         } catch (error) {
