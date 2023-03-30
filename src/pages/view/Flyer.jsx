@@ -72,15 +72,19 @@ function Flyer({ isAdmin }) {
         if (onSale) return onSale[0].expire.toDate();
         else return new Date();
     });
-    useEffect(()=>{
+    useEffect(() => {
         const currentFlyer = [];
-        getDocs(collection(db, "flyer"), orderBy("name")).then((snapShots)=>{
-            snapShots.forEach((doc)=>{
-                currentFlyer.push(doc.data())
+        getDocs(collection(db, "flyer"), orderBy("name"))
+            .then((snapShots) => {
+                snapShots.forEach((doc) => {
+                    currentFlyer.push(doc.data());
+                });
             })
-        }).catch(error=>{console.log(error.message)})
-        setOnSale(currentFlyer)
-    },[])
+            .catch((error) => {
+                console.log(error.message);
+            });
+        setOnSale(currentFlyer);
+    }, []);
     const endOfDay = { hour: 23, minute: 59, second: 59 };
 
     // todo
@@ -128,13 +132,13 @@ function Flyer({ isAdmin }) {
 
 export default function FlyersShow() {
     const { user } = useContext(AuthContext);
-    console.log(user)
+    console.log(user);
     return (
         <div>
             <div>
                 <Navbar />
             </div>
-            <Flyer isAdmin={true} />
+            <Flyer isAdmin={user && user.level === "admin"} />
         </div>
     );
 }

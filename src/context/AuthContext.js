@@ -10,16 +10,13 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         const userState = onAuthStateChanged(auth, (user) => {
-            getDoc(doc(db, "users", user.uid)).then(doc=>{
-                let isAdmin = doc.exists() && doc.data().level === "admin";
-                setCurrentUser({ ...user, isAdmin: isAdmin });
-            }).catch((error)=>{console.log(error.message)})
+            setCurrentUser(user);
         });
 
-        return ()=>{userState();};
+        return () => {
+            userState();
+        };
     }, []);
 
-    console.log("running authcontext..")
-    console.log(currentUser)
-    return <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ currentUser }}>{children}</AuthContext.Provider>;
 };
