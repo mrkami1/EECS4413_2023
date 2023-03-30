@@ -78,20 +78,20 @@ function Profile() {
             {userFields &&
                 <>
                     <p>
-                        Name: {newFields.name}
+                        Name: {userFields?.get("name")}
                         {showEdit && <input type='text' placeholder="New name" name="name" onChange={updateFields}></input>}
                     </p>
                     <p>
-                        Email: {newFields.email}
+                        Email: {userFields?.get("email")}
                         {showEdit && <input type='text' placeholder="New email" name="email" onChange={updateFields}></input>}
                     </p>
                     <p>Account type: {userFields?.get("level")}</p>
                     <p>
-                        Payment: {newFields.payment}
+                        Payment: {userFields?.get("payment")}
                         {showEdit && <input type='text' placeholder="New payment" name="payment" onChange={updateFields}></input>}
                     </p>
                     <p>
-                        Address: {newFields.address}
+                        Address: {userFields?.get("address")}
                         {showEdit && <input type='text' placeholder="New address" name="address" onChange={updateFields}></input>}
                     </p>
                     <p>User ID: {currentUser.uid}</p>

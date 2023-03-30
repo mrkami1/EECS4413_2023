@@ -77,7 +77,7 @@ function Cart() {
                 })
             }
             <p>Total: {total}</p>
-            <button onClick={() => navigate("/view/checkout")}>Check out</button>
+            <button onClick={() => navigate("/view/checkout")}>Checkout</button>
         </div>
     );
 }
