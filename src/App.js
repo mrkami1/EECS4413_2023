@@ -7,7 +7,6 @@ import WishList from "./pages/user/WishList";
 import { AllProducts } from "./pages/view/AllProducts";
 import "./assets/styles.scss";
 import { ProductDetail } from "./pages/view/ProductDetail";
-import { Search} from "./components/Search";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
