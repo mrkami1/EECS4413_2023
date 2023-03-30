@@ -3,7 +3,6 @@ import { db } from "../../firebase";
 import Navbar from "../../components/Navbar";
 import { query, collection, orderBy, getDocs, addDoc, getDoc, deleteDoc, Timestamp } from "firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
-import { AuthContext } from "../../context/AuthContext";
 
 // Yang
 // for flyer components
@@ -131,7 +130,7 @@ function Flyer({ isAdmin }) {
 }
 
 export default function FlyersShow() {
-    const { user } = useContext(AuthContext);
+    const { user } = useContext(UserFieldsContext);
     console.log(user);
     return (
         <div>

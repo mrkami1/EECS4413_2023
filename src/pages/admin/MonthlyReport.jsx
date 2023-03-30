@@ -12,7 +12,7 @@ function MonthSale({ data }) {
 }
 
 function SalesReport() {
-    const [reports, setReports] = useState({});
+    const [reports, setReports] = useState([]);
     return (
         <div>
             {reports.map((report) => {

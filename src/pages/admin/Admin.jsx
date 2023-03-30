@@ -1,22 +1,23 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import Navbar from "../../components/Navbar";
 import { Link } from "react-router-dom";
 import WebUsage from "./WebUsage";
 import MonthlyReport from "./MonthlyReport";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import UserFieldsContext from "../../context/UserFieldsContext";
 
 // Yang
 // for admin statistic components
 
 export default function Administration() {
-    const { admin } = useContext(AuthContext);
+    const { userFields } = useContext(UserFieldsContext);
+    console.log("from admin:");
+    console.log(userFields);
     return (
         <div>
             <div>
                 <Navbar />
             </div>
-            <p>Welcome Administrator: {admin.displayName}</p>
+            {/* <p>Welcome Administrator: {userFields.name}</p> */}
             <Link to="flyer" target="_blank">
                 To Flyer edit page
             </Link>
