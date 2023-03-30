@@ -2,7 +2,8 @@ import Login from "./pages/login/Login";
 import Register from "./pages/login/Register";
 import { Main } from "./pages/Main";
 import Profile from "./pages/user/Profile";
-// import "./index.css";
+import OrderHistory from "./pages/user/OrderHistory";
+import WishList from "./pages/user/WishList";
 import { AllProducts } from "./pages/view/AllProducts";
 import "./assets/styles.scss";
 import { ProductDetail } from "./pages/view/ProductDetail";
@@ -41,9 +42,29 @@ function App() {
                                     <UserFieldsProvider>
                                         <Profile />
                                     </UserFieldsProvider>
-                            </ProtectedRoute>
-                        }
-                    />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="user/OrderHistory"
+                            element={
+                                <ProtectedRoute>
+                                    <UserFieldsProvider>
+                                        <OrderHistory />
+                                    </UserFieldsProvider>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="user/WishList"
+                            element={
+                                <ProtectedRoute>
+                                    <UserFieldsProvider>
+                                        <WishList />
+                                    </UserFieldsProvider>
+                                </ProtectedRoute>
+                            }
+                        />
                     <Route path="Login" element={<Login />} />
                     <Route path="Register" element={<Register />} />
                     <Route
@@ -59,9 +80,11 @@ function App() {
                         element={<SearchPage type={'products'}/>}
                     />
                 </Route>
+
             </Routes>
         </BrowserRouter>
     );
 }
 
 export default App;
+
