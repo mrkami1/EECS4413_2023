@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { auth, db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
-import { collection, getDoc, doc } from "@firebase/firestore";
+import { doc, onSnapshot, get } from "@firebase/firestore";
 
 
 const UserFieldsContext = createContext();
@@ -11,24 +11,17 @@ export function UserFieldsProvider({children}) {
     const { currentUser } = useContext(AuthContext);
 
     useEffect(() => {
-        
-        const getFields = async () => {
-            try {
-                const docSnap = await getDoc(doc(db, "users", currentUser.uid))
-
-                if (docSnap.exists()) {
-                    setUserFields(docSnap._document.data.value.mapValue.fields);
+        if (currentUser?.uid) {
+            const unsub = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
+                setUserFields(doc);
+            })
+            return () => {
+                if (currentUser) {
+                    unsub();
+                    console.log("updated")
                 }
             }
-            catch (error) {
-                
-            }
         }
-
-        return () => {
-            if (currentUser) getFields();
-        } 
-
     }, [currentUser])
 
     return (

@@ -4,10 +4,11 @@ import { Main } from "./pages/Main";
 import Profile from "./pages/user/Profile";
 import OrderHistory from "./pages/user/OrderHistory";
 import WishList from "./pages/user/WishList";
+import Cart from "./pages/user/Cart";
+import Checkout from "./pages/view/Checkout";
 import { AllProducts } from "./pages/view/AllProducts";
 import "./assets/styles.scss";
 import { ProductDetail } from "./pages/view/ProductDetail";
-import { Search} from "./components/Search";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
@@ -33,7 +34,11 @@ function App() {
                 <Route path="/">
                     <Route
                         index
-                        element={<Main />}
+                        element={
+                            <UserFieldsProvider>
+                                <Main />
+                            </UserFieldsProvider>
+                        }
                     />
                     <Route 
                         path="user/Profile"
@@ -61,6 +66,26 @@ function App() {
                                 <ProtectedRoute>
                                     <UserFieldsProvider>
                                         <WishList />
+                                    </UserFieldsProvider>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="user/Cart"
+                            element={
+                                <ProtectedRoute>
+                                    <UserFieldsProvider>
+                                        <Cart />
+                                    </UserFieldsProvider>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="view/Checkout"
+                            element={
+                                <ProtectedRoute>
+                                    <UserFieldsProvider>
+                                        <Checkout />
                                     </UserFieldsProvider>
                                 </ProtectedRoute>
                             }
