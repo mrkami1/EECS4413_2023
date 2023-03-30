@@ -7,6 +7,8 @@ import { db } from "../../firebase"
 import Navbar from "../../components/Navbar";
 import Product from './Product';
 
+// Ying
+// Search product by color / brand with sort functionality
 export const SearchPage = (props) => {
     const { key } = useParams()
     const [value, setValue] = useState("");
@@ -36,11 +38,46 @@ export const SearchPage = (props) => {
       getProducts()
     },[])
 
+    // sort price low to hight
+    const numAscending = [...products].sort((a, b) => a.price - b.price);
+
+  // sort price high to low
+    const numDescending = [...products].sort((a, b) => b.price - a.price);
+    
+  // sort name a - z
+    const strAscending = [...products].sort((a, b) => 
+                          a.name > b.name ? 1 : -1) 
+  
+  // sort name z - a 
+    const strDescending = [...products].sort((a, b) => 
+                          a.name > b.name ? -1 : 1) 
+      
+    const onSelect = (e) => {        
+          const val = e.target.value;
+   
+          switch (val) {
+              case "Sort Product": break; 
+              case "PriceAscending": setProducts(numAscending); break; 
+              case "PriceDescending": setProducts(numDescending); break;
+              case "NameAscending": setProducts(strAscending); break;
+              case "NameDescending": setProducts(strDescending); break;
+              default: break;
+              }
+      }
 
   return (
     <div>
         <div>
             <Navbar />
+        </div>
+        <div>   
+            <select onChange={onSelect} defaultValue="Sort Product">
+                <option value="Sort Product">Sort Products</option>
+                <option value="PriceAscending">Sort Price from Low to High</option>
+                <option value="PriceDescending">Sort Price from high to Low</option>
+                <option value="NameAscending">Sort Name from A to Z</option>
+                <option value="NameDescending">Sort Name from Z to A</option>
+            </select>
         </div>
         <div className='allproduct-container'>
         <p className='Search-result'>Search Result</p>
