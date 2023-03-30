@@ -9,10 +9,11 @@ import Checkout from "./pages/view/Checkout";
 import { AllProducts } from "./pages/view/AllProducts";
 import "./assets/styles.scss";
 import { ProductDetail } from "./pages/view/ProductDetail";
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext, AuthContextProvider } from "./context/AuthContext";
-import UserFieldsContext, { UserFieldsProvider } from "./context/UserFieldsContext";
+import { AuthContext } from "./context/AuthContext";
+import { UserFieldsProvider } from "./context/UserFieldsContext";
 import { SearchPage } from "./pages/view/SearchPage";
 import FlyersShow from "./pages/view/Flyer";
 import Administration from "./pages/admin/Admin";
