@@ -38,7 +38,7 @@ function ProductBlock({ product, isAdmin, handleDelete }) {
                         max={100}
                         onChange={handleChange}
                     />
-                    <button onClick={() => setDiscount(discount)} disabled={discount == product.discount}>
+                    <button onClick={() => setDiscount(discount)} disabled={discount === product.discount}>
                         update
                     </button>
                 </form>
@@ -79,6 +79,7 @@ async function Flyer({ isAdmin }) {
     // todo
     const addSalesItem = (id, newPrice) => {};
     const removeItem = () => {};
+    const saveAbove = () => {};
     return (
         <>
             <div>

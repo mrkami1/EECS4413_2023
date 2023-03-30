@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { db, auth } from "../../firebase";
-i;
 // Yang
 // get the sales of each month
 
