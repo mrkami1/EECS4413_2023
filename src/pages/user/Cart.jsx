@@ -19,7 +19,7 @@ function Cart() {
 
     useEffect(() => {
         if (userFields) {
-            setItems(userFields.get("cartItems"))
+            setItems(userFields.cartItems)
         }
     }, [userFields])
 
