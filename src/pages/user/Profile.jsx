@@ -25,12 +25,12 @@ function Profile() {
 
     const saveProfile = async () => {
         await updateDoc(doc(db, "users", currentUser.uid), {
-            email: newFields.email,
-            payment: newFields.payment,
-            address: newFields.address,
+            email: newFields.email ? newFields.email : userFields.email,
+            payment: newFields.payment ? newFields.payment : userFields.payment,
+            address: newFields.address ? newFields.address : userFields.address,
         }).then(() => {
             updateProfile(auth.currentUser, {
-                displayName: newFields.name,
+                displayName: newFields.name ? newFields.name : userFields.displayName,
             })
                 .then(() => {
                     window.location.reload();

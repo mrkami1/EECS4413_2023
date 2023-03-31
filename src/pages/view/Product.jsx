@@ -4,11 +4,13 @@ import React, { useEffect, useContext } from "react";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { AuthContext } from "../../context/AuthContext";
 import '../../css/Product.css'
+import { useNavigate } from "react-router-dom";
 
 const Product = (product) => {
 
     const { userFields } = useContext(UserFieldsContext)
     const { currentUser } = useContext(AuthContext)
+    const navigate = useNavigate();
 
     const addToCart = async () => {
         const newItem = {
@@ -53,6 +55,8 @@ const Product = (product) => {
                     console.log(error)
                 })
             }
+        } else {
+            navigate("/login")
         }
     }
 
