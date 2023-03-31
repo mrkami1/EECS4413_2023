@@ -12,7 +12,7 @@ export function UserFieldsProvider({ children }) {
     useEffect(() => {
         if (currentUser?.uid) {
             const unsub = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
-                setUserFields(doc);
+                setUserFields(doc.data());
             })
             return () => {
                 if (currentUser) {

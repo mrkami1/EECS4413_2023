@@ -17,7 +17,7 @@ export default function Administration() {
             <div>
                 <Navbar />
             </div>
-            <p>Welcome Administrator: {userFields.name}</p>
+            <p>Welcome Administrator: {userFields?.name}</p>
             <Link to="flyer" target="_blank">
                 To Flyer edit page
             </Link>

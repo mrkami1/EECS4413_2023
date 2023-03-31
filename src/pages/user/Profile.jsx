@@ -71,10 +71,10 @@ function Profile() {
     useEffect(() => {
         if (userFields) {
             setNewFields({
-                name: userFields.get("name"),
-                email: userFields.get("email"),
-                payment: userFields.get("payment"),
-                address: userFields.get("address"),
+                name: userFields.name,
+                email: userFields.email,
+                payment: userFields.payment,
+                address: userFields.address,
             })
         }
     }, [userFields])
@@ -85,20 +85,20 @@ function Profile() {
             {userFields && (
                 <>
                     <p>
-                        Name: {userFields?.get("name")}
+                        Name: {userFields?.name}
                         {showEdit && <input type='text' placeholder="New name" name="name" onChange={updateFields}></input>}
                     </p>
                     <p>
-                        Email: {userFields?.get("email")}
+                        Email: {userFields?.email}
                         {showEdit && <input type='text' placeholder="New email" name="email" onChange={updateFields}></input>}
                     </p>
-                    <p>Account type: {userFields?.get("level")}</p>
+                    <p>Account type: {userFields?.level}</p>
                     <p>
-                        Payment: {userFields?.get("payment")}
+                        Payment: {userFields?.payment}
                         {showEdit && <input type='text' placeholder="New payment" name="payment" onChange={updateFields}></input>}
                     </p>
                     <p>
-                        Address: {userFields?.get("address")}
+                        Address: {userFields?.address}
                         {showEdit && <input type='text' placeholder="New address" name="address" onChange={updateFields}></input>}
                     </p>
                     <p>User ID: {currentUser.uid}</p>

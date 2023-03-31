@@ -25,7 +25,7 @@ function SalesReport() {
 export default function MonthlyReport() {
     return (
         <div>
-            <h1>Monthly Sales Report</h1>
+            <h2>Monthly Sales Report</h2>
             <TimeSelector />
             <SalesReport />
         </div>
