@@ -10,8 +10,6 @@ export default function WebUsage() {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            // console.log("at webusage: user");
-            // console.log(user);
             if (user && !users.some((u) => u.id === user.uid)) {
                 setUsers([
                     ...users,
@@ -29,8 +27,8 @@ export default function WebUsage() {
 
     return (
         <div>
-            <h1>Web usage</h1>
-            <h2>Logged-in users: {users.length}</h2>
+            <h2>Web usage</h2>
+            <h3>Logged-in users: {users.length}</h3>
             <ul>
                 {users.map((u) => (
                     <li key={u.id}>

@@ -44,6 +44,12 @@ function Navbar() {
                 case "wishlist":
                     navigate("/user/wishlist");
                     break;
+                case "admin":
+                    navigate("/admin/portal");
+                    break;
+                case "flyer":
+                    navigate("/flyer");
+                    break;
                 case "signout":
                     logout();
                     break;
@@ -56,13 +62,6 @@ function Navbar() {
         }
         else navigate("/login");
     }
-    const goToProfile = () => {
-        navigate("user/profile");
-    };
-
-    const goToAdmin = () => {
-        navigate("admin/portal");
-    };
 
     useEffect(() => {
         if (currentUser !== null && Object.keys(currentUser).length !== 0) {
@@ -70,7 +69,7 @@ function Navbar() {
         }
 
         if (userFields) {
-            setItemCount(userFields.get("cartItems").length)
+            setItemCount(userFields.cartItems.length)
         }
     }, [currentUser, userFields])
 
@@ -88,6 +87,9 @@ function Navbar() {
                     <button className="site-button" onClick={goToPage} value="home">
                         Glasses Website
                     </button>
+                </li>
+                <li>
+                    {location.pathname !== "/flyer" && <button onClick={goToPage} value="flyer">Check our flyer!</button>}
                 </li>
                 <li>
                     {location.pathname === "/" && (
@@ -108,14 +110,10 @@ function Navbar() {
                         <option value="profile">Your Profile</option>
                         <option value="orders">Your Orders</option>
                         <option value="wishlist">Your Wishlist</option>
+                        {userFields?.level === "admin" && <option value="admin">Admin Portal</option>}
                         {currentUser && <option value="signout">Sign out</option>}
                         {!currentUser && <option value="signin">Sign in</option>}
                     </select>
-                </li>
-                <li>
-                    {location.pathname === "/" && currentUser?.isAdmin && (
-                        <button onClick={goToAdmin}>Admin Portal</button>
-                    )}
                 </li>
                 <li>
                     {location.pathname === "/user/profile" && (
