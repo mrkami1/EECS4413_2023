@@ -21,7 +21,7 @@ const Product = (product) => {
 
         if (userFields && currentUser) {
 
-            let currentItems = userFields.get("cartItems");
+            let currentItems = userFields.cartItems;
             let itemInCart = false;
 
             currentItems.forEach(async (item) => {
