@@ -65,7 +65,10 @@ const Product = (product) => {
                 <p className="product-name">{product.product.name}</p>
                 <div className="price-container">
                     <p className="CAD">
-                        CAD: <span className="rate">{product.product.price}</span>
+                        CAD:{" "}
+                        <span className="rate">
+                            {(product.product.price * (1 - product.product.discount / 100)).toFixed(2)}
+                        </span>
                     </p>
                     {/* <p className='saleprice'>Discount Price:<p className="rate"></p></p> */}
                 </div>

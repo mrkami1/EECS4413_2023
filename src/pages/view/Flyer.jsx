@@ -33,6 +33,8 @@ function ProductBlock({ product, isAdmin, handleDiscount, handleDelete }) {
 
     const removeProd = () => {};
 
+    // const exp = product.expire ? product.expire.toDate().toDateString() : new Date().toDateString();
+
     return (
         <div>
             <h3>{product.name}</h3>
@@ -66,7 +68,7 @@ function NewBlock({ handleAddItem }) {
             <form>
                 <label>For sale new product id: </label>
                 <input onChange={(e) => setId(e.target.value)} />
-                <button onClick={() => handleAddItem(id)}>Add new item</button>
+                <button>Add new item</button>
             </form>
         </div>
     );
@@ -113,34 +115,34 @@ function Flyer({ isAdmin }) {
         setTime(Timestamp.fromDate(new Date(year, mon - 1, day)));
     };
 
-    const addNewItem = (id) => {
-        getDoc(doc(db, "products", id))
-            .then((shot) => {
-                if (shot.exists()) {
-                    const newItem = shot.data();
-                    if (!onSale.some((item) => item.id === newItem.id)) {
-                        console.log("got some new item: => " + id);
-                        setOnSale([
-                            ...onSale,
-                            {
-                                discount: newItem.discount,
-                                expire: newItem.expire,
-                                id: newItem.id,
-                                img: newItem.img,
-                                name: newItem.name,
-                                price: newItem.price,
-                            },
-                        ]);
-                    } else {
-                        setError("This new item exists!");
-                    }
+    const addNewItem = async (id) => {
+        const docRef = doc(db, "products", id);
+        try {
+            const shot = await getDoc(docRef);
+            if (shot.exists()) {
+                const newItem = shot.data();
+                if (!onSale.some((item) => item.id === newItem.id)) {
+                    console.log("got some new item: => " + id);
+                    setOnSale([
+                        ...onSale,
+                        {
+                            discount: newItem.discount,
+                            expire: Timestamp.now(),
+                            id: newItem.id,
+                            img: newItem.img,
+                            name: newItem.name,
+                            price: newItem.price,
+                        },
+                    ]);
                 } else {
-                    setError("This item ID doesn't exist!");
+                    setError("This new item exists!");
                 }
-            })
-            .catch((e) => {
-                console.log(e);
-            });
+            } else {
+                setError("This item ID doesn't exist!");
+            }
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const updateDiscout = () => {};
@@ -148,7 +150,7 @@ function Flyer({ isAdmin }) {
     const removeItem = () => {};
 
     const saveAbove = () => {
-        getDocs(collection(db, "flyer"));
+        // getDocs(collection(db, "flyer"));
     };
 
     return (
