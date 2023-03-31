@@ -3,6 +3,7 @@ import { db } from "../../firebase";
 import React, { useEffect, useContext } from "react";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { AuthContext } from "../../context/AuthContext";
+import '../../css/Product.css'
 
 const Product = (product) => {
 
@@ -57,7 +58,7 @@ const Product = (product) => {
 
     return (
         <div className='product-container'>
-            <img src={product.product.img} />
+            <img className='img' src={product.product.img} />
             <div className='product-details'>
                 <p className="product-brand">{product.product.brand}</p>
                 <p className="product-name">{product.product.name}</p>
