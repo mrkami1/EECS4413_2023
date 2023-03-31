@@ -51,16 +51,15 @@ function Checkout() {
         const orderDoc = await getDoc(doc(db, "orders", currentUser.uid));
         if (!orderDoc.exists()) {
             await setDoc(doc(db, "orders", currentUser.uid), {
-                customerOrders: completedOrder
+                customerOrders: []
             })
-            .then(emptyCart)
         }
-        else {
-            await updateDoc(doc(db, "orders", currentUser.uid), {
-                customerOrders: arrayUnion(completedOrder)
-            })
-            .then(emptyCart)
-        }
+       
+        await updateDoc(doc(db, "orders", currentUser.uid), {
+            customerOrders: arrayUnion(completedOrder)
+        })
+        .then(emptyCart)
+        
     }
 
     const emptyCart = async () => {
