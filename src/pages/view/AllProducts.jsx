@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { collection, query, onSnapshot, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import Product from "./Product";
 import Navbar from "../../components/Navbar";

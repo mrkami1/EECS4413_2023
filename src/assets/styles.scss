@@ -8,7 +8,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: left;
-    
+
     .register-wrapper {
         flex-direction: column;
 
@@ -16,7 +16,6 @@ body {
             display: flex;
             flex-direction: column;
         }
-
     }
 }
 
@@ -24,7 +23,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: left;
-    
+
     .login-wrapper {
         flex-direction: column;
 
@@ -32,7 +31,6 @@ body {
             display: flex;
             flex-direction: column;
         }
-
     }
 }
 
@@ -49,7 +47,6 @@ body {
     padding: 10px;
 
     li {
-        padding-left: 10px; 
+        padding-left: 10px;
     }
-
 }

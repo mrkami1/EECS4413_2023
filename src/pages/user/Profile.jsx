@@ -63,10 +63,9 @@ function Profile() {
             name: newName,
             email: newEmail,
             payment: newPayment,
-            address: newAddress
-        })
-
-    }, [newName, newEmail, newPayment, newAddress])
+            address: newAddress,
+        });
+    }, [newName, newEmail, newPayment, newAddress]);
 
     useEffect(() => {
         if (userFields) {
@@ -75,10 +74,10 @@ function Profile() {
                 email: userFields.email,
                 payment: userFields.payment,
                 address: userFields.address,
-            })
+            });
         }
-    }, [userFields])
-    console.log(userFields)
+    }, [userFields]);
+    console.log(userFields);
     return (
         <div>
             <Navbar />
@@ -86,20 +85,28 @@ function Profile() {
                 <>
                     <p>
                         Name: {userFields?.name}
-                        {showEdit && <input type='text' placeholder="New name" name="name" onChange={updateFields}></input>}
+                        {showEdit && (
+                            <input type="text" placeholder="New name" name="name" onChange={updateFields}></input>
+                        )}
                     </p>
                     <p>
                         Email: {userFields?.email}
-                        {showEdit && <input type='text' placeholder="New email" name="email" onChange={updateFields}></input>}
+                        {showEdit && (
+                            <input type="text" placeholder="New email" name="email" onChange={updateFields}></input>
+                        )}
                     </p>
                     <p>Account type: {userFields?.level}</p>
                     <p>
                         Payment: {userFields?.payment}
-                        {showEdit && <input type='text' placeholder="New payment" name="payment" onChange={updateFields}></input>}
+                        {showEdit && (
+                            <input type="text" placeholder="New payment" name="payment" onChange={updateFields}></input>
+                        )}
                     </p>
                     <p>
                         Address: {userFields?.address}
-                        {showEdit && <input type='text' placeholder="New address" name="address" onChange={updateFields}></input>}
+                        {showEdit && (
+                            <input type="text" placeholder="New address" name="address" onChange={updateFields}></input>
+                        )}
                     </p>
                     <p>User ID: {currentUser.uid}</p>
                 </>

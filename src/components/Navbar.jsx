@@ -7,8 +7,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
     const { currentUser } = useContext(AuthContext);
-    const { userFields } = useContext(UserFieldsContext)
-    
+    const { userFields } = useContext(UserFieldsContext);
+
     const [userTitle, setUserTitle] = useState("Your Account");
     const [itemCount, setItemCount] = useState(0);
 
@@ -25,11 +25,11 @@ function Navbar() {
 
     const goToCart = () => {
         navigate("/user/cart");
-    }
+    };
 
     const goToPage = (e) => {
         const val = e.target.value;
-        
+
         if (currentUser) {
             switch (val) {
                 case "home":
@@ -56,12 +56,10 @@ function Navbar() {
                 default:
                     break;
             }
-        }
-        else if (!currentUser && val === "home") {
+        } else if (!currentUser && val === "home") {
             navigate("/");
-        }
-        else navigate("/login");
-    }
+        } else navigate("/login");
+    };
 
     useEffect(() => {
         if (currentUser !== null && Object.keys(currentUser).length !== 0) {
@@ -69,12 +67,11 @@ function Navbar() {
         }
 
         if (userFields) {
-            setItemCount(userFields.cartItems.length)
+            setItemCount(userFields.cartItems.length);
         }
-    }, [currentUser, userFields])
+    }, [currentUser, userFields]);
 
-    
-    const [input, setInput] = useState('')
+    const [input, setInput] = useState("");
 
     const handleChange = (e) => {
         setInput(e.target.value);
@@ -89,7 +86,11 @@ function Navbar() {
                     </button>
                 </li>
                 <li>
-                    {location.pathname !== "/flyer" && <button onClick={goToPage} value="flyer">Check our flyer!</button>}
+                    {location.pathname !== "/flyer" && (
+                        <button onClick={goToPage} value="flyer">
+                            Check our flyer!
+                        </button>
+                    )}
                 </li>
                 <li>
                     {location.pathname === "/" && (
@@ -115,12 +116,13 @@ function Navbar() {
                         {!currentUser && <option value="signin">Sign in</option>}
                     </select>
                 </li>
+                <li>{location.pathname === "/user/profile" && <button onClick={logout}>Sign out</button>}</li>
                 <li>
-                    {location.pathname === "/user/profile" && (
-                        <button onClick={logout}>Sign out</button>
-                    )}
+                    <button onClick={goToCart}>
+                        <i className="fi fi-bs-shopping-cart"></i>
+                        {itemCount}
+                    </button>
                 </li>
-                <li><button onClick={goToCart}><i className="fi fi-bs-shopping-cart"></i>{itemCount}</button></li>
             </ul>
         </div>
     );

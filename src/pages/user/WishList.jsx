@@ -8,7 +8,7 @@ function WishList() {
             <Navbar />
             this is the wishlist page
         </div>
-    )
+    );
 }
 
-export default WishList
+export default WishList;

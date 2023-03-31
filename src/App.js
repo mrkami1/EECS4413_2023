@@ -9,7 +9,6 @@ import Checkout from "./pages/view/Checkout";
 import { AllProducts } from "./pages/view/AllProducts";
 import "./assets/styles.scss";
 import { ProductDetail } from "./pages/view/ProductDetail";
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
@@ -34,66 +33,52 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/">
+                        <Route index element={<Main />} />
                         <Route
-                            index
-                            element={
-                                <Main />
-                            }
-                        />
-                        <Route 
                             path="user/Profile"
                             element={
-                                    <ProtectedRoute>
-                                        <Profile />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="user/OrderHistory"
-                                element={
-                                    <ProtectedRoute>
-                                        <OrderHistory />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="user/WishList"
-                                element={
-                                    <ProtectedRoute>
-                                        <WishList />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="user/Cart"
-                                element={
-                                    <ProtectedRoute>
-                                        <Cart />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="view/Checkout"
-                                element={
-                                    <ProtectedRoute>
-                                        <Checkout />
-                                    </ProtectedRoute>
-                                }
-                            />
+                                <ProtectedRoute>
+                                    <Profile />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="user/OrderHistory"
+                            element={
+                                <ProtectedRoute>
+                                    <OrderHistory />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="user/WishList"
+                            element={
+                                <ProtectedRoute>
+                                    <WishList />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="user/Cart"
+                            element={
+                                <ProtectedRoute>
+                                    <Cart />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="view/Checkout"
+                            element={
+                                <ProtectedRoute>
+                                    <Checkout />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="Login" element={<Login />} />
                         <Route path="Register" element={<Register />} />
-                        <Route
-                            path="/product-type/glasses"
-                            element={<AllProducts type={'products'}/>}
-                        />
-                        <Route 
-                            path="/product/:id"
-                            element={<ProductDetail type={'products'}/>}
-                        />
-                        <Route 
-                            path="/search/:key"
-                            element={<SearchPage type={'products'}/>}
-                        />
+                        <Route path="/product-type/glasses" element={<AllProducts type={"products"} />} />
+                        <Route path="/product/:id" element={<ProductDetail type={"products"} />} />
+                        <Route path="/search/:key" element={<SearchPage type={"products"} />} />
                         <Route
                             path="admin/portal"
                             element={
