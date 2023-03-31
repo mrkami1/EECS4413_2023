@@ -92,7 +92,7 @@ function Navbar() {
                 <li>
                     {location.pathname === "/" && (
                         <div>
-                            <input type="text" placeholder="Filter by Brand / Color" onChange={handleChange}></input>
+                            <input type="text" placeholder="Search by Brand / Color" onChange={handleChange}></input>
 
                             <a href={`/search/${input}`}>
                                 <button className="details-btn">Search</button>
