@@ -5,6 +5,7 @@ import { AuthContext } from "../../context/AuthContext";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { db, auth } from "../../firebase";
 import { uuidv4 } from "@firebase/util";
+import Navbar from "../../components/Navbar";
 
 // Anubhav
 // for customer payment components
@@ -20,7 +21,7 @@ function Checkout() {
 
     useEffect(() => {
         if (userFields) {
-            setCheckout(userFields.get("cartItems"));
+            setCheckout(userFields.cartItems);
         }
     }, [userFields])
 
@@ -35,7 +36,7 @@ function Checkout() {
 
     const order = async () => {
         
-        if (userFields?.get("address") === "" || userFields?.get("payment") === "") {
+        if (userFields?.address === "" || userFields?.payment === "") {
             setError(true);
             return;
         }
@@ -74,27 +75,32 @@ function Checkout() {
 
     return (
         <div>
-            <p>Shipping address: {userFields?.get("address")}</p>
-            <p>Payment method: {userFields?.get("payment")}</p>
-            <p>Review items: </p>
-            <br />
-            {
-                checkout.map((item) => {
-                    return (
-                        <div key={item.itemID}>
-                            <p>Item image: {item.image}</p>
-                            <p>Item name: {item.name}</p>
-                            <p>Item ID: {item.itemID}</p>
-                            <p>Price: {item.price}</p>
-                            <p>Quantity: {item.quantity}</p>
-                            <br />
-                        </div>
-                    )
-                })
-            }
-            <p>Order Total: {total}</p>
-            <button onClick={order}>Place your order</button>
-            {error && <p>Invalid shipping address or payment method</p>}
+            <div>
+                <Navbar/>
+            </div>
+            <div>
+                <p>Shipping address: {userFields?.address}</p>
+                <p>Payment method: {userFields?.payment}</p>
+                <p>Review items: </p>
+                <br />
+                {
+                    checkout.map((item) => {
+                        return (
+                            <div key={item.itemID}>
+                                <p>Item image: {item.image}</p>
+                                <p>Item name: {item.name}</p>
+                                <p>Item ID: {item.itemID}</p>
+                                <p>Price: {item.price}</p>
+                                <p>Quantity: {item.quantity}</p>
+                                <br />
+                            </div>
+                        )
+                    })
+                }
+                <p>Order Total: {total}</p>
+                <button onClick={order}>Place your order</button>
+                {error && <p>Invalid shipping address or payment method</p>}
+            </div>
         </div>
     )
 }
