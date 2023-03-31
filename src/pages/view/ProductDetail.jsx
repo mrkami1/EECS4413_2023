@@ -8,6 +8,7 @@ import Navbar from "../../components/Navbar"
 import UserFieldsContext from '../../context/UserFieldsContext';
 import { AuthContext } from '../../context/AuthContext';
 import { uuidv4 } from '@firebase/util';
+import '../../css/ProductDetail.css'
 
 export const ProductDetail = () => {
     const { id } = useParams()
@@ -140,7 +141,7 @@ export const ProductDetail = () => {
     <div>ProductDetail
         {product ? <div>
             <div>
-            <img src={product.img} />
+            <img className='img' src={product.img} />
             </div>
             <div>
                 <p>{product.name}</p>
