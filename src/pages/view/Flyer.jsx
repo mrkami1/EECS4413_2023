@@ -1,36 +1,48 @@
 import React, { useContext, useEffect, useState } from "react";
 import { db } from "../../firebase";
 import Navbar from "../../components/Navbar";
-import { query, collection, orderBy, getDocs, addDoc, getDoc, deleteDoc, Timestamp } from "firebase/firestore";
+import { collection, orderBy, getDocs, doc, addDoc, getDoc, deleteDoc, Timestamp } from "firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
+import { AuthContext } from "../../context/AuthContext";
 
 // Yang
 // for flyer components
 
 // Individual Product card, showing product properties.
 // Admin can change its current discout for later submission
-function ProductBlock({ product, isAdmin, handleDelete }) {
-    const prodID = product.name + "_discount";
-    const [discount, setDiscount] = useState(product.discount);
-
-    const handleChange = (event) => {
-        event.preventDefault();
-        setDiscount(event.target.value);
+function ProductBlock({ product, isAdmin, handleDiscount, handleDelete }) {
+    const [ discount, setDiscount ] = useState(product.discount);
+    const [ disabled, setDisabled ] = useState(true)
+    
+    const handleChange = (e) => {
+        if(e.target.value > 100) {
+            setDiscount(100);
+        } else if(e.target.value < 1) {
+            setDiscount(1);
+        } else {
+            setDiscount(e.target.value)
+        }
+        setDisabled(e.target.value === product.discount);
     };
 
+    const handleClick = (e) => {
+        setDiscount(discount);
+        setDisabled(true);
+        handleDiscount(discount);
+    }
+    
     const removeProd = () => {};
 
     return (
         <div>
             <h3>{product.name}</h3>
-            <p>Expire on {product.expire}</p>
-            <img url={product.url} alt={product.name} width={100} height={100} />
+            <p>Expire on {product.expire.toDate().toDateString()}</p>
+            <img src={product.img} alt={product.name} width={150} height={90} />
             <p>Original price: {product.price}</p>
             {isAdmin && (
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <label for={prodID}>Discount (%): </label>
+                    <label>Discount (%): </label>
                     <input
-                        id={prodID}
                         type="number"
                         value={discount}
                         step={1}
@@ -38,27 +50,30 @@ function ProductBlock({ product, isAdmin, handleDelete }) {
                         max={100}
                         onChange={handleChange}
                     />
-                    <button onClick={() => setDiscount(discount)} disabled={discount === product.discount}>
+                    <button onClick={handleClick} disabled={disabled}>
                         update
                     </button>
                 </form>
             )}
-            <hr />
             <p>Discounted price: {(product.price * (1 - discount / 100)).toFixed(2)}</p>
-            {isAdmin && <button onClick={handleDelete}>delete &#x1f5d1</button>}
+            {isAdmin && <button onClick={handleDelete}>Delete Item</button>}
+            <hr />
+            <hr />
         </div>
     );
 }
 
 // A single add-new product block for admin use
 function NewBlock({ handleAddItem }) {
+    const [ id, setId ] = useState('')
+    console.log("from newblock " + id);
     return (
         <div>
             <h3>Add new flyer item here</h3>
             <form>
-                <label htmlFor="">New on sale product id: </label>
-                <input />
-                <button onClick={handleAddItem}></button>
+                <label>For sale new product id: </label>
+                <input onChange={(e) => setId(e.target.value)}/>
+                <button onClick={() => handleAddItem(id)}>Add new item</button>
             </form>
         </div>
     );
@@ -67,77 +82,125 @@ function NewBlock({ handleAddItem }) {
 function Flyer({ isAdmin }) {
     const [updated, setUpdated] = useState(false);
     const [onSale, setOnSale] = useState([]);
-    const [time, setTime] = useState(() => {
-        if (onSale) return onSale[0].expire.toDate();
-        else return new Date();
-    });
+    const [error, setError] = useState("")
+    // let months = ["Jan", "Feb", "Mar", "Apri", "May", "Jun",
+    //     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    console.log("from flyer")
+    console.log(onSale)
+
     useEffect(() => {
         const currentFlyer = [];
         getDocs(collection(db, "flyer"), orderBy("name"))
-            .then((snapShots) => {
-                snapShots.forEach((doc) => {
-                    currentFlyer.push(doc.data());
-                });
-            })
-            .catch((error) => {
+        .then((snapShots) => {
+            snapShots.forEach((doc) => {
+                currentFlyer.push(doc.data());
+            });
+            setOnSale(currentFlyer);
+        })
+        .catch((error) => {
                 console.log(error.message);
             });
-        setOnSale(currentFlyer);
     }, []);
-    const endOfDay = { hour: 23, minute: 59, second: 59 };
 
-    // todo
-    const addSalesItem = (id, newPrice) => {};
+
+    const [time, setTime] = useState(() => {
+        if (onSale.length){
+            console.log(onSale)
+            return onSale[0].expire.toDate();
+        } else {
+            return new Date();
+        }
+    });
+    
+    const [year, setYear] = useState(time.getFullYear());
+    const [mon, setMon] = useState(time.getMonth() + 1);
+    const [day, setDay] = useState(time.getDate());
+    
+    const updateTime = (e) => {
+        e.preventDefault();
+        setTime(Timestamp.fromDate(new Date(year, mon-1, day )));
+    };
+
+    const addNewItem = (id) => {
+        getDoc(doc(db, "products", id))
+        .then((shot) => {
+            if(shot.exists()) {
+                const newItem = shot.data();
+                if(!onSale.some((item) => item.id === newItem.id)){
+                    console.log("got some new item: => " + id)
+                    setOnSale([...onSale, {
+                        discount: newItem.discount,
+                        expire: newItem.expire,
+                        id: newItem.id,
+                        img: newItem.img,
+                        name: newItem.name,
+                        price: newItem.price
+                    }])
+                } else {
+                    setError("This new item exists!")
+                }
+            } else {
+                setError("This item ID doesn't exist!")
+            }
+        })
+        .catch((e) => {console.log(e)})
+    };
+
+    const updateDiscout = () => {};
+
     const removeItem = () => {};
-    const saveAbove = () => {};
+
+
+    const saveAbove = () => {
+        getDocs(collection(db, "flyer"))
+    };
+
     return (
         <>
             <div>
-                <ul>
-                    {onSale.map((prod) => (
-                        <li key={prod.id}>
-                            <ProductBlock product={prod} isAdmin={isAdmin} handleDelete={removeItem} />
+                <h2>Glasses on Sale!</h2>
+                <div>
+                    <h3>Valid until:</h3>
+                    <form>
+                        <label>Year: </label>
+                        {isAdmin ? <input value={year} onChange={(e)=> setYear(e.target.value)} /> : year}
+                        <label>  Month: </label>
+                        {isAdmin ? <input value={mon} onChange={(e)=> setMon(e.target.value)} /> : mon}
+                        <label>  Day: </label>
+                        {isAdmin ? <input value={day} onChange={(e)=> setDay(e.target.value)} /> : day}
+                        {isAdmin && <button onClick={updateTime}>Update Expiration</button>}
+                    </form>
+                </div>
+                <hr />
+                <ol>
+                    {onSale.map((prod, index) => (
+                        <li key={index}>
+                            <ProductBlock product={prod} isAdmin={isAdmin} handleDiscount={updateDiscout} handleDelete={removeItem} />
                         </li>
                     ))}
-                    {isAdmin && (
-                        <li key="blank">
-                            <NewBlock handleAddItem={addSalesItem} />
-                        </li>
-                    )}
-                </ul>
-            </div>
-            <br />
-            <div>
-                <h3>Valid until:</h3>
-                <form>
-                    <label>Year: </label>
-                    <input placeholder={time.getFullYear()} />
-                    <label>Month: </label>
-                    <input placeholder={time.getMonth()} />
-                    <label>Day: </label>
-                    <label placeholder={time.getDate()} />
-                    <button>Update Expiration</button>
-                </form>
+                </ol>
+                {isAdmin && ( <NewBlock handleAddItem={addNewItem} /> )}
+                {error && <p>{error}</p>}
             </div>
             <hr />
             {isAdmin && (
-                <button onClick={saveAbove} disabled={updated}>
+                <button onClick={saveAbove}>
                     Save Updates
                 </button>
             )}
+            <hr />
         </>
     );
 }
 
 export default function FlyersShow() {
-    const { user } = useContext(UserFieldsContext);
-    console.log(user);
+    const { userFields } = useContext(UserFieldsContext);
     return (
         <div>
             <div>
                 <Navbar />
             </div>
-            <Flyer isAdmin={user && user.level === "admin"} />
+            <Flyer isAdmin={userFields?.level === "admin"} />
         </div>
     );
 }

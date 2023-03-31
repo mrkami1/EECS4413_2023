@@ -47,6 +47,9 @@ function Navbar() {
                 case "admin":
                     navigate("/admin/portal");
                     break;
+                case "flyer":
+                    navigate("/flyer");
+                    break;
                 case "signout":
                     logout();
                     break;
@@ -84,6 +87,9 @@ function Navbar() {
                     <button className="site-button" onClick={goToPage} value="home">
                         Glasses Website
                     </button>
+                </li>
+                <li>
+                    {location.pathname !== "/flyer" && <button onClick={goToPage} value="flyer">Check our flyer!</button>}
                 </li>
                 <li>
                     {location.pathname === "/" && (

@@ -9,8 +9,8 @@ import Navbar from "../../components/Navbar";
 // Mashhood
 // for user profile card components
 function Profile() {
-    const { userFields } = useContext(UserFieldsContext);
     const { currentUser } = useContext(AuthContext);
+    const { userFields } = useContext(UserFieldsContext);
 
     const [showEdit, setShowEdit] = useState(false);
     const [newFields, setNewFields] = useState({});
@@ -78,7 +78,7 @@ function Profile() {
             })
         }
     }, [userFields])
-
+    console.log(userFields)
     return (
         <div>
             <Navbar />
