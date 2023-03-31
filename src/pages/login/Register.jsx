@@ -22,7 +22,7 @@ function Register() {
 
         if (password !== confirm) {
             console.log(password);
-            console.log(confirm)
+            console.log(confirm);
             setError(true);
             return;
         }
@@ -38,7 +38,7 @@ function Register() {
                 level,
                 payment,
                 address,
-                cartItems
+                cartItems,
             });
 
             await updateProfile(response.user, {

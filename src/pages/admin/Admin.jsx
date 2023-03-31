@@ -20,7 +20,7 @@ export default function Administration() {
                 <Navbar />
             </div>
             <p>Welcome Administrator: {userFields?.name}</p>
-            <button onClick={()=>navigate("/flyer")}>To Flyer edit page</button>
+            <button onClick={() => navigate("/flyer")}>To Flyer edit page</button>
             <MonthlyReport />
             <hr />
             <WebUsage />

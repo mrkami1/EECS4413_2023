@@ -10,18 +10,18 @@ import { db } from "../../firebase";
 // for customer cart components
 
 function Cart() {
-    const { userFields } = useContext(UserFieldsContext)
+    const { userFields } = useContext(UserFieldsContext);
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
-    
-    const [items, setItems] = useState([])
+
+    const [items, setItems] = useState([]);
     const [total, setTotal] = useState();
 
     useEffect(() => {
         if (userFields) {
-            setItems(userFields.cartItems)
+            setItems(userFields.cartItems);
         }
-    }, [userFields])
+    }, [userFields]);
 
     useEffect(() => {
         if (items) {
@@ -29,13 +29,13 @@ function Cart() {
 
             if (items.length > 0) {
                 items.forEach((item) => {
-                    total += (item.price * item.quantity);
-                })
+                    total += item.price * item.quantity;
+                });
             }
-    
-            setTotal(total)
+
+            setTotal(total);
         }
-    }, [items])
+    }, [items]);
 
     const deleteItem = async (e) => {
         const deleteID = e.target.name;
@@ -45,41 +45,39 @@ function Cart() {
             if (item.itemID !== deleteID) {
                 updatedItems.push(item);
             }
-        })
+        });
 
         await updateDoc(doc(db, "users", currentUser.uid), {
-            cartItems: updatedItems
-        })
-        .then(() => {
+            cartItems: updatedItems,
+        }).then(() => {
             setItems(updatedItems);
-            console.log("deleted item")
-        })
-        
-    }
+            console.log("deleted item");
+        });
+    };
 
     return (
         <div>
             <Navbar />
             Current items in cart:
-            {
-                items.map((item) => {
-                    return (
-                        <div key={item.itemID}>
-                            <p>Item image: {item.image}</p>
-                            <p>Item name: {item.name}</p>
-                            <p>Item ID: {item.itemID}</p>
-                            <p>Price: {item.price}</p>
-                            <p>Quantity: {item.quantity}</p>
-                            <button onClick={deleteItem} name={item.itemID}>Delete</button>
-                            <br />
-                        </div>
-                    )
-                })
-            }
+            {items.map((item) => {
+                return (
+                    <div key={item.itemID}>
+                        <p>Item image: {item.image}</p>
+                        <p>Item name: {item.name}</p>
+                        <p>Item ID: {item.itemID}</p>
+                        <p>Price: {item.price}</p>
+                        <p>Quantity: {item.quantity}</p>
+                        <button onClick={deleteItem} name={item.itemID}>
+                            Delete
+                        </button>
+                        <br />
+                    </div>
+                );
+            })}
             <p>Total: {total}</p>
             <button onClick={() => navigate("/view/checkout")}>Checkout</button>
         </div>
     );
 }
 
-export default Cart
+export default Cart;
