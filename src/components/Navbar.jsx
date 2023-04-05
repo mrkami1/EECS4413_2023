@@ -4,6 +4,8 @@ import { AuthContext } from "../context/AuthContext";
 import UserFieldsContext from "../context/UserFieldsContext";
 import { auth } from "../firebase";
 import { useNavigate, useLocation } from "react-router-dom";
+import { AppBar, Button, FormControl, MenuItem, Select, TextField, Toolbar } from "@mui/material";
+import { Search } from "@mui/icons-material";
 
 function Navbar() {
     const { currentUser } = useContext(AuthContext);
@@ -78,6 +80,54 @@ function Navbar() {
     };
 
     return (
+        <>
+            <AppBar position="static">
+                <Toolbar
+                    sx={{ justifyContent: "space-between", backgroundColor: "#cfcfcf", color: "black" }}
+                >
+                    <Button
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="home"
+                        aria-haspopup="true"
+                        sx={{ mr: 2 }}
+                        variant="text"
+                        onClick={() => navigate("/")}
+                    >
+                        Glasses
+                    </Button>
+                    <TextField 
+                        label="Search" 
+                        variant="outlined" 
+                        size="small" 
+                        sx={{
+                            input: {width: "50vw"}
+                        }}
+                    >
+                    </TextField>
+                    <FormControl>
+                        <Select
+                            value="userTitle"
+                            size="small"
+                            onChange={goToPage}
+                            fullWidth
+                        >
+                            <MenuItem value="userTitle" disabled>{userTitle}</MenuItem>
+                            <MenuItem value="profile">Your Profile</MenuItem>
+                            <MenuItem value="orders">Your Orders</MenuItem>
+                            <MenuItem value="admin">Admin Portal</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    
+                </Toolbar>
+            </AppBar>
+        </>
+    );
+
+    /*
+    return (
         <div className="navbar-container">
             <ul className="navbar-items">
                 <li>
@@ -125,7 +175,7 @@ function Navbar() {
                 </li>
             </ul>
         </div>
-    );
+    );*/
 }
 
 export default Navbar;

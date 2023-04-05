@@ -75,9 +75,6 @@ export const AllProducts = (props) => {
     return (
         <div className="allproduct">
             <div>
-                <Navbar />
-            </div>
-            <div>
                 <select onChange={onSelect} defaultValue="Sort Product">
                     <option value="Sort Product">Sort Products</option>
                     <option value="PriceAscending">Sort Price from Low to High</option>
