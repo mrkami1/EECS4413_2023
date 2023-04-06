@@ -10,13 +10,14 @@ import Sidebar from "../components/Sidebar";
 export const Main = () => {
 
     const [sortType, setSortType] = useState("NameDescending");
+    const [search, setSearch] = useState("");
     
     return (
         <>
             <div className="wrapper">
-                <Navbar />
+                <Navbar search={search} setSearch={setSearch} />
                 <Sidebar sortType={sortType} setSortType={setSortType} />
-                <AllProducts type={"products"} sortType={sortType} />
+                <AllProducts type={"products"} sortType={sortType} search={search} />
             </div>
         </>
     );

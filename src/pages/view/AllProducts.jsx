@@ -122,18 +122,23 @@ export const AllProducts = (props) => {
         }
     };
 
+    useEffect(() => {
+        if (props.search) {
+
+        }
+    }, [props.search])
+
     console.log(products)
     const imageList = () => (
         <ImageList cols={3} sx={{margin: 3}}>
-            {products.map((product) => (
-                <Paper 
+            {products?.map((product, i) => (
+                product.name.toLowerCase().includes(props?.search) && 
+                <Paper
+                    key={i} 
                     elevation={3} 
                     sx={{margin: 2, ':hover': {boxShadow: 10}}}
                 >
-                    <ImageListItem 
-                        key={product.img} 
-                        sx={{margin: 5}}
-                    >
+                    <ImageListItem sx={{margin: 5}}>
                         <img 
                             src={product.img}
                             alt={product.name}

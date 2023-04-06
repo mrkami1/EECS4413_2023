@@ -4,10 +4,18 @@ import { AuthContext } from "../context/AuthContext";
 import UserFieldsContext from "../context/UserFieldsContext";
 import { auth } from "../firebase";
 import { useNavigate, useLocation } from "react-router-dom";
-import { AppBar, Button, FormControl, IconButton, MenuItem, Select, TextField, Toolbar } from "@mui/material";
-import { Search, ShoppingCart } from "@mui/icons-material";
+import {
+    AppBar,
+    Button,
+    FormControl,
+    MenuItem,
+    Select,
+    TextField,
+    Toolbar,
+} from "@mui/material";
+import { ShoppingCart } from "@mui/icons-material";
 
-function Navbar() {
+function Navbar({search, setSearch}) {
     const { currentUser } = useContext(AuthContext);
     const { userFields } = useContext(UserFieldsContext);
 
@@ -64,14 +72,11 @@ function Navbar() {
     };
 
     useEffect(() => {
-        if (currentUser !== null && Object.keys(currentUser).length !== 0) {
-            setUserTitle(currentUser.displayName);
-        }
-
         if (userFields) {
+            setUserTitle(userFields.name)
             setItemCount(userFields.cartItems.length);
         }
-    }, [currentUser, userFields]);
+    }, [userFields]);
 
     const [input, setInput] = useState("");
 
@@ -79,11 +84,20 @@ function Navbar() {
         setInput(e.target.value);
     };
 
+    const handleSearch = (e) => {
+        setSearch(e.target.value.toLowerCase())
+    }
+
     return (
         <>
             <AppBar position="static">
                 <Toolbar
-                    sx={{ justifyContent: "space-between", backgroundColor: "#cfcfcf", color: "black" }}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        backgroundColor: "#cfcfcf",
+                        color: "black",
+                    }}
                 >
                     <Button
                         size="large"
@@ -97,34 +111,38 @@ function Navbar() {
                     >
                         Glasses
                     </Button>
-                    <TextField 
-                        label="Search" 
-                        variant="outlined" 
-                        size="small" 
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        size="small"
                         sx={{
-                            input: {width: "50vw"}
+                            flexGrow: 10,
+                        }}
+                        onChange={handleSearch}
+                    ></TextField>
+                    <FormControl
+                        sx={{
+                            ml: 2,
+                            mr: 2,
                         }}
                     >
-                    </TextField>
-                    <FormControl>
-                        <Select 
-                            value="userTitle"
-                            size="small"
-                            onChange={goToPage}
-                            fullWidth
-                        >
-                            <MenuItem value="userTitle" disabled>{userTitle}</MenuItem>
+                        <Select value="userTitle" size="small" onChange={goToPage}>
+                            <MenuItem value="userTitle" disabled>
+                                {userTitle}
+                            </MenuItem>
                             <MenuItem value="profile">Your Profile</MenuItem>
                             <MenuItem value="orders">Your Orders</MenuItem>
+                            {userFields?.level === "admin" && (
+                                <MenuItem value="admin">Admin Portal</MenuItem>
+                            )}
                             {currentUser && <MenuItem value="signout">Sign out</MenuItem>}
                             {!currentUser && <MenuItem value="signin">Sign in</MenuItem>}
-                            {userFields?.level === "admin" && <MenuItem value="admin">Admin Portal</MenuItem>}
                         </Select>
                     </FormControl>
-                    <IconButton onClick={goToCart}>
+                    <Button onClick={goToCart} variant="contained">
                         <ShoppingCart />
                         {itemCount}
-                    </IconButton>
+                    </Button>
                 </Toolbar>
             </AppBar>
         </>
