@@ -1,15 +1,23 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
+import { arrayUnion, doc, updateDoc } from "@firebase/firestore";
+import UserFieldsContext from "../../context/UserFieldsContext";
+import { AuthContext } from "../../context/AuthContext";
 import Product from "./Product";
 import Navbar from "../../components/Navbar";
+import { ImageList, ImageListItem, ImageListItemBar, Card, Paper, Button } from "@mui/material";
 
 //Ying
 //list all the products with sort functionality
 export const AllProducts = (props) => {
     console.log("the type is: " + props.type);
     const [products, setProducts] = useState([]);
+    const { userFields } = useContext(UserFieldsContext);
+    const { currentUser } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getProducts = () => {
@@ -49,12 +57,8 @@ export const AllProducts = (props) => {
     // sort name z - a
     const strDescending = [...products].sort((a, b) => (a.name > b.name ? -1 : 1));
 
-    const onSelect = (e) => {
-        const val = e.target.value;
-
-        switch (val) {
-            case "Sort Product":
-                break;
+    useEffect(() => {
+        switch (props.sortType) {
             case "PriceAscending":
                 setProducts(numAscending);
                 break;
@@ -62,37 +66,110 @@ export const AllProducts = (props) => {
                 setProducts(numDescending);
                 break;
             case "NameAscending":
-                setProducts(strAscending);
+                setProducts(strDescending);
                 break;
             case "NameDescending":
-                setProducts(strDescending);
+                setProducts(strAscending);
                 break;
             default:
                 break;
         }
+    }, [props?.sortType])
+
+    const addToCart = async (product) => {
+        const newItem = {
+            image: product.img,
+            itemID: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+        };
+
+        if (userFields && currentUser) {
+            let currentItems = userFields.cartItems;
+            let itemInCart = false;
+
+            currentItems.forEach(async (item) => {
+                if (item.itemID === newItem.itemID) {
+                    item.quantity += 1;
+                    itemInCart = true;
+                }
+            });
+
+            if (!itemInCart) {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    cartItems: arrayUnion(newItem),
+                })
+                    .then(() => {
+                        console.log("added new item to cart");
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    cartItems: currentItems,
+                })
+                    .then(() => {
+                        console.log("updated item quantity");
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        } else {
+            navigate("/login");
+        }
     };
+
+    useEffect(() => {
+        if (props.search) {
+
+        }
+    }, [props.search])
+
+    console.log(products)
+    const imageList = () => (
+        <ImageList cols={3} sx={{margin: 3}}>
+            {products?.map((product, i) => (
+                product.name.toLowerCase().includes(props?.search) && 
+                <Paper
+                    key={i} 
+                    elevation={3} 
+                    sx={{margin: 2, ':hover': {boxShadow: 10}}}
+                >
+                    <ImageListItem sx={{margin: 5}}>
+                        <img 
+                            src={product.img}
+                            alt={product.name}
+                            loading="lazy"
+                            onClick={() => navigate("/product/" + product.id)}
+                            style={{cursor: "pointer"}}
+                        />
+                        <ImageListItemBar
+                            title={product.name}
+                            subtitle={product.brand}
+                            position="below"
+                        />
+                        <ImageListItemBar
+                            title={"CAD $" + product.price}
+                            position="below"
+                        />
+                        <div style={{display: "flex", justifyContent: "space-between"}}>
+                            <Button variant="outlined" onClick={() => addToCart(product)}>add to cart</Button>
+                            &emsp;
+                            <Button variant="outlined">try on</Button>
+                        </div>
+                    </ImageListItem>
+                </Paper>
+            ))}
+        </ImageList>
+    )
 
     return (
         <div className="allproduct">
-            <div>
-                <Navbar />
-            </div>
-            <div>
-                <select onChange={onSelect} defaultValue="Sort Product">
-                    <option value="Sort Product">Sort Products</option>
-                    <option value="PriceAscending">Sort Price from Low to High</option>
-                    <option value="PriceDescending">Sort Price from high to Low</option>
-                    <option value="NameAscending">Sort Name from A to Z</option>
-                    <option value="NameDescending">Sort Name from Z to A</option>
-                </select>
-            </div>
-            <div className="heading">
-                <p>results for {props.type}</p>
-            </div>
             <div className="allproduct-container">
-                {products.map((product) => (
-                    <Product key={product.id} product={product} />
-                ))}
+                {imageList()}
             </div>
         </div>
     );

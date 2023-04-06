@@ -7,55 +7,6 @@ import "../../css/Product.css";
 import { useNavigate } from "react-router-dom";
 
 const Product = (product) => {
-    const { userFields } = useContext(UserFieldsContext);
-    const { currentUser } = useContext(AuthContext);
-    const navigate = useNavigate();
-
-    const addToCart = async () => {
-        const newItem = {
-            image: product.product.img,
-            itemID: product.product.id,
-            name: product.product.name,
-            price: product.product.price,
-            quantity: 1,
-        };
-
-        if (userFields && currentUser) {
-            let currentItems = userFields.cartItems;
-            let itemInCart = false;
-
-            currentItems.forEach(async (item) => {
-                if (item.itemID === newItem.itemID) {
-                    item.quantity += 1;
-                    itemInCart = true;
-                }
-            });
-
-            if (!itemInCart) {
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    cartItems: arrayUnion(newItem),
-                })
-                    .then(() => {
-                        console.log("added new item to cart");
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            } else {
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    cartItems: currentItems,
-                })
-                    .then(() => {
-                        console.log("updated item quantity");
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
-        } else {
-            navigate("/login");
-        }
-    };
 
     return (
         <div className="product-container">
@@ -71,16 +22,6 @@ const Product = (product) => {
                         </span>
                     </p>
                     {/* <p className='saleprice'>Discount Price:<p className="rate"></p></p> */}
-                </div>
-                <div>
-                    <a href={`/product/${product.product.id}`}>
-                        <button className="details-btn">More Details &gt;</button>
-                    </a>
-                </div>
-                <div>
-                    <button className="btn" onClick={addToCart}>
-                        Add to cart
-                    </button>
                 </div>
             </div>
             <br />
