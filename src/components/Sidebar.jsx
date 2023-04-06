@@ -16,19 +16,14 @@ import {
     ListSubheader,
     RadioGroup,
     Radio,
-    TextField,
-    ListItem,
     IconButton,
     MenuItem,
     Menu,
-    Typography,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu"
 
 import {
-    MoveToInbox,
-    Mail,
     Grade,
     ExpandLess,
     ExpandMore,
@@ -38,11 +33,12 @@ import {
     Sort,
 } from "@mui/icons-material";
 
-function Sidebar() {
+const Sidebar = ({sortType, setSortType}) => {
     const [sideBar, setSideBar] = useState(false);
 
     const [showSort, setShowSort] = useState(false);
-    const [sortAnchor, setSortAnchor] = useState(null)
+    const [sortText, setSortText] = useState("Name: A to Z")
+    const [sortAnchor, setSortAnchor] = useState(null);
     const [showRating, setShowRating] = useState(false);
     const [showBrand, setShowBrand] = useState(false);
     const [showPrice, setShowPrice] = useState(false);
@@ -140,9 +136,13 @@ function Sidebar() {
         </Box>
     );
 
-    const closeSort = () => {
+    const closeSort = (e) => {
         setShowSort(false);
         setSortAnchor(null);
+        setSortType(e.currentTarget.dataset.myValue);
+        if (e.currentTarget.outerText !== "") {
+            setSortText(e.currentTarget.outerText);
+        }
     }
 
     const optionBar = () => (
@@ -174,7 +174,7 @@ function Sidebar() {
                             }}
                             variant="text"
                         >
-                            Sort&nbsp;
+                            {sortText}&nbsp;
                             <Sort />
                         </Button>
                         <Menu
@@ -192,10 +192,10 @@ function Sidebar() {
                             open={showSort}
                             onClose={closeSort}
                         >
-                            <MenuItem onClick={closeSort}>Price: Low to high</MenuItem>
-                            <MenuItem onClick={closeSort}>Price: High to low</MenuItem>
-                            <MenuItem onClick={closeSort}>Name: A to Z</MenuItem>
-                            <MenuItem onClick={closeSort}>Name: Z to A</MenuItem>
+                            <MenuItem onClick={closeSort} data-my-value="PriceAscending">Price: Low to high</MenuItem>
+                            <MenuItem onClick={closeSort} data-my-value="PriceDescending">Price: High to low</MenuItem>
+                            <MenuItem onClick={closeSort} data-my-value="NameDescending">Name: A to Z</MenuItem>
+                            <MenuItem onClick={closeSort} data-my-value="NameAscending">Name: Z to A</MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>

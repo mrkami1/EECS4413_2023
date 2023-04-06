@@ -4,8 +4,8 @@ import { AuthContext } from "../context/AuthContext";
 import UserFieldsContext from "../context/UserFieldsContext";
 import { auth } from "../firebase";
 import { useNavigate, useLocation } from "react-router-dom";
-import { AppBar, Button, FormControl, MenuItem, Select, TextField, Toolbar } from "@mui/material";
-import { Search } from "@mui/icons-material";
+import { AppBar, Button, FormControl, IconButton, MenuItem, Select, TextField, Toolbar } from "@mui/material";
+import { Search, ShoppingCart } from "@mui/icons-material";
 
 function Navbar() {
     const { currentUser } = useContext(AuthContext);
@@ -107,7 +107,7 @@ function Navbar() {
                     >
                     </TextField>
                     <FormControl>
-                        <Select
+                        <Select 
                             value="userTitle"
                             size="small"
                             onChange={goToPage}
@@ -116,11 +116,15 @@ function Navbar() {
                             <MenuItem value="userTitle" disabled>{userTitle}</MenuItem>
                             <MenuItem value="profile">Your Profile</MenuItem>
                             <MenuItem value="orders">Your Orders</MenuItem>
-                            <MenuItem value="admin">Admin Portal</MenuItem>
+                            {currentUser && <MenuItem value="signout">Sign out</MenuItem>}
+                            {!currentUser && <MenuItem value="signin">Sign in</MenuItem>}
+                            {userFields?.level === "admin" && <MenuItem value="admin">Admin Portal</MenuItem>}
                         </Select>
                     </FormControl>
-
-                    
+                    <IconButton onClick={goToCart}>
+                        <ShoppingCart />
+                        {itemCount}
+                    </IconButton>
                 </Toolbar>
             </AppBar>
         </>

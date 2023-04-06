@@ -9,12 +9,14 @@ import Sidebar from "../components/Sidebar";
 // main page for product display, ?profile review, ?cart display, ?order history, ?payment
 export const Main = () => {
 
+    const [sortType, setSortType] = useState("NameDescending");
+    
     return (
         <>
             <div className="wrapper">
                 <Navbar />
-                <Sidebar />
-                <AllProducts type={"products"} />
+                <Sidebar sortType={sortType} setSortType={setSortType} />
+                <AllProducts type={"products"} sortType={sortType} />
             </div>
         </>
     );
