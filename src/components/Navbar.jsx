@@ -4,18 +4,10 @@ import { AuthContext } from "../context/AuthContext";
 import UserFieldsContext from "../context/UserFieldsContext";
 import { auth } from "../firebase";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-    AppBar,
-    Button,
-    FormControl,
-    MenuItem,
-    Select,
-    TextField,
-    Toolbar,
-} from "@mui/material";
+import { AppBar, Button, FormControl, MenuItem, Select, TextField, Toolbar } from "@mui/material";
 import { ShoppingCart } from "@mui/icons-material";
 
-function Navbar({search, setSearch}) {
+function Navbar({ search, setSearch }) {
     const { currentUser } = useContext(AuthContext);
     const { userFields } = useContext(UserFieldsContext);
 
@@ -73,14 +65,14 @@ function Navbar({search, setSearch}) {
 
     useEffect(() => {
         if (userFields) {
-            setUserTitle(userFields.name)
+            setUserTitle(userFields.name);
             setItemCount(userFields.cartItems.length);
         }
     }, [userFields]);
 
     const handleSearch = (e) => {
-        setSearch(e.target.value.toLowerCase())
-    }
+        setSearch(e.target.value.toLowerCase());
+    };
 
     return (
         <>
@@ -115,6 +107,17 @@ function Navbar({search, setSearch}) {
                         onChange={handleSearch}
                         disabled={location.pathname !== "/"}
                     ></TextField>
+
+                    <Button
+                        size="small"
+                        color="inherit"
+                        onClick={goToPage}
+                        value="flyer"
+                        hidden={location.pathname === "/flyer"}
+                    >
+                        Check our flyer!
+                    </Button>
+
                     <FormControl
                         sx={{
                             ml: 2,
@@ -127,9 +130,7 @@ function Navbar({search, setSearch}) {
                             </MenuItem>
                             <MenuItem value="profile">Your Profile</MenuItem>
                             <MenuItem value="orders">Your Orders</MenuItem>
-                            {userFields?.level === "admin" && (
-                                <MenuItem value="admin">Admin Portal</MenuItem>
-                            )}
+                            {userFields?.level === "admin" && <MenuItem value="admin">Admin Portal</MenuItem>}
                             {currentUser && <MenuItem value="signout">Sign out</MenuItem>}
                             {!currentUser && <MenuItem value="signin">Sign in</MenuItem>}
                         </Select>

@@ -29,7 +29,7 @@ function Cart() {
 
             if (items.length > 0) {
                 items.forEach((item) => {
-                    total += item.price * item.quantity;
+                    total += item.price * (1 - item.discount / 100) * item.quantity;
                 });
             }
 
