@@ -5,6 +5,22 @@ import { doc, updateDoc } from "firebase/firestore";
 import { AuthContext } from "../../context/AuthContext";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import Navbar from "../../components/Navbar";
+import {
+    Card,
+    CardContent,
+    CardMedia,
+    CardActions,
+    Typography,
+    Button,
+    ImageList,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    TextField,
+    DialogActions,
+} from "@mui/material";
+import { Email } from "@mui/icons-material";
 
 // Mashhood
 // for user profile card components
@@ -12,108 +28,446 @@ function Profile() {
     const { currentUser } = useContext(AuthContext);
     const { userFields } = useContext(UserFieldsContext);
 
-    const [showEdit, setShowEdit] = useState(false);
-    const [newFields, setNewFields] = useState({});
-    const [newName, setNewName] = useState("");
-    const [newEmail, setNewEmail] = useState("");
-    const [newPayment, setNewPayment] = useState("");
-    const [newAddress, setNewAddress] = useState("");
+    const [name, setName] = useState("");
+    const [nameValid, setNameValid] = useState(false);
 
-    const editProfile = () => {
-        setShowEdit(true);
-    };
+    const [payment, setPayment] = useState({
+        name: "",
+        number: "",
+        expiry: "",
+        cvc: "",
+    });
+    const [paymentValid, setPaymentValid] = useState(false);
+    const [paymentNameValid, setPaymentNameValid] = useState(false);
+    const [paymentNumberValid, setPaymentNumberValid] = useState(false);
+    const [paymentExpiryValid, setPaymentExpiryValid] = useState(false);
+    const [paymentCVCValid, setPaymentCVCValid] = useState(false);
 
-    const saveProfile = async () => {
-        await updateDoc(doc(db, "users", currentUser.uid), {
-            email: newFields.email ? newFields.email : userFields.email,
-            payment: newFields.payment ? newFields.payment : userFields.payment,
-            address: newFields.address ? newFields.address : userFields.address,
-        }).then(() => {
-            updateProfile(auth.currentUser, {
-                displayName: newFields.name ? newFields.name : userFields.displayName,
-            })
-                .then(() => {
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        });
-    };
+    const [address, setAddress] = useState({
+        name: "",
+        phone: "",
+        address: "",
+    });
+    const [addressNameValid, setAddressNameValid] = useState(false);
+    const [addressPhoneValid, setAddressPhoneValid] = useState(false);
+    const [addressStreetValid, setAddressStreetValid] = useState(false);
+    const [addressValid, setAddressValid] = useState(false);
 
-    const updateFields = (e) => {
-        switch (e.target.name) {
-            case "name":
-                setNewName(e.target.value);
-                break;
-            case "email":
-                setNewEmail(e.target.value);
-                break;
-            case "payment":
-                setNewPayment(e.target.value);
-                break;
-            case "address":
-                setNewAddress(e.target.value);
-                break;
+    const [openName, setOpenName] = useState(false);
+    const [openPayment, setOpenPayment] = useState(false);
+    const [openShipping, setOpenShipping] = useState(false);
+
+    const updateName = async () => {
+        if (currentUser.uid) {
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                name: name,
+            });
+            setName("");
         }
     };
 
-    useEffect(() => {
-        setNewFields({
-            name: newName,
-            email: newEmail,
-            payment: newPayment,
-            address: newAddress,
-        });
-    }, [newName, newEmail, newPayment, newAddress]);
-
-    useEffect(() => {
-        if (userFields) {
-            setNewFields({
-                name: userFields.name,
-                email: userFields.email,
-                payment: userFields.payment,
-                address: userFields.address,
+    const updatePayment = async () => {
+        if (currentUser.uid) {
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                payment: payment,
+            }).then(() => {
+                setPayment({
+                    name: "",
+                    number: "",
+                    expiry: "",
+                    cvc: "",
+                });
             });
         }
-    }, [userFields]);
-    console.log(userFields);
+    };
+
+    const updateAddress = async () => {
+        if (currentUser.uid) {
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                address: address,
+            });
+            setAddress({
+                name: "",
+                phone: "",
+                address: "",
+            });
+        }
+    };
+
+    const openDialog = (e) => {
+        switch (e.target.name) {
+            case "name-dialog":
+                setOpenName(true);
+                break;
+            case "payment-dialog":
+                setOpenPayment(true);
+                break;
+            case "shipping-dialog":
+                setOpenShipping(true);
+                break;
+        }
+    };
+
+    const closeDialog = (e) => {
+        switch (e.target.name) {
+            case "name-dialog":
+                setOpenName(false);
+                break;
+            case "payment-dialog":
+                setOpenPayment(false);
+                break;
+            case "shipping-dialog":
+                setOpenShipping(false);
+                break;
+            case "name-confirm": {
+                updateName();
+                setOpenName(false);
+            }
+            case "payment-confirm":
+                {
+                    updatePayment();
+                    setOpenPayment(false);
+                }
+                break;
+            case "shipping-confirm":
+                {
+                    updateAddress();
+                    setOpenShipping(false);
+                }
+                break;
+        }
+    };
+
+    // name dialog
+    useEffect(() => {
+        const nameRegex = new RegExp("^[a-zA-Z ]{5,50}$");
+        setNameValid(!nameRegex.test(name));
+    }, [name]);
+
+    // payment dialog
+    useEffect(() => {
+        const paymentNameRegex = new RegExp("^[a-zA-Z ]{5,50}$");
+        setPaymentNameValid(paymentNameRegex.test(payment.name));
+        setPaymentNumberValid(payment.number.length === 16);
+        setPaymentExpiryValid(new Date().toISOString().split("T")[0] <= payment.expiry);
+        setPaymentCVCValid(payment.cvc.length === 3);
+    }, [payment]);
+
+    useEffect(() => {
+        setPaymentValid(
+            paymentNameValid && paymentNumberValid && paymentExpiryValid && paymentCVCValid
+        );
+    }, [paymentNameValid, paymentNumberValid, paymentExpiryValid, paymentCVCValid]);
+
+    // address dialog
+    useEffect(() => {
+        const nameRegex = new RegExp("^[a-zA-Z ]{5,50}$");
+        const streetRegex = new RegExp("^[a-zA-Z0-9 ]{10,100}$");
+        setAddressNameValid(nameRegex.test(address.name));
+        setAddressPhoneValid(address.phone.length === 10);
+        setAddressStreetValid(streetRegex.test(address.address));
+    }, [address]);
+
+    useEffect(() => {
+        setAddressValid(addressNameValid && addressPhoneValid && addressStreetValid);
+    }, [addressNameValid, addressPhoneValid, addressStreetValid]);
+
+    const cards = () => (
+        <>
+            <Card
+                elevation={3}
+                sx={{ width: "fit-content", minHeight: 100, margin: 6, backgroundColor: "#ebebeb" }}
+            >
+                <Typography variant="h5" component="div" sx={{ margin: 3 }}>
+                    <p>Hi, {userFields?.name}</p>
+                </Typography>
+                <Typography variant="h6" component="div" sx={{ margin: 3 }}>
+                    <Email />
+                    &nbsp;{userFields?.email}
+                </Typography>
+            </Card>
+            <ImageList cols={3} sx={{ margin: 3 }}>
+                <Card sx={{ margin: 3 }} variant="outlined">
+                    <CardMedia
+                        component="img"
+                        alt="name"
+                        image="https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/profile%2Fnamecard.jpg?alt=media&token=68c1d95e-f3e8-4c8b-b600-a2eb0233fd74"
+                        height={140}
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                            Name
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Change your account name
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" name="name-dialog" onClick={openDialog}>
+                            edit
+                        </Button>
+                    </CardActions>
+                </Card>
+                <Card sx={{ margin: 3 }} variant="outlined">
+                    <CardMedia
+                        component="img"
+                        alt="payment"
+                        image="https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/profile%2Fpaymentcard.jpg?alt=media&token=801c018f-76af-4b34-bc70-68a5832adf6a"
+                        height={140}
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                            Payment
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Change your payment method
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" name="payment-dialog" onClick={openDialog}>
+                            edit
+                        </Button>
+                    </CardActions>
+                </Card>
+                <Card sx={{ margin: 3 }} variant="outlined">
+                    <CardMedia
+                        component="img"
+                        alt="name"
+                        image="https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/profile%2Fshippingcard.jpg?alt=media&token=d101cbe8-be9e-4ba9-840c-320e7eca016b"
+                        height={140}
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                            Address
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Change your shipping address
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" name="shipping-dialog" onClick={openDialog}>
+                            edit
+                        </Button>
+                    </CardActions>
+                </Card>
+            </ImageList>
+        </>
+    );
+
+    const dialogs = () => (
+        <>
+            <Dialog
+                open={openName}
+                onClose={() => {
+                    setOpenName(false);
+                }}
+            >
+                <DialogTitle>Change account name</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Enter your new account name</DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="nameField"
+                        label="Name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        required
+                        onChange={(e) => setName(e.target.value)}
+                        error={nameValid}
+                        helperText="At least 5 characters"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeDialog} name="name-dialog">
+                        cancel
+                    </Button>
+                    <Button onClick={closeDialog} name="name-confirm" disabled={nameValid}>
+                        confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openPayment}
+                onClose={() => {
+                    setOpenPayment(false);
+                }}
+            >
+                <DialogTitle>Change payment details</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Enter your new payment details</DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="cardholderField"
+                        label="Cardholder name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        required
+                        onChange={(e) =>
+                            setPayment({
+                                name: e.target.value,
+                                number: payment.number,
+                                expiry: payment.expiry,
+                                cvc: payment.cvc,
+                            })
+                        }
+                        error={!paymentNameValid}
+                        helperText="At least 5 characters"
+                    />
+                    <TextField
+                        margin="dense"
+                        id="numberField"
+                        label="Card number"
+                        type="number"
+                        fullWidth
+                        variant="standard"
+                        required
+                        inputProps={{ maxLength: 16, minLength: 16 }}
+                        onChange={(e) =>
+                            setPayment({
+                                name: payment.name,
+                                number: e.target.value,
+                                expiry: payment.expiry,
+                                cvc: payment.cvc,
+                            })
+                        }
+                        error={!paymentNumberValid}
+                        helperText="16 digits only"
+                    />
+                    <TextField
+                        margin="dense"
+                        id="expiryField"
+                        label="Card expiry"
+                        type="date"
+                        variant="standard"
+                        required
+                        InputLabelProps={{ shrink: true }}
+                        onChange={(e) =>
+                            setPayment({
+                                name: payment.name,
+                                number: payment.number,
+                                expiry: e.target.value,
+                                cvc: payment.cvc,
+                            })
+                        }
+                        error={!paymentExpiryValid}
+                        helperText="Expiry must be valid"
+                    />
+                    &emsp;
+                    <TextField
+                        margin="dense"
+                        id="cvcField"
+                        label="CVC"
+                        type="number"
+                        variant="standard"
+                        required
+                        inputProps={{ maxLength: 3, minLength: 3 }}
+                        onChange={(e) =>
+                            setPayment({
+                                name: payment.name,
+                                number: payment.number,
+                                expiry: payment.expiry,
+                                cvc: e.target.value,
+                            })
+                        }
+                        error={!paymentCVCValid}
+                        helperText="3 digits only"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeDialog} name="payment-dialog">
+                        cancel
+                    </Button>
+                    <Button onClick={closeDialog} name="payment-confirm" disabled={!paymentValid}>
+                        confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openShipping}
+                onClose={() => {
+                    setOpenShipping(false);
+                }}
+            >
+                <DialogTitle>Change shipping details</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Enter your new shipping address</DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="shippingNameField"
+                        label="Full name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        required
+                        onChange={(e) =>
+                            setAddress({
+                                name: e.target.value,
+                                phone: address.phone,
+                                address: address.address,
+                            })
+                        }
+                        error={!addressNameValid}
+                        helperText="At least 5 characters"
+                    />
+                    <TextField
+                        margin="dense"
+                        id="shippingPhoneField"
+                        label="Phone number"
+                        type="number"
+                        fullWidth
+                        variant="standard"
+                        required
+                        onChange={(e) =>
+                            setAddress({
+                                name: address.name,
+                                phone: e.target.value,
+                                address: address.address,
+                            })
+                        }
+                        error={!addressPhoneValid}
+                        helperText="Must be 10 numbers"
+                    />
+                    <TextField
+                        margin="dense"
+                        id="addressField"
+                        label="Address"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        required
+                        onChange={(e) =>
+                            setAddress({
+                                name: address.name,
+                                phone: address.phone,
+                                address: e.target.value,
+                            })
+                        }
+                        error={!addressStreetValid}
+                        helperText="At least 10 characters"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeDialog} name="shipping-dialog">
+                        cancel
+                    </Button>
+                    <Button onClick={closeDialog} name="shipping-confirm" disabled={!addressValid}>
+                        confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+
     return (
         <div>
             <Navbar />
-            {userFields && (
-                <>
-                    <p>
-                        Name: {userFields?.name}
-                        {showEdit && (
-                            <input type="text" placeholder="New name" name="name" onChange={updateFields}></input>
-                        )}
-                    </p>
-                    <p>
-                        Email: {userFields?.email}
-                        {showEdit && (
-                            <input type="text" placeholder="New email" name="email" onChange={updateFields}></input>
-                        )}
-                    </p>
-                    <p>Account type: {userFields?.level}</p>
-                    <p>
-                        Payment: {userFields?.payment}
-                        {showEdit && (
-                            <input type="text" placeholder="New payment" name="payment" onChange={updateFields}></input>
-                        )}
-                    </p>
-                    <p>
-                        Address: {userFields?.address}
-                        {showEdit && (
-                            <input type="text" placeholder="New address" name="address" onChange={updateFields}></input>
-                        )}
-                    </p>
-                    <p>User ID: {currentUser.uid}</p>
-                </>
-            )}
-            {!showEdit && <button onClick={editProfile}>Edit profile</button>}
-            {showEdit && <button onClick={saveProfile}>Save</button>}
-            {showEdit && <button onClick={() => setShowEdit(false)}>Cancel</button>}
+            {cards()}
+            {dialogs()}
         </div>
     );
 }
