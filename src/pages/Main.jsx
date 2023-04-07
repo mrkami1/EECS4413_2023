@@ -19,7 +19,9 @@ export const Main = () => {
                 <Navbar search={search} setSearch={setSearch} />
                 <Sidebar sortType={sortType} setSortType={setSortType} />
                 <AllProducts type={"products"} sortType={sortType} search={search} />
-                <Chatbot />
+                <div className="chatbot_container">
+                    <Chatbot />
+                </div>                
             </div>
         </>
     );

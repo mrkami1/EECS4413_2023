@@ -1,0 +1,70 @@
+.message {
+    margin-top: 2rem;
+    margin-right: 2rem;
+    max-width: 250px;
+    /* width: 50%; */
+    font-size: 14px;
+}
+
+.person_message {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    /* align-items: start; */
+    /* flex-direction: column; */
+    /* max-width: 220px; */
+    display: flex;
+}
+
+.person_reply{
+    margin-right: 20px;
+    border-radius: 5px;
+    max-width: 200px;
+    /* width: auto; */
+    word-wrap: break-word;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    height:auto;
+    background-color: rgb(201, 203, 205);
+    flex-direction: column;
+    flex: 12;
+}
+
+.bot_message {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    /* align-items: start;
+    flex-direction: column; */
+    /* max-width: 220px; */
+    display: flex;
+}
+
+.bot {
+    /* margin-right: 20px; */
+    border-radius: 5px;
+    max-width: 200px;
+    /* width: auto; */
+    word-wrap: break-word;
+    /* height:auto; */
+    flex: 12;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    color: white;
+    background-color: rgba(45, 159, 253, 0.589);
+}
+
+.chatdots {
+    /* margin-top: 0.4rem; */
+    flex: 1;
+    margin: 10px;
+    /* width: 10%; */
+}
+
+.person {
+    flex: 1;
+    margin: 10px;
+    /* width: 10%; */
+}
