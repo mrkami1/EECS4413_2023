@@ -9,6 +9,7 @@ import { AuthContext } from "../../context/AuthContext";
 import Product from "./Product";
 import Navbar from "../../components/Navbar";
 import { ImageList, ImageListItem, ImageListItemBar, Card, Paper, Button } from "@mui/material";
+import { Star } from "@mui/icons-material";
 
 //Ying
 //list all the products with sort functionality
@@ -142,18 +143,25 @@ export const AllProducts = (props) => {
                         <img 
                             src={product.img}
                             alt={product.name}
-                            loading="lazy"
+                            loading="eager"
                             onClick={() => navigate("/product/" + product.id)}
                             style={{cursor: "pointer"}}
                         />
                         <ImageListItemBar
-                            title={product.name}
+                            title={product.name + " - " + product.color}
                             subtitle={product.brand}
                             position="below"
                         />
                         <ImageListItemBar
                             title={"CAD $" + product.price}
                             position="below"
+                        />
+                        <ImageListItemBar
+                            title={product.rate}
+                            actionIcon={<Star sx={{color: "#ffc400"}} />}
+                            actionPosition="left"
+                            position="below"
+                            sx={{lineHeight: "3"}}
                         />
                         <div style={{display: "flex", justifyContent: "space-between"}}>
                             <Button variant="outlined" onClick={() => addToCart(product)}>add to cart</Button>
