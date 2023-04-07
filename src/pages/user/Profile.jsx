@@ -30,12 +30,12 @@ function Profile() {
 
     const [name, setName] = useState("");
     const [nameValid, setNameValid] = useState(false);
-  
+
     const [payment, setPayment] = useState({
         name: "",
         number: "",
         expiry: "",
-        cvc: ""
+        cvc: "",
     });
     const [paymentValid, setPaymentValid] = useState(false);
     const [paymentNameValid, setPaymentNameValid] = useState(false);
@@ -46,10 +46,10 @@ function Profile() {
     const [address, setAddress] = useState({
         name: "",
         phone: "",
-        address: ""
+        address: "",
     });
-    const [addressNameValid, setAddressNameValid] = useState(false)
-    const [addressPhoneValid, setAddressPhoneValid] = useState(false)
+    const [addressNameValid, setAddressNameValid] = useState(false);
+    const [addressPhoneValid, setAddressPhoneValid] = useState(false);
     const [addressStreetValid, setAddressStreetValid] = useState(false);
     const [addressValid, setAddressValid] = useState(false);
 
@@ -60,8 +60,8 @@ function Profile() {
     const updateName = async () => {
         if (currentUser.uid) {
             await updateDoc(doc(db, "users", currentUser.uid), {
-                name: name
-            })
+                name: name,
+            });
             setName("");
         }
     };
@@ -69,86 +69,115 @@ function Profile() {
     const updatePayment = async () => {
         if (currentUser.uid) {
             await updateDoc(doc(db, "users", currentUser.uid), {
-                payment: payment
-            })
-            .then(() => {
+                payment: payment,
+            }).then(() => {
                 setPayment({
                     name: "",
                     number: "",
                     expiry: "",
-                    cvc: ""
+                    cvc: "",
                 });
-            })
+            });
         }
     };
 
     const updateAddress = async () => {
         if (currentUser.uid) {
             await updateDoc(doc(db, "users", currentUser.uid), {
-                address: address
-            })
+                address: address,
+            });
             setAddress({
                 name: "",
                 phone: "",
-                address: ""
-            })
+                address: "",
+            });
         }
     };
 
     const openDialog = (e) => {
         switch (e.target.name) {
-            case "name-dialog": setOpenName(true); break;
-            case "payment-dialog": setOpenPayment(true); break;
-            case "shipping-dialog": setOpenShipping(true); break;
+            case "name-dialog":
+                setOpenName(true);
+                break;
+            case "payment-dialog":
+                setOpenPayment(true);
+                break;
+            case "shipping-dialog":
+                setOpenShipping(true);
+                break;
         }
-    }
+    };
 
     const closeDialog = (e) => {
         switch (e.target.name) {
-            case "name-dialog": setOpenName(false); break;
-            case "payment-dialog": setOpenPayment(false); break;
-            case "shipping-dialog": setOpenShipping(false); break;
-            case "name-confirm": {updateName(); setOpenName(false)}
-            case "payment-confirm": {updatePayment(); setOpenPayment(false)} break;
-            case "shipping-confirm": {updateAddress(); setOpenShipping(false)} break;
+            case "name-dialog":
+                setOpenName(false);
+                break;
+            case "payment-dialog":
+                setOpenPayment(false);
+                break;
+            case "shipping-dialog":
+                setOpenShipping(false);
+                break;
+            case "name-confirm": {
+                updateName();
+                setOpenName(false);
+            }
+            case "payment-confirm":
+                {
+                    updatePayment();
+                    setOpenPayment(false);
+                }
+                break;
+            case "shipping-confirm":
+                {
+                    updateAddress();
+                    setOpenShipping(false);
+                }
+                break;
         }
-    }
+    };
 
-    // name dialog    
+    // name dialog
     useEffect(() => {
         const nameRegex = new RegExp("^[a-zA-Z ]{5,50}$");
-        setNameValid(!nameRegex.test(name))
-    }, [name])
-    
+        setNameValid(!nameRegex.test(name));
+    }, [name]);
+
     // payment dialog
     useEffect(() => {
         const paymentNameRegex = new RegExp("^[a-zA-Z ]{5,50}$");
-        setPaymentNameValid(paymentNameRegex.test(payment.name))
-        setPaymentNumberValid(payment.number.length === 16)
-        setPaymentExpiryValid((new Date().toISOString().split("T")[0] <= payment.expiry))
-        setPaymentCVCValid(payment.cvc.length === 3) 
-    }, [payment])
+        setPaymentNameValid(paymentNameRegex.test(payment.name));
+        setPaymentNumberValid(payment.number.length === 16);
+        setPaymentExpiryValid(new Date().toISOString().split("T")[0] <= payment.expiry);
+        setPaymentCVCValid(payment.cvc.length === 3);
+    }, [payment]);
 
     useEffect(() => {
-        setPaymentValid(paymentNameValid && paymentNumberValid && paymentExpiryValid && paymentCVCValid)
-    }, [paymentNameValid, paymentNumberValid, paymentExpiryValid, paymentCVCValid])
+        setPaymentValid(
+            paymentNameValid && paymentNumberValid && paymentExpiryValid && paymentCVCValid
+        );
+    }, [paymentNameValid, paymentNumberValid, paymentExpiryValid, paymentCVCValid]);
 
     // address dialog
     useEffect(() => {
-        const nameRegex = new RegExp("^[a-zA-Z ]{5,50}$")
-        const streetRegex = new RegExp("^[a-zA-Z0-9 ]{10,100}$")
+        const nameRegex = new RegExp("^[a-zA-Z ]{5,50}$");
+        const streetRegex = new RegExp("^[a-zA-Z0-9 ]{10,100}$");
         setAddressNameValid(nameRegex.test(address.name));
         setAddressPhoneValid(address.phone.length === 10);
         setAddressStreetValid(streetRegex.test(address.address));
-    }, [address])
+    }, [address]);
 
     useEffect(() => {
         setAddressValid(addressNameValid && addressPhoneValid && addressStreetValid);
-    }, [addressNameValid, addressPhoneValid, addressStreetValid])
+    }, [addressNameValid, addressPhoneValid, addressStreetValid]);
 
     const cards = () => (
         <>
-            <Card elevation={3} sx={{ width: "fit-content", minHeight: 100, margin: 6, backgroundColor: "#ebebeb" }}>
+            <Card
+                elevation={3}
+                sx={{ width: "fit-content", minHeight: 100, margin: 6, backgroundColor: "#ebebeb" }}
+            >
                 <Typography variant="h5" component="div" sx={{ margin: 3 }}>
                     <p>Hi, {userFields?.name}</p>
                 </Typography>
@@ -162,7 +191,7 @@ function Profile() {
                     <CardMedia
                         component="img"
                         alt="name"
-                        image={require("../../images/namecard.jpg")}
+                        image="https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/profile%2Fnamecard.jpg?alt=media&token=68c1d95e-f3e8-4c8b-b600-a2eb0233fd74"
                         height={140}
                     />
                     <CardContent>
@@ -174,14 +203,16 @@ function Profile() {
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Button size="small" name="name-dialog" onClick={openDialog}>edit</Button>
+                        <Button size="small" name="name-dialog" onClick={openDialog}>
+                            edit
+                        </Button>
                     </CardActions>
                 </Card>
                 <Card sx={{ margin: 3 }} variant="outlined">
                     <CardMedia
                         component="img"
                         alt="payment"
-                        image={require("../../images/paymentcard.jpg")}
+                        image="https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/profile%2Fpaymentcard.jpg?alt=media&token=801c018f-76af-4b34-bc70-68a5832adf6a"
                         height={140}
                     />
                     <CardContent>
@@ -193,14 +224,16 @@ function Profile() {
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Button size="small" name="payment-dialog" onClick={openDialog}>edit</Button>
+                        <Button size="small" name="payment-dialog" onClick={openDialog}>
+                            edit
+                        </Button>
                     </CardActions>
                 </Card>
                 <Card sx={{ margin: 3 }} variant="outlined">
                     <CardMedia
                         component="img"
                         alt="name"
-                        image={require("../../images/shippingcard.jpg")}
+                        image="https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/profile%2Fshippingcard.jpg?alt=media&token=d101cbe8-be9e-4ba9-840c-320e7eca016b"
                         height={140}
                     />
                     <CardContent>
@@ -212,7 +245,9 @@ function Profile() {
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Button size="small" name="shipping-dialog" onClick={openDialog}>edit</Button>
+                        <Button size="small" name="shipping-dialog" onClick={openDialog}>
+                            edit
+                        </Button>
                     </CardActions>
                 </Card>
             </ImageList>
@@ -221,13 +256,16 @@ function Profile() {
 
     const dialogs = () => (
         <>
-            <Dialog open={openName} onClose={() => {setOpenName(false)}}>
+            <Dialog
+                open={openName}
+                onClose={() => {
+                    setOpenName(false);
+                }}
+            >
                 <DialogTitle>Change account name</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Enter your new account name
-                    </DialogContentText>
-                    <TextField 
+                    <DialogContentText>Enter your new account name</DialogContentText>
+                    <TextField
                         autoFocus
                         margin="dense"
                         id="nameField"
@@ -242,17 +280,24 @@ function Profile() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={closeDialog} name="name-dialog">cancel</Button>
-                    <Button onClick={closeDialog} name="name-confirm" disabled={nameValid}>confirm</Button>
+                    <Button onClick={closeDialog} name="name-dialog">
+                        cancel
+                    </Button>
+                    <Button onClick={closeDialog} name="name-confirm" disabled={nameValid}>
+                        confirm
+                    </Button>
                 </DialogActions>
             </Dialog>
-            <Dialog open={openPayment} onClose={() => {setOpenPayment(false)}}>
+            <Dialog
+                open={openPayment}
+                onClose={() => {
+                    setOpenPayment(false);
+                }}
+            >
                 <DialogTitle>Change payment details</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Enter your new payment details
-                    </DialogContentText>
-                    <TextField 
+                    <DialogContentText>Enter your new payment details</DialogContentText>
+                    <TextField
                         autoFocus
                         margin="dense"
                         id="cardholderField"
@@ -261,18 +306,18 @@ function Profile() {
                         fullWidth
                         variant="standard"
                         required
-                        onChange={(e) => setPayment(
-                            {
+                        onChange={(e) =>
+                            setPayment({
                                 name: e.target.value,
                                 number: payment.number,
                                 expiry: payment.expiry,
-                                cvc: payment.cvc
-                            }
-                        )}
+                                cvc: payment.cvc,
+                            })
+                        }
                         error={!paymentNameValid}
                         helperText="At least 5 characters"
                     />
-                    <TextField 
+                    <TextField
                         margin="dense"
                         id="numberField"
                         label="Card number"
@@ -280,34 +325,34 @@ function Profile() {
                         fullWidth
                         variant="standard"
                         required
-                        inputProps={{maxLength: 16, minLength: 16}}
-                        onChange={(e) => setPayment(
-                            {
+                        inputProps={{ maxLength: 16, minLength: 16 }}
+                        onChange={(e) =>
+                            setPayment({
                                 name: payment.name,
                                 number: e.target.value,
                                 expiry: payment.expiry,
-                                cvc: payment.cvc
-                            }
-                        )}
+                                cvc: payment.cvc,
+                            })
+                        }
                         error={!paymentNumberValid}
                         helperText="16 digits only"
                     />
-                    <TextField 
+                    <TextField
                         margin="dense"
                         id="expiryField"
                         label="Card expiry"
                         type="date"
                         variant="standard"
                         required
-                        InputLabelProps={{shrink: true}}
-                        onChange={(e) => setPayment(
-                            {
+                        InputLabelProps={{ shrink: true }}
+                        onChange={(e) =>
+                            setPayment({
                                 name: payment.name,
                                 number: payment.number,
                                 expiry: e.target.value,
-                                cvc: payment.cvc
-                            }
-                        )}
+                                cvc: payment.cvc,
+                            })
+                        }
                         error={!paymentExpiryValid}
                         helperText="Expiry must be valid"
                     />
@@ -319,31 +364,38 @@ function Profile() {
                         type="number"
                         variant="standard"
                         required
-                        inputProps={{maxLength: 3, minLength: 3}}
-                        onChange={(e) => setPayment(
-                            {
+                        inputProps={{ maxLength: 3, minLength: 3 }}
+                        onChange={(e) =>
+                            setPayment({
                                 name: payment.name,
                                 number: payment.number,
                                 expiry: payment.expiry,
-                                cvc: e.target.value
-                            }
-                        )}
+                                cvc: e.target.value,
+                            })
+                        }
                         error={!paymentCVCValid}
                         helperText="3 digits only"
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={closeDialog} name="payment-dialog">cancel</Button>
-                    <Button onClick={closeDialog} name="payment-confirm" disabled={!paymentValid}>confirm</Button>
+                    <Button onClick={closeDialog} name="payment-dialog">
+                        cancel
+                    </Button>
+                    <Button onClick={closeDialog} name="payment-confirm" disabled={!paymentValid}>
+                        confirm
+                    </Button>
                 </DialogActions>
             </Dialog>
-            <Dialog open={openShipping} onClose={() => {setOpenShipping(false)}}>
+            <Dialog
+                open={openShipping}
+                onClose={() => {
+                    setOpenShipping(false);
+                }}
+            >
                 <DialogTitle>Change shipping details</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Enter your new shipping address
-                    </DialogContentText>
-                    <TextField 
+                    <DialogContentText>Enter your new shipping address</DialogContentText>
+                    <TextField
                         autoFocus
                         margin="dense"
                         id="shippingNameField"
@@ -352,17 +404,17 @@ function Profile() {
                         fullWidth
                         variant="standard"
                         required
-                        onChange={(e) => setAddress (
-                            {
+                        onChange={(e) =>
+                            setAddress({
                                 name: e.target.value,
                                 phone: address.phone,
-                                address: address.address
-                            }
-                        )}
+                                address: address.address,
+                            })
+                        }
                         error={!addressNameValid}
                         helperText="At least 5 characters"
                     />
-                    <TextField 
+                    <TextField
                         margin="dense"
                         id="shippingPhoneField"
                         label="Phone number"
@@ -370,17 +422,17 @@ function Profile() {
                         fullWidth
                         variant="standard"
                         required
-                        onChange={(e) => setAddress (
-                            {
+                        onChange={(e) =>
+                            setAddress({
                                 name: address.name,
                                 phone: e.target.value,
-                                address: address.address
-                            }
-                        )}
+                                address: address.address,
+                            })
+                        }
                         error={!addressPhoneValid}
                         helperText="Must be 10 numbers"
                     />
-                    <TextField 
+                    <TextField
                         margin="dense"
                         id="addressField"
                         label="Address"
@@ -388,24 +440,28 @@ function Profile() {
                         fullWidth
                         variant="standard"
                         required
-                        onChange={(e) => setAddress (
-                            {
+                        onChange={(e) =>
+                            setAddress({
                                 name: address.name,
                                 phone: address.phone,
-                                address: e.target.value
-                            }
-                        )}
+                                address: e.target.value,
+                            })
+                        }
                         error={!addressStreetValid}
                         helperText="At least 10 characters"
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={closeDialog} name="shipping-dialog">cancel</Button>
-                    <Button onClick={closeDialog} name="shipping-confirm" disabled={!addressValid}>confirm</Button>
+                    <Button onClick={closeDialog} name="shipping-dialog">
+                        cancel
+                    </Button>
+                    <Button onClick={closeDialog} name="shipping-confirm" disabled={!addressValid}>
+                        confirm
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>
-    )
+    );
 
     return (
         <div>
