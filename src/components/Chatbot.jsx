@@ -31,14 +31,27 @@ export const Chatbot = () => {
       list = [
         ...list,
         {
-          message: `Hi, ${text}, How can I help you?`,
+          message: `Hi, ${text}`,
         },
+        {
+          message: "How may I help you today?"
+        }
       ];
     }
     setMessages(list)
     setText("")
     setTimeout(() => {
-      document.querySelector('#copyright').scrollIntoView();
+      // document.querySelector('.chat_input').scrollIntoView();
+      // document.querySelector('.chat_message').scrollIntoView();
+    //   $('.chat_message').animate({
+    //     scrollTop: $('chat_input').offset().top - $('.chat_message').offset().top + 
+    //     $('.chat_message').scrollTop()
+    //  })
+    document.querySelector('.chat_message').scrollTo({ // scroll message window down to bottom
+      top: document.body.scrollHeight,
+      left: 0,
+      behavior: 'smooth'
+    })
     }, 1);
   }
 
