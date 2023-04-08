@@ -83,27 +83,8 @@ export const AllProducts = (props) => {
         }
     }, [props?.sortType]);
 
-   
-    // const priceCondition= (price, value) => {
-    //         switch (value) {
-    //             case "1":
-    //                 setPriceRange((price < 25));
-    //                 break;
-    //             case "2":
-    //                 setPriceRange((price >= 25) && (price <= 50));
-    //                 break;
-    //             case "3":
-    //                 setPriceRange((price >= 50) && (price <= 100));
-    //                 break;
-    //             case "4":
-    //                 setPriceRange((price >= 100));
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    // }
-    
-    function priceCondition(price, value) {
+
+    function priceCondition(price, value) { // handle price filter
         if (value.includes("1")) {
             return (price < 25);
         }
