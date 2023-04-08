@@ -1,14 +1,12 @@
 import React from "react";
 import { useState, useEffect, useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import { arrayUnion, doc, updateDoc } from "@firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { AuthContext } from "../../context/AuthContext";
-import Product from "./Product";
-import Navbar from "../../components/Navbar";
-import { ImageList, ImageListItem, ImageListItemBar, Card, Paper, Button } from "@mui/material";
+import { ImageList, ImageListItem, ImageListItemBar, Paper, Button } from "@mui/material";
 import { Star } from "@mui/icons-material";
 
 //Ying

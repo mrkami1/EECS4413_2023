@@ -38,7 +38,7 @@ export const ProductDetail = () => {
             image: product.img,
             itemID: id,
             name: product.name,
-            price: product.price,
+            price: product.newPrice,
             quantity: 1,
         };
 
@@ -125,9 +125,9 @@ export const ProductDetail = () => {
     function GetSpecifiedProduct() {
         useEffect(() => {
             const getProduct = async () => {
-                const docRef = doc(db, "products", id);
-                const docSnap = await getDoc(docRef);
-                setProduct(docSnap.data());
+                const docSnap = await getDoc(doc(db, "products", id));
+                let content = docSnap.data();
+                setProduct({ ...content, newPrice: (content.price * (1 - content.discount / 100)).toFixed(2) });
             };
             getProduct();
         }, []);
@@ -160,7 +160,12 @@ export const ProductDetail = () => {
                 <CardContent sx={{ flex: "1" }}>
                     <Typography variant="h4">{product.name + " - " + product.color}</Typography>
                     <Typography variant="h5">{product.brand}</Typography>
-                    <Typography variant="h6">{"CAD $" + product.price}</Typography>
+                    <Typography variant="h6">{"CAD $" + product.newPrice}</Typography>
+                    {product.discount !== 0 && (
+                        <Typography variant="h6" style={{ textDecoration: "line-through" }}>
+                            original: {product.price}
+                        </Typography>
+                    )}
                     <IconButton
                         size="small"
                         edge="start"
@@ -202,12 +207,7 @@ export const ProductDetail = () => {
                         multiline
                         onChange={(e) => setMessage(e.target.value)}
                     />
-                    <TextField
-                        select
-                        label="Rating"
-                        value={rating}
-                        onChange={(e) => setRating(e.target.value)}
-                    >
+                    <TextField select label="Rating" value={rating} onChange={(e) => setRating(e.target.value)}>
                         <MenuItem value={5}>5 stars</MenuItem>
                         <MenuItem value={4}>4 stars</MenuItem>
                         <MenuItem value={3}>3 stars</MenuItem>
