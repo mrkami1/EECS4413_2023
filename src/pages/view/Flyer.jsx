@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { db } from "../../firebase";
 import Navbar from "../../components/Navbar";
-import { collection, orderBy, getDocs, doc, getDoc, setDoc, deleteDoc, Timestamp, addDoc } from "firebase/firestore";
+import { collection, orderBy, getDocs, doc, getDoc, deleteDoc, Timestamp, addDoc, updateDoc } from "firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
-import { AuthContext } from "../../context/AuthContext";
 import { FlyerContext, FlyerDispatchContext } from "../../context/FlyerContext";
 
 // Yang
@@ -167,13 +166,30 @@ function Flyer({ isAdmin }) {
     };
 
     const saveAll = async () => {
+        // delete all prev flyer items
         const colRef = collection(db, "flyer");
         const docSnapshots = await getDocs(colRef);
-        docSnapshots.forEach((doc) => {
+        docSnapshots.forEach(async (doc) => {
+            // reset product discount to 0
+            const productRef = doc(db, "products", doc.id);
+            try {
+                await updateDoc(productRef, { discount: 0 });
+            } catch (e) {
+                console.log(e);
+            }
             deleteDoc(doc.ref);
         });
+
+        // add all current flyer items
         onSale.forEach(async (item) => {
             await addDoc(colRef, item);
+            // reflect discount on products
+            const pRef = doc(db, "products", item.id);
+            try {
+                await updateDoc(pRef, { discount: item.discount });
+            } catch (e) {
+                console.log(e);
+            }
         });
         setUpdated(false);
     };

@@ -28,7 +28,12 @@ export const AllProducts = (props) => {
             getDocs(collection(db, path))
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
-                        productsArray.push({ ...doc.data(), id: doc.id });
+                        let content = doc.data();
+                        productsArray.push({
+                            ...content,
+                            id: doc.id,
+                            newPrice: (content.price * (1 - content.discount / 100)).toFixed(2),
+                        });
                         console.log(doc.id, " => ", doc.data());
                     });
                     setProducts(productsArray);
@@ -47,10 +52,10 @@ export const AllProducts = (props) => {
     //   })
 
     // sort price low to hight
-    const numAscending = [...products].sort((a, b) => a.price - b.price);
+    const numAscending = [...products].sort((a, b) => a.newPrice - b.newPrice);
 
     // sort price high to low
-    const numDescending = [...products].sort((a, b) => b.price - a.price);
+    const numDescending = [...products].sort((a, b) => b.newPrice - a.newPrice);
 
     // sort name a - z
     const strAscending = [...products].sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -75,14 +80,14 @@ export const AllProducts = (props) => {
             default:
                 break;
         }
-    }, [props?.sortType])
+    }, [props?.sortType]);
 
     const addToCart = async (product) => {
         const newItem = {
             image: product.img,
             itemID: product.id,
             name: product.name,
-            price: product.price,
+            price: product.newPrice,
             quantity: 1,
         };
 
@@ -125,60 +130,60 @@ export const AllProducts = (props) => {
 
     useEffect(() => {
         if (props.search) {
-
         }
-    }, [props.search])
+    }, [props.search]);
 
-    console.log(products)
+    console.log(products);
     const imageList = () => (
-        <ImageList cols={3} sx={{margin: 3}}>
-            {products?.map((product, i) => (
-                product.name.toLowerCase().includes(props?.search) && 
-                <Paper
-                    key={i} 
-                    elevation={3} 
-                    sx={{margin: 2, ':hover': {boxShadow: 10}}}
-                >
-                    <ImageListItem sx={{margin: 5}}>
-                        <img 
-                            src={product.img}
-                            alt={product.name}
-                            loading="eager"
-                            onClick={() => navigate("/product/" + product.id)}
-                            style={{cursor: "pointer"}}
-                        />
-                        <ImageListItemBar
-                            title={product.name + " - " + product.color}
-                            subtitle={product.brand}
-                            position="below"
-                        />
-                        <ImageListItemBar
-                            title={"CAD $" + product.price}
-                            position="below"
-                        />
-                        <ImageListItemBar
-                            title={product.rate}
-                            actionIcon={<Star sx={{color: "#ffc400"}} />}
-                            actionPosition="left"
-                            position="below"
-                            sx={{lineHeight: "3"}}
-                        />
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            <Button variant="outlined" onClick={() => addToCart(product)}>add to cart</Button>
-                            &emsp;
-                            <Button variant="outlined">try on</Button>
-                        </div>
-                    </ImageListItem>
-                </Paper>
-            ))}
+        <ImageList cols={3} sx={{ margin: 3 }}>
+            {products?.map(
+                (product, i) =>
+                    product.name.toLowerCase().includes(props?.search) && (
+                        <Paper key={i} elevation={3} sx={{ margin: 2, ":hover": { boxShadow: 10 } }}>
+                            <ImageListItem sx={{ margin: 5 }}>
+                                <img
+                                    src={product.img}
+                                    alt={product.name}
+                                    loading="eager"
+                                    onClick={() => navigate("/product/" + product.id)}
+                                    style={{ cursor: "pointer" }}
+                                />
+                                <ImageListItemBar title={product.name} subtitle={product.brand} position="below" />
+                                <ImageListItemBar
+                                    title={"CAD $" + product.newPrice}
+                                    subtitle={
+                                        product.discount !== 0 && (
+                                            <p style={{ display: "inline", textDecoration: "line-through" }}>
+                                                original ${product.price}
+                                            </p>
+                                        )
+                                    }
+                                    position="below"
+                                />
+                                <ImageListItemBar
+                                    title={product.rate}
+                                    actionIcon={<Star sx={{ color: "#ffc400" }} />}
+                                    actionPosition="left"
+                                    position="below"
+                                    sx={{ lineHeight: "3" }}
+                                />
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <Button variant="outlined" onClick={() => addToCart(product)}>
+                                        add to cart
+                                    </Button>
+                                    &emsp;
+                                    <Button variant="outlined">try on</Button>
+                                </div>
+                            </ImageListItem>
+                        </Paper>
+                    )
+            )}
         </ImageList>
-    )
+    );
 
     return (
         <div className="allproduct">
-            <div className="allproduct-container">
-                {imageList()}
-            </div>
+            <div className="allproduct-container">{imageList()}</div>
         </div>
     );
 };
