@@ -85,25 +85,43 @@ export const AllProducts = (props) => {
         }
     }, [props?.sortType]);
 
-    // function priceCondition(price, value) {
-    //     switch (value) {
-    //         case "1":
-    //             setPriceRange((price < 25));
-    //             break;
-    //         case "2":
-    //             setPriceRange((price >= 25) && (price <= 50));
-    //             break;
-    //         case "3":
-    //             setPriceRange((price >= 50) && (price <= 100));
-    //             break;
-    //         case "4":
-    //             setPriceRange((price >= 100));
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    //     return priceRange;
+   
+    // const priceCondition= (price, value) => {
+    //         switch (value) {
+    //             case "1":
+    //                 setPriceRange((price < 25));
+    //                 break;
+    //             case "2":
+    //                 setPriceRange((price >= 25) && (price <= 50));
+    //                 break;
+    //             case "3":
+    //                 setPriceRange((price >= 50) && (price <= 100));
+    //                 break;
+    //             case "4":
+    //                 setPriceRange((price >= 100));
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
     // }
+    
+    function priceCondition(price, value) {
+        if (value.includes("1")) {
+            return (price < 25);
+        }
+        else if (value.includes("2")) {
+            return ((price >= 25) && (price <= 50));
+        }
+        else if (value.includes("3")) {
+            return ((price >= 50) && (price <= 100));
+        }
+        else if (value.includes("4")) {
+            return (price >= 100);
+        }
+        else {
+            return true;
+        }
+    }
 
 
     const addToCart = async (product) => {
@@ -166,7 +184,7 @@ export const AllProducts = (props) => {
                     product.color.toLowerCase().includes(props?.filterColor) &&
                     product.brand.toLowerCase().includes(props?.filterBrand) &&
                     product.rate.toString().includes(props?.filterRate) &&
-                    // priceCondition(product.price, props?.filterPrice) && 
+                    priceCondition(product.price, props?.filterPrice) && 
                     (
                         <Paper key={i} elevation={3} sx={{ margin: 2, ":hover": { boxShadow: 10 } }}>
                             <ImageListItem sx={{ margin: 5 }}>
