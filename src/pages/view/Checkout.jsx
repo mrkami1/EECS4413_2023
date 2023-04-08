@@ -7,7 +7,6 @@ import { db } from "../../firebase";
 import { uuidv4 } from "@firebase/util";
 import Navbar from "../../components/Navbar";
 
-// Anubhav
 // for customer payment components
 function Checkout() {
     const { userFields } = useContext(UserFieldsContext);
@@ -74,8 +73,8 @@ function Checkout() {
                 <Navbar />
             </div>
             <div>
-                <p>Shipping address: {userFields?.address}</p>
-                <p>Payment method: {userFields?.payment}</p>
+                <p>Shipping address: {userFields?.address.address}</p>
+                <p>Payment method: {userFields?.payment.number}</p>
                 <p>Review items: </p>
                 <br />
                 {checkout.map((item) => {
