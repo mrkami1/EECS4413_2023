@@ -73,7 +73,7 @@ function Navbar({ search, setSearch }) {
     const handleSearch = (e) => {
         setSearch(e.target.value.toLowerCase());
     };
-
+    console.log(location.pathname)
     return (
         <>
             <AppBar position="static">
@@ -107,17 +107,20 @@ function Navbar({ search, setSearch }) {
                         onChange={handleSearch}
                         disabled={location.pathname !== "/"}
                     ></TextField>
-
+                    
+                    {location.pathname !== "/flyer" &&
                     <Button
-                        size="small"
+                        size="medium"
                         color="inherit"
                         onClick={goToPage}
                         value="flyer"
-                        hidden={location.pathname === "/flyer"}
+                        variant="contained"
+                        sx={{ml: 2}}
                     >
-                        Check our flyer!
+                        Flyer
                     </Button>
-
+                    }
+                    
                     <FormControl
                         sx={{
                             ml: 2,

@@ -87,7 +87,7 @@ function OrderHistory() {
                                 Order placed : {o.date.toDate().toDateString()}
                             </Typography>
                             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                                TOTAL : {o.total}
+                                TOTAL : CAD ${o.total}
                             </Typography>
                             <Button
                                 name={i}
