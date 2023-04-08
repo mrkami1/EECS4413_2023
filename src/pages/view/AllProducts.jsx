@@ -14,8 +14,11 @@ import { Star } from "@mui/icons-material";
 //Ying
 //list all the products with sort functionality
 export const AllProducts = (props) => {
+    console.log("this is the prop: "+props.sortType);
+    console.log("rate: "+props.filterRate+" "+typeof(props.filterRate))
     console.log("the type is: " + props.type);
     const [products, setProducts] = useState([]);
+    const [priceRange, setPriceRange] = useState(true);
     const { userFields } = useContext(UserFieldsContext);
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -82,6 +85,45 @@ export const AllProducts = (props) => {
         }
     }, [props?.sortType]);
 
+   
+    // const priceCondition= (price, value) => {
+    //         switch (value) {
+    //             case "1":
+    //                 setPriceRange((price < 25));
+    //                 break;
+    //             case "2":
+    //                 setPriceRange((price >= 25) && (price <= 50));
+    //                 break;
+    //             case "3":
+    //                 setPriceRange((price >= 50) && (price <= 100));
+    //                 break;
+    //             case "4":
+    //                 setPriceRange((price >= 100));
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
+    // }
+    
+    function priceCondition(price, value) {
+        if (value.includes("1")) {
+            return (price < 25);
+        }
+        else if (value.includes("2")) {
+            return ((price >= 25) && (price <= 50));
+        }
+        else if (value.includes("3")) {
+            return ((price >= 50) && (price <= 100));
+        }
+        else if (value.includes("4")) {
+            return (price >= 100);
+        }
+        else {
+            return true;
+        }
+    }
+
+
     const addToCart = async (product) => {
         const newItem = {
             image: product.img,
@@ -138,7 +180,12 @@ export const AllProducts = (props) => {
         <ImageList cols={3} sx={{ margin: 3 }}>
             {products?.map(
                 (product, i) =>
-                    product.name.toLowerCase().includes(props?.search) && (
+                    product.name.toLowerCase().includes(props?.search) && 
+                    product.color.toLowerCase().includes(props?.filterColor) &&
+                    product.brand.toLowerCase().includes(props?.filterBrand) &&
+                    product.rate.toString().includes(props?.filterRate) &&
+                    priceCondition(product.price, props?.filterPrice) && 
+                    (
                         <Paper key={i} elevation={3} sx={{ margin: 2, ":hover": { boxShadow: 10 } }}>
                             <ImageListItem sx={{ margin: 5 }}>
                                 <img
