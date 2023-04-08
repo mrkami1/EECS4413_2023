@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { db } from "../../firebase";
 import Navbar from "../../components/Navbar";
-import { collection, orderBy, getDocs, doc, getDoc, deleteDoc, Timestamp, addDoc, updateDoc } from "firebase/firestore";
+import { collection, orderBy, getDocs, doc, getDoc, deleteDoc, Timestamp, setDoc, updateDoc } from "firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { FlyerContext, FlyerDispatchContext } from "../../context/FlyerContext";
 
@@ -116,14 +116,6 @@ function NewBlock({ timeStamp }) {
 function Flyer({ isAdmin }) {
     const [updated, setUpdated] = useState(false);
     const [onSale, dispatch] = useReducer(saleReducer, []);
-    const [time, setTime] = useState(() => {
-        if (onSale.length) {
-            console.log(onSale);
-            return onSale[0].expire.toDate();
-        } else {
-            return new Date();
-        }
-    });
     console.log("from flyer");
     console.log(onSale);
 
@@ -140,6 +132,15 @@ function Flyer({ isAdmin }) {
                 console.log(error.message);
             });
     }, []);
+
+    const [time, setTime] = useState(() => {
+        if (onSale.length) {
+            console.log(onSale);
+            return onSale[0].expire.toDate();
+        } else {
+            return new Date();
+        }
+    });
 
     useEffect(() => {
         setUpdated(true);
@@ -169,20 +170,20 @@ function Flyer({ isAdmin }) {
         // delete all prev flyer items
         const colRef = collection(db, "flyer");
         const docSnapshots = await getDocs(colRef);
-        docSnapshots.forEach(async (doc) => {
+        docSnapshots.forEach(async (shot) => {
             // reset product discount to 0
-            const productRef = doc(db, "products", doc.id);
+            const productRef = doc(db, "products", shot.id);
             try {
                 await updateDoc(productRef, { discount: 0 });
             } catch (e) {
                 console.log(e);
             }
-            deleteDoc(doc.ref);
+            deleteDoc(shot.ref);
         });
 
         // add all current flyer items
         onSale.forEach(async (item) => {
-            await addDoc(colRef, item);
+            await setDoc(doc(db, "flyer", item.id), item);
             // reflect discount on products
             const pRef = doc(db, "products", item.id);
             try {
@@ -278,9 +279,7 @@ export default function FlyersShow() {
     const { userFields } = useContext(UserFieldsContext);
     return (
         <div>
-            <div>
-                <Navbar />
-            </div>
+            <Navbar />
             <Flyer isAdmin={userFields?.level === "admin"} />
         </div>
     );
