@@ -62,7 +62,7 @@ export const Chatbot = () => {
         <div className="chatbot">
           <div className="chat_message">
           {
-            messages.length > 0 && messages.map((data) => <ChatMessages {...data} />)
+            messages.length > 0 && messages.map((data, index) => <ChatMessages {...data} key={index} />)
           }
             </div>
         <div className="chat_input">
