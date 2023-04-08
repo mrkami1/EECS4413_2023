@@ -69,7 +69,9 @@ const Sidebar = ({sortType, setSortType,
                 <Collapse in={showRating} timeout="auto" unmountOnExit>
                     <FormControl>
                         <RadioGroup sx={{ pl: 4 }} defaultValue="all">
-                            <FormControlLabel value="all" control={<Radio />} label="All ratings" />
+                            <FormControlLabel value="all" control={<Radio />} label="All ratings" onChange={(e)=>{
+                                 setFilterRate("")
+                            }}/>
                             <FormControlLabel value="5" control={<Radio />} label="5 Stars" onChange={(e)=>{
                                  setFilterRate("5")
                             }}/>
@@ -99,7 +101,10 @@ const Sidebar = ({sortType, setSortType,
                 <Collapse in={showBrand} timeout="auto" unmountOnExit>
                     <FormControl>
                         <RadioGroup sx={{ pl: 4 }} defaultValue="all">
-                            <FormControlLabel value="all" control={<Radio />} label="All brands" />
+                            <FormControlLabel value="all" control={<Radio />} label="All brands" onChange={(e)=>{
+                                 setFilterBrand("")
+                            }}
+                            />
                             <FormControlLabel value="1" control={<Radio />} label="aka" onChange={(e)=>{
                                  setFilterBrand("aka")
                             }}/>
@@ -129,7 +134,9 @@ const Sidebar = ({sortType, setSortType,
                 <Collapse in={showPrice} timeout="auto" unmountOnExit>
                     <FormControl>
                         <RadioGroup sx={{ pl: 4 }} defaultValue="all">
-                            <FormControlLabel value="all" control={<Radio />} label="All prices" />
+                            <FormControlLabel value="all" control={<Radio />} label="All prices" onChange={(e)=>{
+                                 setFilterPrice("")
+                            }}/>
                             <FormControlLabel value="1" control={<Radio />} label="Under $25" onChange={(e)=>{
                                  setFilterPrice("1")
                             }}/>
@@ -159,7 +166,9 @@ const Sidebar = ({sortType, setSortType,
                 <Collapse in={showColor} timeout="auto" unmountOnExit>
                     <FormControl>
                         <RadioGroup sx={{ pl: 4 }} defaultValue="all">
-                            <FormControlLabel value="all" control={<Radio />} label="All colors" />
+                            <FormControlLabel value="all" control={<Radio />} label="All colors" onChange={(e)=>{
+                                 setFilterColor("")
+                            }}/>
                             <FormControlLabel value="1" control={<Radio />} label="Black" onChange={(e)=>{
                                 // console.log("how to find value: "+ e.target.value)
                                 setFilterColor("black")
