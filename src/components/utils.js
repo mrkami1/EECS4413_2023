@@ -56,11 +56,32 @@ export const analyze = (text) => {
     else if (text.includes('customer service') || text.includes('agent')) {
         return "If you want to reach out an agent, please go to York University EECS4413 class, and find Team L members for assistance."
     }
-    else if (text.includes('recommendation') || text.includes('suggestion')) {
+    else if (text.includes('recommendation') || text.includes('suggestion') || text.includes('popular')) {
         return "You can take a look at our top rated glasses. You can find the filter on the top right of the NavBar. There are also other filter options you can choose."
     }
     else if (text.includes('cheap') || text.includes('sale') || text.includes('on sale') || text.includes('event')) {
         return "You can check our flyer, we always have good sales going on."
+    }
+    else if (text.includes('your name')) {
+        return "My name is Kitty, how can I help you?"
+    }
+    else if (text.includes('nothing') || text.includes('no more') || text.includes('don\'t need')) {
+        return "Thank you for contacting me today. Have a great rest of the day!"
+    }
+    else if (text.includes('course')) {
+        return "We are currently taking EECS4413 now. There're also many other useful courses."
+    }
+    else if (text.includes('flyer') || text.includes('discount')) {
+        return "We have flyers every week, please check out our sales through flyers. You can find it on the right top of Navbar!"
+    }
+    else if (text.includes('best programming language')) {
+        return "aha~ I dare you don't expect me to say Java. I think maybe JavaScript?"
+    }
+    else if (text.includes('translate')) {
+        return "Yo! I'm still growing, please use https://translate.google.com/ to help you!"
+    }
+    else if (text.includes('beautiful') || text.includes('pretty') || text.includes('handsome')) {
+        return "Thank you so much. I appreciate that you're telling me the truth!"
     }
     return "Sorry, I cannot get you. Can you please rephrase the message?"
 }
