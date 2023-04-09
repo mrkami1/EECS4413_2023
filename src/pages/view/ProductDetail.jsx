@@ -6,6 +6,7 @@ import { doc, setDoc, updateDoc, arrayUnion, Timestamp } from "firebase/firestor
 import { db } from "../../firebase";
 import Navbar from "../../components/Navbar";
 import UserFieldsContext from "../../context/UserFieldsContext";
+import TryOn from "../../components/TryOn";
 import { AuthContext } from "../../context/AuthContext";
 import "../../css/ProductDetail.css";
 import {
@@ -181,7 +182,7 @@ export const ProductDetail = () => {
                     <Button variant="contained" onClick={addToCart}>
                         add to cart
                     </Button>
-                    <Button variant="outlined">try on</Button>
+                    <TryOn imgSrc={product.img} imgName={product.name} />
                 </CardActions>
             </Box>
         </Card>
