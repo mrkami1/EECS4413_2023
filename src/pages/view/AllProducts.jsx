@@ -6,14 +6,15 @@ import { db } from "../../firebase";
 import { arrayUnion, doc, updateDoc } from "@firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { AuthContext } from "../../context/AuthContext";
+import TryOn from "../../components/TryOn";
 import { ImageList, ImageListItem, ImageListItemBar, Paper, Button } from "@mui/material";
 import { Star } from "@mui/icons-material";
 
 //Ying
 //list all the products with sort functionality
 export const AllProducts = (props) => {
-    console.log("this is the prop: "+props.sortType);
-    console.log("rate: "+props.filterRate+" "+typeof(props.filterRate))
+    console.log("this is the prop: " + props.sortType);
+    console.log("rate: " + props.filterRate + " " + typeof props.filterRate);
     console.log("the type is: " + props.type);
     const [products, setProducts] = useState([]);
     const [priceRange, setPriceRange] = useState(true);
@@ -83,25 +84,20 @@ export const AllProducts = (props) => {
         }
     }, [props?.sortType]);
 
-
-    function priceCondition(price, value) { // handle price filter
+    function priceCondition(price, value) {
+        // handle price filter
         if (value.includes("1")) {
-            return (price < 25);
-        }
-        else if (value.includes("2")) {
-            return ((price >= 25) && (price <= 50));
-        }
-        else if (value.includes("3")) {
-            return ((price >= 50) && (price <= 100));
-        }
-        else if (value.includes("4")) {
-            return (price >= 100);
-        }
-        else {
+            return price < 25;
+        } else if (value.includes("2")) {
+            return price >= 25 && price <= 50;
+        } else if (value.includes("3")) {
+            return price >= 50 && price <= 100;
+        } else if (value.includes("4")) {
+            return price >= 100;
+        } else {
             return true;
         }
     }
-
 
     const addToCart = async (product) => {
         const newItem = {
@@ -159,12 +155,11 @@ export const AllProducts = (props) => {
         <ImageList cols={3} sx={{ margin: 3 }}>
             {products?.map(
                 (product, i) =>
-                    product.name.toLowerCase().includes(props?.search) && 
+                    product.name.toLowerCase().includes(props?.search) &&
                     product.color.toLowerCase().includes(props?.filterColor) &&
                     product.brand.toLowerCase().includes(props?.filterBrand) &&
                     product.rate.toString().includes(props?.filterRate) &&
-                    priceCondition(product.price, props?.filterPrice) && 
-                    (
+                    priceCondition(product.price, props?.filterPrice) && (
                         <Paper key={i} elevation={3} sx={{ margin: 2, ":hover": { boxShadow: 10 } }}>
                             <ImageListItem sx={{ margin: 5 }}>
                                 <img
@@ -198,7 +193,7 @@ export const AllProducts = (props) => {
                                         add to cart
                                     </Button>
                                     &emsp;
-                                    <Button variant="outlined">try on</Button>
+                                    <TryOn imgSrc={product.img} imgName={product.name} />
                                 </div>
                             </ImageListItem>
                         </Paper>
