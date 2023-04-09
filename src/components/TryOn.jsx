@@ -6,6 +6,7 @@ import { getDownloadURL,
          uploadBytes,
          listAll,
          } from "firebase/storage";
+import { Slider } from '@mui/material';
 
 
 function Background({ children, face}) {
@@ -82,6 +83,7 @@ export default function TryOn({ imgSrc, imgName }) {
     const [faces, setFaces] = useState(defaultFaces);
     const [uploadImg, setUploadImg] = useState(null);
     const [scale, setScale] = useState("0.3");
+    const [value, setValue] = useState(50);
 
 
     const imagesListRef = ref(storage, "faces/");
@@ -132,6 +134,19 @@ export default function TryOn({ imgSrc, imgName }) {
             x: position.x + dx,
             y: position.y + dy,
         });
+    }
+
+    const handleSlider = (e) => {
+        console.log(value)
+        console.log(e.target.value)
+        if (e.target.value > value ) {
+            setScale((prev)=>(prev*1.05))
+            setValue(e.target.value)
+        }
+        else {
+            setScale((prev)=>(prev*0.95))
+            setValue(e.target.value)
+        }
     }
 
 
@@ -188,9 +203,22 @@ export default function TryOn({ imgSrc, imgName }) {
                         <Button variant="contained" color="primary" component="span" onClick={uploadImage} style={{marginLeft: "2px"}}>
                                 Upload
                             </Button>
-                            <Button variant="contained" color="primary" component="span" style={{marginLeft: "2px"}} onClick={() => setScale((prev)=>(prev*1.1))}>+</Button>
-                            <Button variant="contained" color="primary" component="span" style={{marginLeft: "2px"}} onClick={() => setScale((prev)=>(prev*0.9))}>-</Button>
+                            {/* <Button variant="contained" color="primary" component="span" style={{marginLeft: "2px"}} onClick={() => setScale((prev)=>(prev*1.1))}>+</Button>
+                            <Button variant="contained" color="primary" component="span" style={{marginLeft: "2px"}} onClick={() => setScale((prev)=>(prev*0.9))}>-</Button> */}
                     </div>
+                    <Slider
+  sx={{
+    '& input[type="range"]': {
+      WebkitAppearance: 'slider-horizontal',
+    },
+  }}
+//   orientation="vertical"
+  defaultValue={50}
+  aria-label="Glasses_Size"
+  valueLabelDisplay="auto"
+//   step={0.1}
+  onChange={handleSlider}
+/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)}>Close</Button>
