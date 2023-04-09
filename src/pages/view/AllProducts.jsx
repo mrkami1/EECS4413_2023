@@ -167,7 +167,7 @@ export const AllProducts = (props) => {
                                     alt={product.name}
                                     loading="eager"
                                     onClick={() => navigate("/product/" + product.id)}
-                                    style={{ cursor: "pointer" }}
+                                    style={{ cursor: "pointer", height: 110 }}
                                 />
                                 <ImageListItemBar title={product.name} subtitle={product.brand} position="below" />
                                 <ImageListItemBar

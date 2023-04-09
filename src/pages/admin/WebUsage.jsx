@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { Box, Card, CardContent, CardHeader, List, ListItem, ListItemText } from "@mui/material";
 
 // Yang
 // keep track of all the users who log in our system and display
@@ -26,16 +27,19 @@ export default function WebUsage() {
     }, []);
 
     return (
-        <div>
-            <h2>Web usage</h2>
-            <h3>Logged-in users: {users.length}</h3>
-            <ul>
-                {users.map((u) => (
-                    <li key={u.id}>
-                        {u.name}, {u.email}
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+            <Card sx={{ width: 800 }}>
+                <CardHeader title="Web usage" subheader={"Logged-in users: " + users.length}></CardHeader>
+                <CardContent>
+                    <List>
+                        {users.map((u) => (
+                            <ListItem key={u.id}>
+                                <ListItemText primary={u.name} secondary={u.email}></ListItemText>
+                            </ListItem>
+                        ))}
+                    </List>
+                </CardContent>
+            </Card>
+        </Box>
     );
 }

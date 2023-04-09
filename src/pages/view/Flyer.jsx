@@ -4,13 +4,27 @@ import Navbar from "../../components/Navbar";
 import { collection, orderBy, getDocs, doc, getDoc, deleteDoc, Timestamp, setDoc, updateDoc } from "firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { FlyerContext, FlyerDispatchContext } from "../../context/FlyerContext";
+import {
+    Card,
+    CardContent,
+    Button,
+    Typography,
+    Box,
+    CardHeader,
+    ImageList,
+    Input,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
+} from "@mui/material";
 
 // Yang
 // for flyer components
 
 // Individual Product card, showing product properties.
 // Admin can change its current discout or delete for later submission
-function ProductBlock({ product, isAdmin }) {
+function ProductBlock({ serial, product, isAdmin }) {
     const [discount, setDiscount] = useState(product.discount === 0 ? 1 : product.discount);
     const [changed, setChanged] = useState(false);
     const dispatch = useContext(FlyerDispatchContext);
@@ -37,25 +51,49 @@ function ProductBlock({ product, isAdmin }) {
     // const exp = product.expire ? product.expire.toDate().toDateString() : new Date().toDateString();
 
     return (
-        <div>
-            <h3>{product.name}</h3>
-            <p>Expire on {product.expire.toDate().toDateString()}</p>
-            <img src={product.img} alt={product.name} width={150} height={90} />
-            <p>Original price: {product.price}</p>
-            {isAdmin && (
-                <>
-                    <label>Discount (%): </label>
-                    <input type="number" value={discount} step={1} min={1} max={100} onChange={handleDiscChange} />
-                    <button onClick={updateDiscout} disabled={discount === product.discount || !changed}>
-                        update
-                    </button>
-                </>
-            )}
-            <p>Discounted price: {(product.price * (1 - discount / 100)).toFixed(2)}</p>
-            {isAdmin && <button onClick={removeItem}>Delete Item</button>}
-            <hr />
-            <hr />
-        </div>
+        <Card sx={{ width: 300, ":hover": { boxShadow: 10 } }}>
+            <CardHeader
+                title={serial + ". " + product.name}
+                subheader={"Expire on " + product.expire.toDate().toDateString()}
+            ></CardHeader>
+            <CardContent>
+                <img src={product.img} alt={product.name} height={80} />
+                <Typography variant="body1">Original price: CAD {product.price}</Typography>
+                {isAdmin && (
+                    <>
+                        <Typography variant="body1">
+                            Discount (%):{"  "}
+                            <Input
+                                type="number"
+                                value={discount}
+                                step={1}
+                                min={1}
+                                max={100}
+                                sx={{ width: 50, marginRight: 1 }}
+                                onChange={handleDiscChange}
+                            />
+                            <Button
+                                variant="contained"
+                                size="small"
+                                onClick={updateDiscout}
+                                disabled={discount === product.discount || !changed}
+                            >
+                                update
+                            </Button>
+                        </Typography>
+                    </>
+                )}
+                <Typography>Discounted price: CAD {(product.price * (1 - discount / 100)).toFixed(2)}</Typography>
+                {isAdmin && (
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <Button variant="contained" size="small" onClick={removeItem}>
+                            Delete Item
+                        </Button>
+                    </Box>
+                )}
+            </CardContent>
+            <Box></Box>
+        </Card>
     );
 }
 
@@ -101,14 +139,18 @@ function NewBlock({ timeStamp }) {
         }
     };
     return (
-        <div>
-            <label>Add new flyer item id:</label>
-            <input placeholder="New item ID" value={id} onChange={(e) => setId(e.target.value)} />
-            <button onClick={addNewItem} disabled={id === ""}>
-                Add new item
-            </button>
-            <label disabled={error.length === 0}>{error}</label>
-        </div>
+        <Card sx={{ width: 300, ":hover": { boxShadow: 10 } }}>
+            <CardHeader title="Add new flyer item id"></CardHeader>
+            <CardContent>
+                <Input placeholder="New item ID" value={id} onChange={(e) => setId(e.target.value)} />
+                <Button variant="contained" onClick={addNewItem} disabled={id === ""}>
+                    Add new item
+                </Button>
+                <Typography sx={{ color: "red" }} disabled={error.length === 0}>
+                    {error}
+                </Typography>
+            </CardContent>
+        </Card>
     );
 }
 
@@ -152,6 +194,16 @@ function Flyer({ isAdmin }) {
     const [year, setYear] = useState(time.getFullYear());
     const [mon, setMonth] = useState(time.getMonth());
     const [day, setDay] = useState(time.getDate());
+    const days = new Date(year, mon, 0).getDate();
+
+    const dayItems = [];
+    for (let i = 0; i < days; i++) {
+        dayItems.push(
+            <MenuItem key={i} value={i + 1}>
+                {i + 1}
+            </MenuItem>
+        );
+    }
 
     useEffect(() => {
         setTime(new Date(year, mon, day));
@@ -173,11 +225,7 @@ function Flyer({ isAdmin }) {
         docSnapshots.forEach(async (shot) => {
             // reset product discount to 0
             const productRef = doc(db, "products", shot.id);
-            try {
-                await updateDoc(productRef, { discount: 0 });
-            } catch (e) {
-                console.log(e);
-            }
+            updateDoc(productRef, { discount: 0 });
             deleteDoc(shot.ref);
         });
 
@@ -186,56 +234,82 @@ function Flyer({ isAdmin }) {
             await setDoc(doc(db, "flyer", item.id), item);
             // reflect discount on products
             const pRef = doc(db, "products", item.id);
-            try {
-                await updateDoc(pRef, { discount: item.discount });
-            } catch (e) {
-                console.log(e);
-            }
+            updateDoc(pRef, { discount: item.discount });
         });
         setUpdated(false);
     };
 
     return (
-        <div>
-            <h2>Glasses on Sale!</h2>
-            <div>
-                <h3>Valid until:</h3>
-                {isAdmin ? (
-                    <>
-                        <label>Year: </label>
-                        <input type="number" value={year} onChange={(e) => setYear(Number(e.target.value))} />
-                        <label> Month: </label>
-                        <input value={months[mon]} onChange={(e) => setMonth(months.indexOf(e.target.value))} />
-                        <label> Day: </label>
-                        <input type="number" value={day} onChange={(e) => setDay(e.target.value)} />
-                        <button onClick={updateTime} disabled={!timeChanged}>
-                            Update Expiration
-                        </button>
-                    </>
-                ) : (
-                    time.toLocaleDateString(undefined, dateFormat)
-                )}
-            </div>
-            <hr />
+        <>
+            <Card>
+                <CardHeader title="Glasses on Sale!"></CardHeader>
+                <CardContent>
+                    <Typography variant="body1">Valid until:</Typography>
+                    {isAdmin && (
+                        <>
+                            <FormControl variant="standard" sx={{ m: 1, minWidth: 60 }}>
+                                <InputLabel id="month">Month</InputLabel>
+                                <Select
+                                    labelId="month"
+                                    value={months[mon]}
+                                    onChange={(e) => setMonth(months.indexOf(e.target.value))}
+                                >
+                                    {months.map((monthName) => (
+                                        <MenuItem key={monthName} value={monthName}>
+                                            {monthName}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="standard" sx={{ m: 1, minWidth: 60 }}>
+                                <InputLabel id="day">Day</InputLabel>
+                                <Select labelId="day" value={day} onChange={(e) => setDay(e.target.value)}>
+                                    {dayItems}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="standard" sx={{ m: 1, minWidth: 60 }}>
+                                <InputLabel id="year">Year</InputLabel>
+                                <Input
+                                    labelId="year"
+                                    value={year}
+                                    disabled
+                                    onChange={(e) => setYear(Number(e.target.value))}
+                                />
+                            </FormControl>
+                            <Box sx={{ paddingTop: 2 }}>
+                                <Button variant="contained" onClick={updateTime} disabled={!timeChanged}>
+                                    Update Expiration
+                                </Button>
+                            </Box>
+                        </>
+                    )}
+                </CardContent>
+            </Card>
             <FlyerContext.Provider value={onSale}>
                 <FlyerDispatchContext.Provider value={dispatch}>
-                    <ol>
+                    <ImageList cols={4} sx={{ padding: 2 }}>
                         {onSale.map((prod, index) => (
-                            <li key={index}>
-                                <ProductBlock product={prod} isAdmin={isAdmin} />
-                            </li>
+                            <ProductBlock key={index} serial={index + 1} product={prod} isAdmin={isAdmin} />
                         ))}
-                    </ol>
-                    {isAdmin && <NewBlock timeStamp={Timestamp.fromDate(time)} />}
-                    <hr />
+                        {isAdmin && <NewBlock timeStamp={Timestamp.fromDate(time)} />}
+                    </ImageList>
                     {isAdmin && (
-                        <button onClick={saveAll} disabled={!updated}>
-                            Save Updates
-                        </button>
+                        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    backgroundColor: "green",
+                                }}
+                                onClick={saveAll}
+                                disabled={!updated}
+                            >
+                                Save Updates
+                            </Button>
+                        </Box>
                     )}
                 </FlyerDispatchContext.Provider>
             </FlyerContext.Provider>
-        </div>
+        </>
     );
 }
 

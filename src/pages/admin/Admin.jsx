@@ -5,6 +5,7 @@ import WebUsage from "./WebUsage";
 import MonthlyReport from "./MonthlyReport";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { AuthContext } from "../../context/AuthContext";
+import { Paper, Typography, Button } from "@mui/material";
 
 // Yang
 // for admin statistic components
@@ -15,15 +16,16 @@ export default function Administration() {
     console.log("from admin:");
     console.log(userFields);
     return (
-        <div>
-            <div>
-                <Navbar />
-            </div>
-            <p>Welcome Administrator: {userFields?.name}</p>
-            <button onClick={() => navigate("/flyer")}>To Flyer edit page</button>
-            <MonthlyReport />
-            <hr />
-            <WebUsage />
-        </div>
+        <>
+            <Navbar />
+            <Paper elevation={2} sx={{ margin: 2, padding: 2 }}>
+                <Typography variant="h5">Welcome Administrator: {userFields?.name}</Typography>
+                <Button variant="outlined" onClick={() => navigate("/flyer")}>
+                    To Flyer edit page
+                </Button>
+                <MonthlyReport />
+                <WebUsage />
+            </Paper>
+        </>
     );
 }
