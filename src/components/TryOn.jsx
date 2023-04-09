@@ -93,7 +93,7 @@ export default function TryOn({ imgSrc, imgName }) {
                             <img src={imgSrc} alt={imgName} style={{ scale: "30%" }} />
                         </Glasses>
                     </Background>
-                    <ImageList cols={2} rowHeight="auto" sx={{ display: "flex" }}>
+                    <ImageList cols={2} rowHeight="auto" sx={{ display: "flex", marginTop: "-150px"}}>
                         {faces.map((face) => {
                             return (
                                 <ImageListItem
