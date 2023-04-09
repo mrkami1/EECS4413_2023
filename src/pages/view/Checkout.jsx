@@ -6,7 +6,7 @@ import UserFieldsContext from "../../context/UserFieldsContext";
 import { db } from "../../firebase";
 import { uuidv4 } from "@firebase/util";
 import Navbar from "../../components/Navbar";
-import { Button, Card, CardContent, Paper, Typography } from "@mui/material";
+import { Alert, Button, Card, CardContent, Dialog, DialogTitle, Paper, Snackbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 // for customer payment components
@@ -16,6 +16,8 @@ function Checkout() {
     const [checkout, setCheckout] = useState([]);
     const [total, setTotal] = useState(0);
     const [error, setError] = useState(false);
+    const [tempError, setTempError] = useState(false);
+    const [cardError, setCardError] = useState(false);
     const [expiry, setExpiry] = useState(false);
 
     const navigate = useNavigate();
@@ -33,6 +35,7 @@ function Checkout() {
         checkout.forEach((item) => {
             totalCost += item.price * item.quantity;
         });
+        
         setError(userFields?.address === "" || userFields?.payment.number === "" || userFields?.payment.expiry === "" || userFields?.payment.cvc === "")
         setTotal((Math.round(totalCost * 100) / 100).toFixed(2));
     }, [checkout]);
@@ -48,6 +51,7 @@ function Checkout() {
         };
 
         const orderDoc = await getDoc(doc(db, "orders", currentUser.uid));
+
         if (!orderDoc.exists()) {
             await setDoc(doc(db, "orders", currentUser.uid), {
                 customerOrders: [],
@@ -56,15 +60,27 @@ function Checkout() {
 
         await updateDoc(doc(db, "orders", currentUser.uid), {
             customerOrders: arrayUnion(completedOrder),
+
         }).then(emptyCart);
     };
 
     const emptyCart = async () => {
+        console.log(userFields.ordersCompleted)
+         
         await updateDoc(doc(db, "users", currentUser.uid), {
             cartItems: [],
-        }).then(() => {
-            console.log("completed order");
-            navigate("/");
+            ordersCompleted: userFields.ordersCompleted + 1
+        })
+        .then(() => {
+            const totalOrders = userFields.ordersCompleted;
+            if (totalOrders % 2 === 0 && totalOrders !== 0) {
+                setCardError(true);
+                setTempError(true)
+            }
+            else {
+                console.log("completed order");
+                navigate("/");
+            }
         });
     };
 
@@ -145,7 +161,7 @@ function Checkout() {
                             Invalid payment method or shipping address
                         </Typography>
                     }
-                    <Button disabled={error} onClick={order} variant="contained" sx={{ mt: 2 }}>
+                    <Button disabled={error || tempError} onClick={order} variant="contained" sx={{ mt: 2 }}>
                         Place your order
                     </Button>
                 </Box>
@@ -153,11 +169,25 @@ function Checkout() {
         </Card>
     );
 
+    const cardSnackbar = () => (
+        <Snackbar
+            open={cardError}
+            autoHideDuration={6000}
+            onClose={() => setCardError(false)}
+            anchorOrigin={{vertical: "bottom", horizontal: "center"}}
+        >   
+            <Alert severity="error" variant="filled">
+                Your card was declined or there was an error!
+            </Alert>
+        </Snackbar>
+    )
+
     return (
         <div>
             <Navbar />
             {titleCard()}
             {itemCard()}
+            {cardSnackbar()}
         </div>
     );
 }
