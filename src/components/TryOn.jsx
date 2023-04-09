@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, ImageList, ImageListItem } from "@mui/material";
 
-function Background({ children, face }) {
+function Background({ children, face, imgUrl, uploadImg }) {
     return (
         <>
             <div style={{ width: 300, height: 300, display: "flex" }}>
                 <img
-                    src={face.src}
-                    alt={face.alt}
+                    src={(imgUrl&&uploadImg)? imgUrl : face.src}
+                    alt={(imgUrl&&uploadImg)? uploadImg.name : face.alt}
                     loading="eager"
                     style={{
                         width: 300,
@@ -72,6 +72,8 @@ export default function TryOn({ imgSrc, imgName }) {
         },
     ];
     const [face, setFace] = useState(faces[0]);
+    const [uploadImg, setUploadImg] = useState(null);
+    const [imgUrl, setImgUrl]=useState(null)
 
     function handleMove(dx, dy) {
         setPosition({
@@ -80,6 +82,13 @@ export default function TryOn({ imgSrc, imgName }) {
         });
     }
 
+    useEffect(()=> {
+        if (uploadImg) {
+            setImgUrl(URL.createObjectURL(uploadImg));
+            console.log("this is the img: "+face)
+        }
+    }, [uploadImg])
+
     return (
         <div>
             <Button variant="outlined" onClick={() => setOpen(true)}>
@@ -87,8 +96,8 @@ export default function TryOn({ imgSrc, imgName }) {
             </Button>
             <Dialog open={open} keepMounted>
                 <DialogTitle>Virtual Try-on</DialogTitle>
-                <DialogContent>
-                    <Background face={face}>
+                <DialogContent>                    
+                    <Background face={face} imgUrl={imgUrl} uploadImg={uploadImg}>
                         <Glasses position={position} onMove={handleMove}>
                             <img src={imgSrc} alt={imgName} style={{ scale: "30%" }} />
                         </Glasses>
@@ -118,6 +127,20 @@ export default function TryOn({ imgSrc, imgName }) {
                             );
                         })}
                     </ImageList>
+                    <div>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            id="upload_img"
+                            onChange={(e)=>setUploadImg(e.target.files[0])}/>
+                        <label htmlFor="upload_img">
+                            <Button variant="contained" color="primary" component="span"
+                                   >
+                                Upload
+                            </Button>
+                        </label>
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)}>Close</Button>
