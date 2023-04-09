@@ -81,6 +81,7 @@ export default function TryOn({ imgSrc, imgName }) {
     const [face, setFace] = useState(defaultFaces[0]);
     const [faces, setFaces] = useState(defaultFaces);
     const [uploadImg, setUploadImg] = useState(null);
+    const [scale, setScale] = useState("0.3");
 
 
     const imagesListRef = ref(storage, "faces/");
@@ -106,7 +107,7 @@ export default function TryOn({ imgSrc, imgName }) {
             const imageArray=[]
             listAll(imagesListRef).then((response) => {
                 response.items.forEach((item) => {
-                    console.log("item info: "+item)
+                    // console.log("item info: "+item)
                     getDownloadURL(item).then((url) => {
                         const img={
                             src: url,
@@ -144,7 +145,7 @@ export default function TryOn({ imgSrc, imgName }) {
                 <DialogContent>                    
                     <Background face={face}>
                         <Glasses position={position} onMove={handleMove}>
-                            <img src={imgSrc} alt={imgName} style={{ scale: "30%" }} />
+                            <img src={imgSrc} alt={imgName} style={{ scale: `${scale}` }} />
                         </Glasses>
                     </Background>
                     <ImageList cols={faces.length} rowHeight="auto" sx={{ display: "flex", marginTop: "-150px"}}>
@@ -187,6 +188,8 @@ export default function TryOn({ imgSrc, imgName }) {
                         <Button variant="contained" color="primary" component="span" onClick={uploadImage} style={{marginLeft: "2px"}}>
                                 Upload
                             </Button>
+                            <Button variant="contained" color="primary" component="span" style={{marginLeft: "2px"}} onClick={() => setScale((prev)=>(prev*1.1))}>+</Button>
+                            <Button variant="contained" color="primary" component="span" style={{marginLeft: "2px"}} onClick={() => setScale((prev)=>(prev*0.9))}>-</Button>
                     </div>
                 </DialogContent>
                 <DialogActions>
