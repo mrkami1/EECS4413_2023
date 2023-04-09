@@ -160,14 +160,14 @@ export const AllProducts = (props) => {
                     product.brand.toLowerCase().includes(props?.filterBrand) &&
                     product.rate.toString().includes(props?.filterRate) &&
                     priceCondition(product.price, props?.filterPrice) && (
-                        <Paper key={i} elevation={3} sx={{ margin: 2, ":hover": { boxShadow: 10 } }}>
+                        <Paper key={i} elevation={3} sx={{ margin: 5, ":hover": { boxShadow: 10 } }}>
                             <ImageListItem sx={{ margin: 5 }}>
                                 <img
                                     src={product.img}
                                     alt={product.name}
                                     loading="eager"
                                     onClick={() => navigate("/product/" + product.id)}
-                                    style={{ cursor: "pointer", height: 110 }}
+                                    style={{ cursor: "pointer" }}
                                 />
                                 <ImageListItemBar title={product.name} subtitle={product.brand} position="below" />
                                 <ImageListItemBar
