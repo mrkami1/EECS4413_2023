@@ -103,6 +103,10 @@ export default function TryOn({ imgSrc, imgName }) {
         })
     }
 
+    const deleteImage = () => { // delete image from firebase
+
+    }
+
 
     useEffect(() => {
         const getImages = () => {
@@ -155,15 +159,18 @@ export default function TryOn({ imgSrc, imgName }) {
             <Button variant="outlined" onClick={() => setOpen(true)}>
                 Try On
             </Button>
-            <Dialog open={open} keepMounted style={{maxWidth: "450px", overflowX: "auto"}}>
+            <Dialog open={open} keepMounted style={{width: "450px", overflowX: "auto"}}>
                 <DialogTitle>Virtual Try-on</DialogTitle>
-                <DialogContent>                    
+                <DialogContent>  
+                    <div className="face_background" style={{width: "100%", height: "300px"}}>
                     <Background face={face}>
                         <Glasses position={position} onMove={handleMove}>
                             <img src={imgSrc} alt={imgName} style={{ scale: `${scale}` }} />
                         </Glasses>
                     </Background>
-                    <ImageList cols={faces.length} rowHeight="auto" sx={{ display: "flex", marginTop: "-150px"}}>
+                    </div>                  
+                    <div className="imgList" style={{width: "100%", height: "120px"}}>
+                    <ImageList cols={faces.length} rowHeight={100} sx={{ display: "flex", marginTop: "10px"}}>
                         {faces.map((face) => {
                             return (
                                 <ImageListItem
@@ -188,7 +195,9 @@ export default function TryOn({ imgSrc, imgName }) {
                             );
                         })}
                     </ImageList>
-                    <div>
+                    </div>
+    
+                    <div className="image_buttons"  style={{width: "100%", height: "38px", marginTop: "10px"}}>
                         <input
                             type="file"
                             accept="image/*"
@@ -200,25 +209,23 @@ export default function TryOn({ imgSrc, imgName }) {
                                 Select
                             </Button>
                         </label>
-                        <Button variant="contained" color="primary" component="span" onClick={uploadImage} style={{marginLeft: "2px"}}>
+                        <Button variant="contained" color="primary" component="span" onClick={uploadImage} style={{marginLeft: "10px"}}>
                                 Upload
                             </Button>
-                            {/* <Button variant="contained" color="primary" component="span" style={{marginLeft: "2px"}} onClick={() => setScale((prev)=>(prev*1.1))}>+</Button>
-                            <Button variant="contained" color="primary" component="span" style={{marginLeft: "2px"}} onClick={() => setScale((prev)=>(prev*0.9))}>-</Button> */}
                     </div>
-                    <Slider
-  sx={{
-    '& input[type="range"]': {
-      WebkitAppearance: 'slider-horizontal',
-    },
-  }}
-//   orientation="vertical"
-  defaultValue={50}
-  aria-label="Glasses_Size"
-  valueLabelDisplay="auto"
-//   step={0.1}
-  onChange={handleSlider}
-/>
+                    <div className="slider" style={{width: "100%", height: "30px", marginTop: "10px"}}>
+                        <Slider
+                                sx={{
+                                        '& input[type="range"]': {
+                                        WebkitAppearance: 'slider-horizontal',
+                                        },
+                                    }}
+                                defaultValue={50}
+                                aria-label="Glasses_Size"
+                                valueLabelDisplay="auto"
+                                onChange={handleSlider}
+                            />
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)}>Close</Button>
