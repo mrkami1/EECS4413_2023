@@ -189,7 +189,7 @@ export const AllProducts = (props) => {
                                     sx={{ lineHeight: "3" }}
                                 />
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <Button variant="outlined" onClick={() => addToCart(product)}>
+                                    <Button variant="contained" onClick={() => addToCart(product)}>
                                         add to cart
                                     </Button>
                                     &emsp;
