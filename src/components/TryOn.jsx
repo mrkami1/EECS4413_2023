@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, ImageList, ImageListItem } from "@mui/material";
+import { storage } from "../firebase";
+import { getDownloadURL, 
+         ref, 
+         uploadBytes,
+         listAll,
+         } from "firebase/storage";
 
-function Background({ children, face, imgUrl, uploadImg }) {
+
+function Background({ children, face}) {
     return (
         <>
             <div style={{ width: 300, height: 300, display: "flex" }}>
                 <img
-                    src={(imgUrl&&uploadImg)? imgUrl : face.src}
-                    alt={(imgUrl&&uploadImg)? uploadImg.name : face.alt}
+                    src={face.src}
+                    alt={face.alt}
                     loading="eager"
                     style={{
                         width: 300,
@@ -61,19 +68,63 @@ function Glasses({ children, position, onMove }) {
 export default function TryOn({ imgSrc, imgName }) {
     const [open, setOpen] = useState(false);
     const [position, setPosition] = useState({ x: -70, y: -140 });
-    const faces = [
+    const defaultFaces = [
         {
             src: "https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Ffemale.png?alt=media&token=9b0b2f5a-449e-48ab-8afe-b8712e70b36b",
-            alt: "female",
+            alt: "0",
         },
         {
             src: "https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Fmale.png?alt=media&token=5ef5bab9-f8ae-4fb3-9e82-5383403a59da",
-            alt: "male",
+            alt: "1",
         },
     ];
-    const [face, setFace] = useState(faces[0]);
+    const [face, setFace] = useState(defaultFaces[0]);
+    const [faces, setFaces] = useState(defaultFaces);
     const [uploadImg, setUploadImg] = useState(null);
-    const [imgUrl, setImgUrl]=useState(null)
+
+
+    const imagesListRef = ref(storage, "faces/");
+
+    const uploadImage = () => { // upload image to firebase 
+        if (uploadImg == null) return;
+        const imageRef = ref(storage, `faces/${uploadImg.name}`);
+        uploadBytes(imageRef, uploadImg).then((querySnapshot) => {         
+            console.log("image uploaded")
+            getDownloadURL(querySnapshot.ref).then((url) => {
+                const newPic={
+                    src: url, 
+                    alt: (faces.length+1).toString()
+                }
+                setFaces((prev) => [...prev, newPic])
+            })
+        })
+    }
+
+
+    useEffect(() => {
+        const getImages = () => {
+            const imageArray=[]
+            listAll(imagesListRef).then((response) => {
+                response.items.forEach((item) => {
+                    console.log("item info: "+item)
+                    getDownloadURL(item).then((url) => {
+                        const img={
+                            src: url,
+                            alt: item
+                        }
+                        imageArray.push(img)
+                        imageArray.sort((a,b) =>((a.alt > b.alt)? 1 : -1))
+                    })
+                })
+                setFaces(imageArray)
+            })
+            .catch((error)=>{
+                console.log(error.message)
+            })
+        }
+        getImages();
+    }, [])
+
 
     function handleMove(dx, dy) {
         setPosition({
@@ -82,27 +133,21 @@ export default function TryOn({ imgSrc, imgName }) {
         });
     }
 
-    useEffect(()=> {
-        if (uploadImg) {
-            setImgUrl(URL.createObjectURL(uploadImg));
-            console.log("this is the img: "+face)
-        }
-    }, [uploadImg])
 
     return (
         <div>
             <Button variant="outlined" onClick={() => setOpen(true)}>
                 Try On
             </Button>
-            <Dialog open={open} keepMounted>
+            <Dialog open={open} keepMounted style={{maxWidth: "450px", overflowX: "auto"}}>
                 <DialogTitle>Virtual Try-on</DialogTitle>
                 <DialogContent>                    
-                    <Background face={face} imgUrl={imgUrl} uploadImg={uploadImg}>
+                    <Background face={face}>
                         <Glasses position={position} onMove={handleMove}>
                             <img src={imgSrc} alt={imgName} style={{ scale: "30%" }} />
                         </Glasses>
                     </Background>
-                    <ImageList cols={2} rowHeight="auto" sx={{ display: "flex", marginTop: "-150px"}}>
+                    <ImageList cols={faces.length} rowHeight="auto" sx={{ display: "flex", marginTop: "-150px"}}>
                         {faces.map((face) => {
                             return (
                                 <ImageListItem
@@ -135,11 +180,13 @@ export default function TryOn({ imgSrc, imgName }) {
                             id="upload_img"
                             onChange={(e)=>setUploadImg(e.target.files[0])}/>
                         <label htmlFor="upload_img">
-                            <Button variant="contained" color="primary" component="span"
-                                   >
-                                Upload
+                            <Button variant="contained" color="primary" component="span">
+                                Select
                             </Button>
                         </label>
+                        <Button variant="contained" color="primary" component="span" onClick={uploadImage} style={{marginLeft: "2px"}}>
+                                Upload
+                            </Button>
                     </div>
                 </DialogContent>
                 <DialogActions>
