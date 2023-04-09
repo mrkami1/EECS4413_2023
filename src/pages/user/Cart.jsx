@@ -40,22 +40,22 @@ function Cart() {
         }
     }, [items]);
 
-    const deleteItem = async (e) => {
-        const deleteID = e.target.name;
-
+    const deleteItem = async (e, id) => {
+        const deleteID = id;
         let updatedItems = [];
-        items.forEach((item) => {
-            if (item.itemID !== deleteID) {
-                updatedItems.push(item);
-            }
-        });
-
-        await updateDoc(doc(db, "users", currentUser.uid), {
-            cartItems: updatedItems,
-        }).then(() => {
-            setItems(updatedItems);
-            console.log("deleted item");
-        });
+        if (deleteID) {
+            items.forEach((item) => {
+                if (item.itemID !== deleteID) {
+                    updatedItems.push(item);
+                }
+            });
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                cartItems: updatedItems,
+            }).then(() => {
+                setItems(updatedItems);
+                console.log("deleted item");
+            });
+        }
     };
 
     const titleCard = () => (
@@ -90,14 +90,19 @@ function Cart() {
                                     CAD ${item.price}
                                 </Typography>
                             </Box>
-                            <Button
+                            <Box sx={{m: 2, mt: "auto"}} >
+                                <IconButton size="large" onClick={(e) => deleteItem(e, item.itemID)}>
+                                    <Delete fontSize="large" />
+                                </IconButton>
+                            </Box>
+                            {/* <Button
                                 onClick={deleteItem}
                                 name={item.itemID}
                                 variant="contained"
                                 color="error"
+                                endIcon={<Delete />}
                             >
-                                <Delete />
-                            </Button>
+                            </Button> */}
                         </Paper>
                     );
                 })}

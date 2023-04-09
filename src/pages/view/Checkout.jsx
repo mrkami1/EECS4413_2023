@@ -33,15 +33,11 @@ function Checkout() {
         checkout.forEach((item) => {
             totalCost += item.price * item.quantity;
         });
-
+        setError(userFields?.address === "" || userFields?.payment.number === "" || userFields?.payment.expiry === "" || userFields?.payment.cvc === "")
         setTotal((Math.round(totalCost * 100) / 100).toFixed(2));
     }, [checkout]);
 
     const order = async () => {
-        if (userFields?.address === "" || userFields?.payment === "") {
-            setError(true);
-            return;
-        }
 
         const completedOrder = {
             orderID: uuidv4(),
@@ -80,6 +76,11 @@ function Checkout() {
                     <Typography variant="h6" sx={{ wordBreak: "break-word", mb: 2 }}>
                         {userFields?.address.address}
                     </Typography>
+                    {userFields?.address === "" &&
+                        <Typography color="error" variant="h6" sx={{ wordBreak: "break-word", mb: 2 }}>
+                            Address not set
+                        </Typography>
+                    }
                 </Box>
                 <Box sx={{ m: 2, mt: 4, borderBottom: "1px solid lightgray" }}>
                     <Typography variant="h4">Payment method</Typography>
@@ -90,9 +91,14 @@ function Checkout() {
                             userFields?.payment.number.length - 4
                         )}
                     </Typography>
+                    {userFields?.payment.number === "" &&
+                        <Typography color="error" variant="h6" sx={{ wordBreak: "break-word", mb: 2 }}>
+                            Card not set
+                        </Typography>
+                    }
                     {expiry && (
                         <Typography variant="body1" sx={{ mb: 2 }} color="error">
-                            Card expired
+                            Card expired or invalid
                         </Typography>
                     )}
                 </Box>
