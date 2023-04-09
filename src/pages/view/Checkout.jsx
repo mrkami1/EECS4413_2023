@@ -58,29 +58,31 @@ function Checkout() {
             });
         }
 
-        await updateDoc(doc(db, "orders", currentUser.uid), {
-            customerOrders: arrayUnion(completedOrder),
-
-        }).then(emptyCart);
-    };
-
-    const emptyCart = async () => {
-        console.log(userFields.ordersCompleted)
-         
         await updateDoc(doc(db, "users", currentUser.uid), {
-            cartItems: [],
             ordersCompleted: userFields.ordersCompleted + 1
         })
-        .then(() => {
+        .then(async () => {
             const totalOrders = userFields.ordersCompleted;
-            if (totalOrders % 2 === 0 && totalOrders !== 0) {
+            if (totalOrders % 3 === 0 && totalOrders !== 0) {
                 setCardError(true);
                 setTempError(true)
             }
             else {
-                console.log("completed order");
-                navigate("/");
+                await updateDoc(doc(db, "orders", currentUser.uid), {
+                    customerOrders: arrayUnion(completedOrder),
+                })
+                .then(emptyCart);
             }
+        });
+    };
+
+    const emptyCart = async () => {    
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            cartItems: [],
+        })
+        .then(() => {
+            console.log("completed order");
+            navigate("/");
         });
     };
 
