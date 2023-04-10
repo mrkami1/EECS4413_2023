@@ -62,9 +62,21 @@ const Sidebar = ({
         setSideBar(open);
     };
 
+    const clearAll= () => {
+        setFilterColor("")
+        setFilterRate("")
+        setFilterBrand("")
+        setFilterPrice("")
+    }
+
     const list = (filterColor, filterRate, filterBrand, filterPrice) => (
         <Box sx={{ width: 250 }} role="presentation" onKeyDown={toggleDrawer(false)}>
-            <List subheader={<ListSubheader>Filtering</ListSubheader>}>
+            <List subheader={<ListSubheader>
+                <span>Filtering</span>
+                <span>
+                    <Button style={{marginLeft: '100px'}} onClick={clearAll}>Clear
+                    </Button>
+                </span></ListSubheader>}>
                 <ListItemButton onClick={() => setShowRating(!showRating)}>
                     <ListItemIcon>
                         <Grade />
