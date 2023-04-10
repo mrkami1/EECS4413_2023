@@ -17,7 +17,7 @@ export const analyze = (text) => {
     else if (text.includes('interest')) {
         return "We get lots of nice glasses that you may be interested in."
     }
-    else if (text.includes('thank you')) {
+    else if (text.includes('thank you') || text.includes('Thanks') || text.includes('Thank you') || text.includes('Thank you')) {
         return "Thanks for Contacting me"
     }
     else if (text.includes('bye')) {
