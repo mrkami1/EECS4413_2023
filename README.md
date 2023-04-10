@@ -21,7 +21,7 @@ This small ecommerce project uses Google Firebase for backend data storage & str
 
 ## Some usable info
 1. For admin account access, use `ajenson@gmail.com` with `1234!Qwer`
-2. Register for any regular customer account, using 6+ numeric-aphabetic pswd
+2. Register for any regular customer account, using 8+ numeric-aphabetic pswd
 3. Explicitly provide arbitrary shipping address & 16-digit credit card number to purchase
 4. Some product ID to play with:
 arale_black alivia_blue cascata_pink
