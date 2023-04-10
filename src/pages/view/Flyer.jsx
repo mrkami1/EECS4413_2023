@@ -103,7 +103,6 @@ function NewBlock({ timeStamp }) {
     const [id, setId] = useState("");
     const dispatch = useContext(FlyerDispatchContext);
     const onSale = useContext(FlyerContext);
-    console.log("from newblock " + id);
 
     const addNewItem = async () => {
         const docRef = doc(db, "products", id);
@@ -111,10 +110,10 @@ function NewBlock({ timeStamp }) {
             const snapShot = await getDoc(docRef);
             if (snapShot.exists()) {
                 const newItem = snapShot.data();
-                console.log(newItem);
-                console.log(snapShot);
+                //console.log(newItem);
+                //console.log(snapShot);
                 if (!onSale.some((item) => item.id === newItem.id)) {
-                    console.log("got some new item: => " + id);
+                    //console.log("got some new item: => " + id);
                     dispatch({
                         type: "add",
                         item: {
@@ -134,8 +133,8 @@ function NewBlock({ timeStamp }) {
                 setError("This item ID doesn't exist!");
             }
         } catch (e) {
-            setError("Unknow error");
-            console.log(e);
+            setError("Unknown error");
+            //console.log(e);
         }
     };
     return (
@@ -158,8 +157,8 @@ function NewBlock({ timeStamp }) {
 function Flyer({ isAdmin }) {
     const [updated, setUpdated] = useState(false);
     const [onSale, dispatch] = useReducer(saleReducer, []);
-    console.log("from flyer");
-    console.log(onSale);
+    //console.log("from flyer");
+    //console.log(onSale);
 
     useEffect(() => {
         const currentFlyer = [];
@@ -171,13 +170,13 @@ function Flyer({ isAdmin }) {
                 dispatch({ type: "init", init: currentFlyer });
             })
             .catch((error) => {
-                console.log(error.message);
+                //console.log(error.message);
             });
     }, []);
 
     const [time, setTime] = useState(() => {
         if (onSale.length) {
-            console.log(onSale);
+            //console.log(onSale);
             return onSale[0].expire.toDate();
         } else {
             return new Date();

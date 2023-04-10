@@ -73,7 +73,7 @@ function Navbar({ search, setSearch }) {
     const handleSearch = (e) => {
         setSearch(e.target.value.toLowerCase());
     };
-    console.log(location.pathname)
+
     return (
         <>
             <AppBar position="static">
@@ -95,7 +95,8 @@ function Navbar({ search, setSearch }) {
                         variant="text"
                         onClick={() => navigate("/")}
                     >
-                        Glasses
+                        <img src={require("../assets/logo.png")} />
+                        
                     </Button>
                     <TextField
                         label="Search"

@@ -13,9 +13,7 @@ import { Star } from "@mui/icons-material";
 //Ying
 //list all the products with sort functionality
 export const AllProducts = (props) => {
-    console.log("this is the prop: " + props.sortType);
-    console.log("rate: " + props.filterRate + " " + typeof props.filterRate);
-    console.log("the type is: " + props.type);
+
     const [products, setProducts] = useState([]);
     const [priceRange, setPriceRange] = useState(true);
     const { userFields } = useContext(UserFieldsContext);
@@ -26,7 +24,7 @@ export const AllProducts = (props) => {
         const getProducts = () => {
             const productsArray = [];
             const path = `${props.type}`;
-            // console.log("this is: "+path)
+
             getDocs(collection(db, path))
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
@@ -36,22 +34,15 @@ export const AllProducts = (props) => {
                             id: doc.id,
                             newPrice: (content.price * (1 - content.discount / 100)).toFixed(2),
                         });
-                        console.log(doc.id, " => ", doc.data());
                     });
                     setProducts(productsArray);
                 })
                 .catch((error) => {
-                    console.log(error.message);
+                    //console.log(error.message);
                 });
         };
         getProducts();
     }, []);
-
-    //   const [sortState, setSortState] = useState("Sort Products");
-    //   console.log("products: "+products)
-    //   products.forEach((product)=>{
-    //     console.log("product: "+product.id)
-    //   })
 
     // sort price low to hight
     const numAscending = [...products].sort((a, b) => a.newPrice - b.newPrice);
@@ -123,22 +114,16 @@ export const AllProducts = (props) => {
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     cartItems: arrayUnion(newItem),
                 })
-                    .then(() => {
-                        console.log("added new item to cart");
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                .catch((error) => {
+                    //console.log(error);
+                });
             } else {
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     cartItems: currentItems,
                 })
-                    .then(() => {
-                        console.log("updated item quantity");
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                .catch((error) => {
+                    //console.log(error);
+                });
             }
         } else {
             navigate("/login");
@@ -150,7 +135,6 @@ export const AllProducts = (props) => {
         }
     }, [props.search]);
 
-    console.log(products);
     const imageList = () => (
         <ImageList cols={3} sx={{ margin: 3 }}>
             {products?.map(
