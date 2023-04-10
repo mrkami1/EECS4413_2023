@@ -9,8 +9,6 @@ Ying Zhang
 
 Yang Lan
 
-Anubhav Nag
-
 This small ecommerce project uses Google Firebase for backend data storage & structuring, with React frontend logic & business.
 
 ## Local testing
