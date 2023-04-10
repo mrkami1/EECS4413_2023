@@ -20,8 +20,11 @@ This small ecommerce project uses Google Firebase for backend data storage & str
 4. Local starting url is `https://localhost:3000/`
 
 ## Some usable info
-1. For admin account access, use `ajenson@gmail.com` with `123qwe`
+1. For admin account access, use `ajenson@gmail.com` with `1234!Qwer`
 2. Register for any regular customer account, using 6+ numeric-aphabetic pswd
 3. Explicitly provide arbitrary shipping address & 16-digit credit card number to purchase
+4. Some product ID to play with:
+arale_black alivia_blue cascata_pink
+colin_green gabriel_brown juliet_green
 
 Enjoy and let us know if you need any help or have suggestions!
