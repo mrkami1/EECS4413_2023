@@ -17,19 +17,19 @@ export const analyze = (text) => {
     else if (text.includes('interest')) {
         return "We get lots of nice glasses that you may be interested in."
     }
-    else if (text.includes('thank you')) {
+    else if (text.includes('thank you') || text.includes('Thanks') || text.includes('Thank you') || text.includes('thank you')) {
         return "Thanks for Contacting me"
     }
-    else if (text.includes('bye')) {
+    else if (text.includes('bye') || text.includes('Bye')) {
         return "Have a great day, byebye!"
     }
-    else if (text.includes('sad')) {
+    else if (text.includes('sad') || text.includes('Sad')) {
         return "Don't be sad, buy a pair of bright glasses makes you happy!"
     }
     else if (text.includes('joke')) {
         return "You wanna hear a joke? Here's a good one: Why do birds fly south in the winter? It is faster than walking!"
     }
-    else if (text.includes('happy') || text.includes('good')) {
+    else if (text.includes('happy') || text.includes('good') || text.includes('Good')) {
         return "Glad you are happy. Are there anything that I can assist you with?"
     }
     else if (text.includes('pay') || text.includes('payment')) {
