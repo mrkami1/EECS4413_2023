@@ -156,7 +156,7 @@ export default function TryOn({ imgSrc, imgName }) {
 
     return (
         <div>
-            <Button variant="outlined" onClick={() => setOpen(true)}>
+            <Button variant="outlined" onClick={() => setOpen(true)} sx={{ml: 2}}>
                 Try On
             </Button>
             <Dialog open={open} keepMounted style={{width: "450px", overflowX: "auto"}}>
