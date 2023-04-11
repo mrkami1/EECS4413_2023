@@ -107,8 +107,7 @@ export default function TryOn({ imgSrc, imgName }) {
         })
     }
 
-    const deleteImage = () => { // delete image from firebase
-        
+    const deleteImage = () => { // delete image from firebase       
         if ( face.del ) {
             if (typeof(face.alt.name) === 'undefined' && face.del) {
                 setFace(defaultFaces[0])
@@ -121,7 +120,6 @@ export default function TryOn({ imgSrc, imgName }) {
                     })
                 alert("photo deleted !")
             }
-
             else {
                     setFace(defaultFaces[0])
                     let deletedFaces = faces.filter(img => img !== face)

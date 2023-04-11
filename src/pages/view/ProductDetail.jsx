@@ -91,9 +91,9 @@ export const ProductDetail = () => {
                 }
             }
         };
-        return () => {
-            getReviews();
-        };
+        
+        getReviews();
+        
     }, [currentUser, id]);
 
     console.log(reviews);
