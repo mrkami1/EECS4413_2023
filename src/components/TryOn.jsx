@@ -72,12 +72,14 @@ export default function TryOn({ imgSrc, imgName }) {
     const [position, setPosition] = useState({ x: -70, y: -140 });
     const defaultFaces = [
         {
-            src: "https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Ffemale.png?alt=media&token=16f1db32-a64f-49b6-8197-0da7ed6b3653",
+            src: "https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Ffemale.png?alt=media&token=fdcb0eed-1195-4461-9637-b786cc234470",
             alt: "0",
+            del: false,
         },
         {
             src: "https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Fmale.png?alt=media&token=5ef5bab9-f8ae-4fb3-9e82-5383403a59da",
             alt: "1",
+            del: false,
         },
     ];
     const [face, setFace] = useState(defaultFaces[0]);
@@ -97,39 +99,41 @@ export default function TryOn({ imgSrc, imgName }) {
             getDownloadURL(querySnapshot.ref).then((url) => {
                 const newPic={
                     src: url, 
-                    alt: (faces.length+1).toString()
+                    alt: (faces.length+1).toString(),
+                    del: true
                 }
                 setFaces((prev) => [...prev, newPic])
             })
         })
     }
 
-    const deleteImage = () => { // delete image from firebase
-        if (typeof(face.alt.name) === 'undefined') {
-            setFace(defaultFaces[0])
-            let deletedFaces = faces.filter(img => img !== face)
-            setFaces(deletedFaces)
-            const imageRef = ref(storage, face.src);
-            deleteObject(imageRef).
-                catch((error) => {
-                    console.log("cannot delete", error)
-                })
-            alert("photo deleted !")
-        }
-        else if ( face.alt.name.includes("male.png") || face.alt.name.includes("female.png")) { // cannot delete default
-                alert("cannot delete the default picture!")
-                return
-             }
-             else {
+    const deleteImage = () => { // delete image from firebase       
+        if ( face.del ) {
+            if (typeof(face.alt.name) === 'undefined' && face.del) {
                 setFace(defaultFaces[0])
                 let deletedFaces = faces.filter(img => img !== face)
                 setFaces(deletedFaces)
-                deleteObject(face.alt).
+                const imageRef = ref(storage, face.src);
+                deleteObject(imageRef).
                     catch((error) => {
                         console.log("cannot delete", error)
                     })
-                alert("deleted sucessfully!")
-             }
+                alert("photo deleted !")
+            }
+            else {
+                    setFace(defaultFaces[0])
+                    let deletedFaces = faces.filter(img => img !== face)
+                    setFaces(deletedFaces)
+                    deleteObject(face.alt).
+                        catch((error) => {
+                            console.log("cannot delete", error)
+                        })
+                    alert("deleted sucessfully!")
+                 }
+        }
+        else {
+            alert("Please don't delete default photo!")
+        }
     }
 
 
@@ -139,9 +143,13 @@ export default function TryOn({ imgSrc, imgName }) {
             listAll(imagesListRef).then((response) => {
                 response.items.forEach((item) => {
                     getDownloadURL(item).then((url) => {
+                        let defaultPic= (url==="https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Ffemale.png?alt=media&token=fdcb0eed-1195-4461-9637-b786cc234470" ||
+                            url==="https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Fmale.png?alt=media&token=5ef5bab9-f8ae-4fb3-9e82-5383403a59da") 
+
                         const img={
                             src: url,
-                            alt: item
+                            alt: item,
+                            del: defaultPic? false : true
                         }
                         imageArray.push(img)
                         imageArray.sort((a,b) =>((a.alt > b.alt)? 1 : -1))
