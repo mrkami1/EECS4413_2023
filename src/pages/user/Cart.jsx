@@ -106,7 +106,7 @@ function Cart() {
                         variant="contained"
                         onClick={() => navigate("/view/checkout")}
                         sx={{ mt: 2 }}
-                        disabled={total === "0.00"}
+                        disabled={items.length === 0}
                     >
                         Checkout
                     </Button>
