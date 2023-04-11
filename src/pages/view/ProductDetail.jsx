@@ -87,7 +87,7 @@ export const ProductDetail = () => {
                     const r = reviewsDoc.data().customerReviews;
                     setReviews(r);
                 } else {
-                    console.log("no doc exists");
+                    //console.log("no doc exists");
                 }
             }
         };
@@ -96,7 +96,7 @@ export const ProductDetail = () => {
         
     }, [currentUser, id]);
 
-    console.log(reviews);
+    //console.log(reviews);
 
     const createReview = async () => {
         const newReview = {

@@ -19,6 +19,8 @@ function Checkout() {
     const [tempError, setTempError] = useState(false);
     const [cardError, setCardError] = useState(false);
     const [expiry, setExpiry] = useState(false);
+    const [alertType, setAlertType] = useState("error");
+    const [alertMsg, setAlertMsg] = useState("");
 
     const navigate = useNavigate();
 
@@ -35,7 +37,7 @@ function Checkout() {
         checkout.forEach((item) => {
             totalCost += item.price * item.quantity;
         });
-        
+        setTempError(checkout.length === 0);
         setError(userFields?.address === "" || userFields?.payment.number === "" || userFields?.payment.expiry === "" || userFields?.payment.cvc === "")
         setTotal((Math.round(totalCost * 100) / 100).toFixed(2));
     }, [checkout]);
@@ -66,6 +68,8 @@ function Checkout() {
             if (totalOrders % 3 === 0 && totalOrders !== 0) {
                 setCardError(true);
                 setTempError(true)
+                setAlertType("error");
+                setAlertMsg("Card declined or there was an error!")
             }
             else {
                 await updateDoc(doc(db, "orders", currentUser.uid), {
@@ -81,8 +85,10 @@ function Checkout() {
             cartItems: [],
         })
         .then(() => {
-            console.log("completed order");
-            navigate("/");
+            setCardError(true);
+            setTempError(true);
+            setAlertType("success");
+            setAlertMsg("Order complete!")
         });
     };
 
@@ -178,8 +184,8 @@ function Checkout() {
             onClose={() => setCardError(false)}
             anchorOrigin={{vertical: "bottom", horizontal: "center"}}
         >   
-            <Alert severity="error" variant="filled">
-                Your card was declined or there was an error!
+            <Alert severity={alertType} variant="filled">
+                {alertMsg}
             </Alert>
         </Snackbar>
     )
