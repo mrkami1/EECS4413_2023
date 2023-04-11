@@ -95,14 +95,6 @@ function Cart() {
                                     <Delete fontSize="large" />
                                 </IconButton>
                             </Box>
-                            {/* <Button
-                                onClick={deleteItem}
-                                name={item.itemID}
-                                variant="contained"
-                                color="error"
-                                endIcon={<Delete />}
-                            >
-                            </Button> */}
                         </Paper>
                     );
                 })}

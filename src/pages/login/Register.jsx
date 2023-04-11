@@ -81,6 +81,7 @@ function Register() {
                 payment,
                 address,
                 cartItems,
+                ordersCompleted: 0
             });
 
             await updateProfile(response.user, {
