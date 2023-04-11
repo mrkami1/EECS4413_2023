@@ -116,7 +116,7 @@ export default function TryOn({ imgSrc, imgName }) {
                 })
             alert("photo deleted !")
         }
-        else if ( face.alt.name.includes("male.png") || face.alt.name.includes("female.png")) {
+        else if ( face.alt.name.includes("male.png") || face.alt.name.includes("female.png")) { // cannot delete default
                 alert("cannot delete the default picture!")
                 return
              }
