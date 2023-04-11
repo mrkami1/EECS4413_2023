@@ -6,6 +6,7 @@ import Navbar from "../../components/Navbar";
 import { AuthContext } from "../../context/AuthContext";
 import { db } from "../../firebase";
 import { Button, Box, Card, CardContent, Paper, Typography } from "@mui/material";
+import UserFieldsContext from "../../context/UserFieldsContext";
 
 function OrderHistory() {
     const { currentUser } = useContext(AuthContext);
@@ -20,14 +21,10 @@ function OrderHistory() {
                 }
             }
         };
-
-        return () => {
-            getOrders();
-        };
+        getOrders();
     }, [currentUser]);
 
     const cancelOrder = async (e) => {
-        console.log(e.target.name);
 
         orders.splice(e.target.name, 1);
 
@@ -47,68 +44,66 @@ function OrderHistory() {
             </CardContent>
         </Card>
     );
-
-    const orderCard = () => (
-        <>
-            {orders?.map((o, i) => {
-                return (
-                    <Card key={i} sx={{ mt: 5, ml: "auto", mr: "auto", maxWidth: "70%" }}>
-                        <Typography variant="h6" sx={{ margin: 2 }}>
-                            ORDER # {o.orderID}
-                        </Typography>
-                        {o.items?.map((item, k) => {
-                            return (
-                                <Paper
-                                    key={k}
-                                    sx={{
-                                        margin: 2,
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        ":hover": { boxShadow: 10 },
-                                        minHeight: 200,
-                                    }}
-                                    elevation={3}
-                                >
-                                    <img src={item.image} style={{ margin: 20 }} />
-                                    <Box sx={{ flex: "1", margin: 2 }}>
-                                        <Typography variant="h4">{item.name}</Typography>
-                                        <Typography variant="body1">
-                                            Quantity : {item.quantity}
-                                        </Typography>
-                                        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                                            CAD ${item.price}
-                                        </Typography>
-                                    </Box>
-                                </Paper>
-                            );
-                        })}
-                        <Box margin={2}>
-                            <Typography variant="body1">
-                                Order placed : {o.date.toDate().toDateString()}
-                            </Typography>
-                            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                                TOTAL : CAD ${o.total}
-                            </Typography>
-                            <Button
-                                name={i}
-                                onClick={cancelOrder}
-                                variant="contained"
-                                sx={{ mt: 5 }}
+    
+    const ordersCard = () => (
+        orders?.map((o, i) => {
+            return (
+                <Card key={i} sx={{ mt: 5, ml: "auto", mr: "auto", maxWidth: "70%" }}>
+                    <Typography variant="h6" sx={{ margin: 2 }}>
+                        ORDER # {o.orderID}
+                    </Typography>
+                    {o.items?.map((item, k) => {
+                        return (
+                            <Paper
+                                key={k}
+                                sx={{
+                                    margin: 2,
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    ":hover": { boxShadow: 10 },
+                                    minHeight: 200,
+                                }}
+                                elevation={3}
                             >
-                                Cancel order
-                            </Button>
-                        </Box>
-                    </Card>
-                );
-            })}
-        </>
-    );
+                                <img src={item.image} style={{ margin: 20 }} />
+                                <Box sx={{ flex: "1", margin: 2 }}>
+                                    <Typography variant="h4">{item.name}</Typography>
+                                    <Typography variant="body1">
+                                        Quantity : {item.quantity}
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                                        CAD ${item.price}
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                        );
+                    })}
+                    <Box margin={2}>
+                        <Typography variant="body1">
+                            Order placed : {o.date.toDate().toDateString()}
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                            TOTAL : CAD ${o.total}
+                        </Typography>
+                        <Button
+                            name={i}
+                            onClick={cancelOrder}
+                            variant="contained"
+                            sx={{ mt: 5 }}
+                        >
+                            Cancel order
+                        </Button>
+                    </Box>
+                </Card>
+            );
+        })
+    )
 
     return (
         <div>
             <Navbar />
             {titleCard()}
-            {orderCard()}
+            {ordersCard()}
         </div>
     );
 }
