@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, ImageList, ImageListItem } from "@mui/material";
 import { storage } from "../firebase";
+import { deleteObject } from "firebase/storage";
 import { getDownloadURL, 
          ref, 
          uploadBytes,
@@ -71,7 +72,7 @@ export default function TryOn({ imgSrc, imgName }) {
     const [position, setPosition] = useState({ x: -70, y: -140 });
     const defaultFaces = [
         {
-            src: "https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Ffemale.png?alt=media&token=9b0b2f5a-449e-48ab-8afe-b8712e70b36b",
+            src: "https://firebasestorage.googleapis.com/v0/b/project-6e0fc.appspot.com/o/faces%2Ffemale.png?alt=media&token=16f1db32-a64f-49b6-8197-0da7ed6b3653",
             alt: "0",
         },
         {
@@ -104,7 +105,31 @@ export default function TryOn({ imgSrc, imgName }) {
     }
 
     const deleteImage = () => { // delete image from firebase
-
+        if (typeof(face.alt.name) === 'undefined') {
+            setFace(defaultFaces[0])
+            let deletedFaces = faces.filter(img => img !== face)
+            setFaces(deletedFaces)
+            const imageRef = ref(storage, face.src);
+            deleteObject(imageRef).
+                catch((error) => {
+                    console.log("cannot delete", error)
+                })
+            alert("photo deleted !")
+        }
+        else if ( face.alt.name.includes("male.png") || face.alt.name.includes("female.png")) { // cannot delete default
+                alert("cannot delete the default picture!")
+                return
+             }
+             else {
+                setFace(defaultFaces[0])
+                let deletedFaces = faces.filter(img => img !== face)
+                setFaces(deletedFaces)
+                deleteObject(face.alt).
+                    catch((error) => {
+                        console.log("cannot delete", error)
+                    })
+                alert("deleted sucessfully!")
+             }
     }
 
 
@@ -113,7 +138,6 @@ export default function TryOn({ imgSrc, imgName }) {
             const imageArray=[]
             listAll(imagesListRef).then((response) => {
                 response.items.forEach((item) => {
-                    // console.log("item info: "+item)
                     getDownloadURL(item).then((url) => {
                         const img={
                             src: url,
@@ -211,6 +235,9 @@ export default function TryOn({ imgSrc, imgName }) {
                         </label>
                         <Button variant="contained" color="primary" component="span" onClick={uploadImage} style={{marginLeft: "10px"}}>
                                 Upload
+                            </Button>
+                            <Button variant="contained" color="primary" component="span" onClick={deleteImage} style={{marginLeft: "10px"}}>
+                                Delete
                             </Button>
                     </div>
                     <div className="slider" style={{width: "100%", height: "30px", marginTop: "10px"}}>
