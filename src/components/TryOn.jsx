@@ -4,7 +4,7 @@ import { storage } from "../firebase";
 import { db } from "../firebase";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { deleteObject } from "firebase/storage";
-import { getDownloadURL, ref, uploadBytes, listAll } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Slider } from "@mui/material";
 import UserFieldsContext from "../context/UserFieldsContext";
 import { useNavigate } from "react-router-dom";
@@ -70,7 +70,6 @@ export default function TryOn({ imgSrc, imgName }) {
     const { userFields } = useContext(UserFieldsContext);
     const [open, setOpen] = useState(false);
     const [position, setPosition] = useState({ x: 85, y: -140 });
-    // const [uploadImg, setUploadImg] = useState(null);
     const glassRef = useRef();
     const [width, setWidth] = useState(130);
     const defaultFaces = [
@@ -144,24 +143,6 @@ export default function TryOn({ imgSrc, imgName }) {
         });
         setFaces(faces.filter((f) => f.alt !== face.alt));
         setFace(defaultFaces[0]);
-        // if (typeof face.alt.name === "undefined" && face.del) {
-        //     setFace(defaultFaces[0]);
-        //     let deletedFaces = faces.filter((img) => img !== face);
-        //     setFaces(deletedFaces);
-        //     const imageRef = ref(storage, face.src);
-        //     deleteObject(imageRef).catch((error) => {
-        //         console.log("cannot delete", error);
-        //     });
-        //     alert("photo deleted !");
-        // } else {
-        //     setFace(defaultFaces[0]);
-        //     let deletedFaces = faces.filter((img) => img !== face);
-        //     setFaces(deletedFaces);
-        //     deleteObject(face.alt).catch((error) => {
-        //         console.log("cannot delete", error);
-        //     });
-        //     alert("deleted sucessfully!");
-        // }
     };
 
     function handleMove(dx, dy) {
@@ -220,7 +201,6 @@ export default function TryOn({ imgSrc, imgName }) {
                             ))}
                         </ImageList>
                     </div>
-
                     <div
                         className="image_buttons"
                         style={{
@@ -243,9 +223,6 @@ export default function TryOn({ imgSrc, imgName }) {
                                 Upload your image
                             </Button>
                         </label>
-                        {/* <Button variant="contained" color="primary" component="span" onClick={uploadImage}>
-                            Upload
-                        </Button> */}
                         <Button
                             variant="contained"
                             color="primary"
