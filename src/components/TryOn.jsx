@@ -90,7 +90,7 @@ export default function TryOn({ imgSrc, imgName }) {
 
     useEffect(() => {
         const imageArray = [...defaultFaces];
-        if (userFields?.selfies.length) {
+        if (userFields?.selfies?.length) {
             imageArray.push(...userFields.selfies);
             setFaces(imageArray);
         }
