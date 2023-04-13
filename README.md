@@ -11,6 +11,9 @@ Yang Lan
 
 This small ecommerce project uses Google Firebase for backend data storage & structuring, with React frontend logic & business.
 
+## Deployed testing
+The project can be used and tested at https://project-6e0fc.web.app/
+
 ## Local testing
 1. Pull the project to local working folder, and start from project root.
 2. Install dependencies using bash or powershell run `npm install`
