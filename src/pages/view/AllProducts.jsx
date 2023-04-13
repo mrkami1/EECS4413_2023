@@ -7,15 +7,13 @@ import { arrayUnion, doc, updateDoc } from "@firebase/firestore";
 import UserFieldsContext from "../../context/UserFieldsContext";
 import { AuthContext } from "../../context/AuthContext";
 import TryOn from "../../components/TryOn";
-import { ImageList, ImageListItem, ImageListItemBar, Paper, Button } from "@mui/material";
+import { ImageList, ImageListItem, ImageListItemBar, Paper, Button, Stack } from "@mui/material";
 import { Star } from "@mui/icons-material";
 
 //Ying
 //list all the products with sort functionality
 export const AllProducts = (props) => {
-
     const [products, setProducts] = useState([]);
-    const [priceRange, setPriceRange] = useState(true);
     const { userFields } = useContext(UserFieldsContext);
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -113,15 +111,13 @@ export const AllProducts = (props) => {
             if (!itemInCart) {
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     cartItems: arrayUnion(newItem),
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     //console.log(error);
                 });
             } else {
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     cartItems: currentItems,
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     //console.log(error);
                 });
             }
@@ -144,27 +140,29 @@ export const AllProducts = (props) => {
                     product.brand.toLowerCase().includes(props?.filterBrand) &&
                     product.rate.toString().includes(props?.filterRate) &&
                     priceCondition(product.price, props?.filterPrice) && (
-                        <Paper key={i} elevation={3} sx={{ margin: 5, ":hover": { boxShadow: 10 } }}>
-                            <ImageListItem sx={{ margin: 5 }}>
+                        <Paper key={i} elevation={3} sx={{ margin: 3, ":hover": { boxShadow: 10 } }}>
+                            <ImageListItem sx={{ margin: 4 }}>
                                 <img
                                     src={product.img}
                                     alt={product.name}
                                     loading="eager"
                                     onClick={() => navigate("/product/" + product.id)}
-                                    style={{ cursor: "pointer" }}
+                                    style={{ cursor: "pointer", height: 140, objectFit: "scale-down" }}
                                 />
-                                <ImageListItemBar title={product.name} subtitle={product.brand} position="below" />
-                                <ImageListItemBar
-                                    title={"CAD $" + product.newPrice}
-                                    subtitle={
-                                        product.discount !== 0 && (
-                                            <p style={{ display: "inline", textDecoration: "line-through" }}>
-                                                original ${product.price}
-                                            </p>
-                                        )
-                                    }
-                                    position="below"
-                                />
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <ImageListItemBar title={product.name} subtitle={product.brand} position="below" />
+                                    <ImageListItemBar
+                                        title={"CAD $" + product.newPrice}
+                                        subtitle={
+                                            product.discount && (
+                                                <p style={{ margin: 0, textDecoration: "line-through" }}>
+                                                    original ${product.price}
+                                                </p>
+                                            )
+                                        }
+                                        position="below"
+                                    />
+                                </div>
                                 <ImageListItemBar
                                     title={product.rate}
                                     actionIcon={<Star sx={{ color: "#ffc400" }} />}
@@ -176,7 +174,6 @@ export const AllProducts = (props) => {
                                     <Button variant="contained" onClick={() => addToCart(product)}>
                                         add to cart
                                     </Button>
-                                    &emsp;
                                     <TryOn imgSrc={product.img} imgName={product.name} />
                                 </div>
                             </ImageListItem>
