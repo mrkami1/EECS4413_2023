@@ -15,7 +15,7 @@ export function UserFieldsProvider({ children }) {
                 setUserFields(doc.data());
             });
             return () => {
-                if (currentUser) {
+                if (currentUser.uid) {
                     unsub();
                     console.log("updated");
                 }
