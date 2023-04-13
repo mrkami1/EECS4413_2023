@@ -7,6 +7,7 @@ import { deleteObject } from "firebase/storage";
 import { getDownloadURL, ref, uploadBytes, listAll } from "firebase/storage";
 import { Slider } from "@mui/material";
 import UserFieldsContext from "../context/UserFieldsContext";
+import { useNavigate } from "react-router-dom";
 
 function Background({ children, face }) {
     return (
@@ -67,11 +68,9 @@ function Glasses({ children, position, onMove }) {
 
 export default function TryOn({ imgSrc, imgName }) {
     const { userFields } = useContext(UserFieldsContext);
-    console.log(userFields);
-    const userRef = doc(db, "users", userFields?.userID);
     const [open, setOpen] = useState(false);
     const [position, setPosition] = useState({ x: 85, y: -140 });
-    const [uploadImg, setUploadImg] = useState(null);
+    // const [uploadImg, setUploadImg] = useState(null);
     const glassRef = useRef();
     const [width, setWidth] = useState(130);
     const defaultFaces = [
@@ -88,45 +87,51 @@ export default function TryOn({ imgSrc, imgName }) {
     ];
     const [face, setFace] = useState(defaultFaces[0]);
     const [faces, setFaces] = useState(defaultFaces);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const imageArray = [...defaultFaces];
-        if (userFields.selfies) {
+        if (userFields?.selfies.length) {
             imageArray.push(...userFields.selfies);
+            setFaces(imageArray);
         }
-        setFaces(imageArray);
     }, []);
 
-    const uploadImage = () => {
+    const uploadImage = (e) => {
         // upload image to firebase
-        if (uploadImg == null) return;
-        const newPic = null;
+        if (!userFields) {
+            navigate("/login");
+            return;
+        }
+        const uploadImg = e.target.files[0];
         const imageRef = ref(storage, `faces/${uploadImg.name}`);
         uploadBytes(imageRef, uploadImg).then((querySnapshot) => {
             console.log("image uploaded");
             getDownloadURL(querySnapshot.ref).then((url) => {
-                newPic = {
+                const newPic = {
                     src: url,
                     alt: uploadImg.name,
                     del: true,
                 };
                 setFaces((prev) => [...prev, newPic]);
+                const userRef = doc(db, "users", userFields?.userID);
+                getDoc(userRef).then((userSnap) => {
+                    if (userSnap.exists()) {
+                        const selfieArr = userSnap.data().selfies;
+                        if (selfieArr) {
+                            updateDoc(userRef, { selfies: [...selfieArr, newPic] });
+                        } else {
+                            updateDoc(userRef, { selfies: [newPic] });
+                        }
+                    }
+                });
             });
-        });
-        getDoc(userRef).then((userSnap) => {
-            if (userSnap.exists()) {
-                const selfieArr = userSnap.data().selfies;
-                if (selfieArr) {
-                    updateDoc(userRef, { selfies: [...selfieArr, newPic] });
-                } else {
-                    updateDoc(userRef, { selfies: [newPic] });
-                }
-            }
         });
     };
 
     const deleteImage = () => {
         // delete image from firebase
+        const userRef = doc(db, "users", userFields?.userID);
         getDoc(userRef).then((userSnap) => {
             if (userSnap.exists()) {
                 const selfieArr = userSnap.data().selfies;
@@ -192,29 +197,27 @@ export default function TryOn({ imgSrc, imgName }) {
                     </div>
                     <div className="imgList" style={{ width: "100%", height: "120px" }}>
                         <ImageList cols={faces.length} rowHeight={100} sx={{ display: "flex", marginTop: "10px" }}>
-                            {faces.map((face) => {
-                                return (
-                                    <ImageListItem
-                                        key={face.alt}
-                                        sx={{
-                                            width: 100,
-                                            height: 100,
-                                            justifyContent: "center",
-                                            border: 3,
-                                            borderColor: "white",
-                                            ":hover": { borderColor: "cyan" },
-                                        }}
-                                    >
-                                        <img
-                                            src={face.src}
-                                            alt={face.alt}
-                                            onClick={() => setFace(face)}
-                                            loading="eager"
-                                            style={{ width: 100, height: 100 }}
-                                        />
-                                    </ImageListItem>
-                                );
-                            })}
+                            {faces.map((f) => (
+                                <ImageListItem
+                                    key={f.alt}
+                                    sx={{
+                                        width: 100,
+                                        height: 100,
+                                        justifyContent: "center",
+                                        border: 3,
+                                        borderColor: "white",
+                                        ":hover": { borderColor: "cyan" },
+                                    }}
+                                >
+                                    <img
+                                        src={f.src}
+                                        alt={f.alt}
+                                        onClick={() => setFace(f)}
+                                        loading="eager"
+                                        style={{ width: 100, height: 100 }}
+                                    />
+                                </ImageListItem>
+                            ))}
                         </ImageList>
                     </div>
 
@@ -233,14 +236,11 @@ export default function TryOn({ imgSrc, imgName }) {
                             accept="image/*"
                             style={{ display: "none" }}
                             id="upload_img"
-                            onChange={(e) => {
-                                setUploadImg(e.target.files[0]);
-                                uploadImage();
-                            }}
+                            onChange={uploadImage}
                         />
                         <label htmlFor="upload_img">
                             <Button variant="contained" color="primary" component="span">
-                                Select
+                                Upload your image
                             </Button>
                         </label>
                         {/* <Button variant="contained" color="primary" component="span" onClick={uploadImage}>

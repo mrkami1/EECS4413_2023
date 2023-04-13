@@ -10,7 +10,7 @@ export function UserFieldsProvider({ children }) {
     const { currentUser } = useContext(AuthContext);
 
     useEffect(() => {
-        if (currentUser.uid) {
+        if (currentUser?.uid) {
             const unsub = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
                 setUserFields(doc.data());
             });
